@@ -9,8 +9,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.Data;
+
 @Entity
 @Table(name = "questions_and_answers")
+@Data
 public class QuestionAndAnswer {
 	
 	@Id
@@ -27,49 +30,5 @@ public class QuestionAndAnswer {
 	@ManyToOne
 	@JoinColumn(name = "category_id", nullable = false)
 	private Category category;
-	
-	
-	public QuestionAndAnswer() {
-	}
-	
-	public QuestionAndAnswer(String question, String answer, Category category) {
-		this.question = question;
-		this.answer = answer;
-		this.category = category;
-	}
-
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getQuestion() {
-		return question;
-	}
-
-	public void setQuestion(String question) {
-		this.question = question;
-	}
-
-	public String getAnswer() {
-		return answer;
-	}
-
-	public void setAnswer(String answer) {
-		this.answer = answer;
-	}
-
-	public Category getCategory() {
-		return category;
-	}
-
-	public void setCategory(Category category) {
-		this.category = category;
-	}
-	
 
 }
