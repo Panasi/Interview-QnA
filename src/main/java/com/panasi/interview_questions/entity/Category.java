@@ -20,7 +20,7 @@ public class Category {
 	@Column(name="id")
 	private int id;
 	
-	@Column(name = "name")
+	@Column(name = "name", nullable = false)
 	private String name;
 	
 	@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH}, mappedBy = "category")

@@ -1,6 +1,5 @@
 package com.panasi.interview_questions.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,14 +18,14 @@ public class QuestionAndAnswer {
 	@Column(name="id")
 	private int id;
 	
-	@Column(name="question")
+	@Column(name="question", nullable = false)
 	private String question;
 	
 	@Column(name="answer", nullable = true)
 	private String answer;
 	
-	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
-	@JoinColumn(name = "category_id")
+	@ManyToOne
+	@JoinColumn(name = "category_id", nullable = false)
 	private Category category;
 	
 	

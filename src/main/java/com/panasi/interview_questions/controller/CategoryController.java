@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.panasi.interview_questions.entity.Category;
-import com.panasi.interview_questions.service.QaAService;
+import com.panasi.interview_questions.service.CategoryService;
 
 @RestController
 @RequestMapping("/category")
 public class CategoryController {
 	
 	@Autowired
-	private QaAService service;
+	private CategoryService service;
 	
 	
 	@GetMapping("/all")
