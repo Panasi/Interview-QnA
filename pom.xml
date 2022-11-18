@@ -13,10 +13,14 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>interview_questions</name>
 	<description>Questions and answers for interview</description>
+	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>17</java.version>
+		<m2e.apt.activation>jdt_apt</m2e.apt.activation>
 	</properties>
+	
+	
 	<dependencies>
 	
 		<dependency>
@@ -52,6 +56,12 @@
     		<groupId>org.projectlombok</groupId>
     		<artifactId>lombok</artifactId>
     		<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+    		<groupId>org.mapstruct</groupId>
+    		<artifactId>mapstruct</artifactId>
+    		<version>1.5.3.Final</version>
 		</dependency>
 		
 	</dependencies>

@@ -1,4 +1,4 @@
-package com.panasi.interview_questions.entity;
+package com.panasi.interview_questions.repository.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,12 +9,18 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "questions_and_answers")
 @Data
-public class QuestionAndAnswer {
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class Question {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
