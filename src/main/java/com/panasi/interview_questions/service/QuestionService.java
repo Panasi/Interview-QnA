@@ -6,7 +6,9 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.panasi.interview_questions.repository.QuestionRepository;
+import com.panasi.interview_questions.repository.dto.QuestionDto;
 import com.panasi.interview_questions.repository.entity.Question;
+import com.panasi.interview_questions.service.mappers.QuestionMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,26 +17,30 @@ import lombok.RequiredArgsConstructor;
 public class QuestionService {
 	
 	private final QuestionRepository questionRepository;
+	private final QuestionMapper mapper;
 	
 	
-	public List<Question> getAllQuestions() {
-		return questionRepository.findAll();
+	public List<QuestionDto> getAllQuestions() {
+		List<QuestionDto> allQuestionDtos = mapper.toQuestionDtos(questionRepository.findAll());
+		return allQuestionDtos;
 	}
 	
-	public List<Question> getAllQuestionsByCategory(int id) {
-		return questionRepository.findAllByCategoryId(id);
+	public List<QuestionDto> getAllQuestionsByCategory(int id) {
+		List<QuestionDto> allQuestionDtos = mapper.toQuestionDtos(questionRepository.findAllByCategoryId(id));
+		return allQuestionDtos;
 	}
 	
-	public Question getQuestionById(int id) {
+	public QuestionDto getQuestionById(int id) {
 		Optional<Question> optional = questionRepository.findById(id);
-		Question question = null;
+		QuestionDto question = null;
 		if (optional.isPresent()) {
-			question = optional.get();
+			question = mapper.toQuestionDto(optional.get());
 		}
 		return question;
 	}
 	
-	public void saveQuestion(Question question) {
+	public void saveQuestion(QuestionDto questionDto) {
+		Question question = mapper.toQuestion(questionDto);
 		questionRepository.save(question);
 	}
 	

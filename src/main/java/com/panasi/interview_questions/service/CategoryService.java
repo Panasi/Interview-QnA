@@ -6,7 +6,9 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.panasi.interview_questions.repository.CategoryRepository;
+import com.panasi.interview_questions.repository.dto.CategoryDto;
 import com.panasi.interview_questions.repository.entity.Category;
+import com.panasi.interview_questions.service.mappers.CategoryMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,22 +17,25 @@ import lombok.RequiredArgsConstructor;
 public class CategoryService {
 	
 	private final CategoryRepository categoryRepository;
+	private final CategoryMapper mapper;
 	
 	
-	public List<Category> getAllCategories() {
-		return categoryRepository.findAll();
+	public List<CategoryDto> getAllCategories() {
+		List<CategoryDto> allCategoryDtos = mapper.toCategoryDtos(categoryRepository.findAll());
+		return allCategoryDtos;
 	}
 	
-	public Category getCategoryById(int id) {
+	public CategoryDto getCategoryById(int id) {
 		Optional<Category> optional = categoryRepository.findById(id);
-		Category category = null;
+		CategoryDto categoryDto = null;
 		if (optional.isPresent()) {
-			category = optional.get();
+			categoryDto = mapper.toCategoryDto(optional.get());
 		}
-		return category;
+		return categoryDto;
 	}
 	
-	public void saveCategory(Category category) {
+	public void saveCategory(CategoryDto categoryDto) {
+		Category category = mapper.toCategory(categoryDto);
 		categoryRepository.save(category);
 	}
 	
