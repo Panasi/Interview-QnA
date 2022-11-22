@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.panasi.interview_questions.repository.dto.QuestionDto;
 import com.panasi.interview_questions.service.QuestionService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -27,6 +28,7 @@ public class QuestionController {
 	
 	
 	@GetMapping
+	@Operation(summary = "Get all questions")
 	public ResponseEntity<List<QuestionDto>> showAllQuestions() {
 		List<QuestionDto> allQuestionDtos = service.getAllQuestions();
 		if (allQuestionDtos == null) {
@@ -36,6 +38,7 @@ public class QuestionController {
 	}
 	
 	@GetMapping("/category/{id}")
+	@Operation(summary = "Get all questions by their category id")
 	public ResponseEntity<List<QuestionDto>> showAllQuestionsByCategory(@PathVariable int id) {
 		List<QuestionDto> allQuestionDtos = service.getAllQuestionsByCategory(id);
 		if (allQuestionDtos.isEmpty()) {
@@ -45,6 +48,7 @@ public class QuestionController {
 	}
 	
 	@GetMapping("/{id}")
+	@Operation(summary = "Get a question by id")
 	public ResponseEntity<QuestionDto> showQuestion(@PathVariable int id) {
 		QuestionDto questionDto = service.getQuestionById(id);
 		if (questionDto == null) {
@@ -54,18 +58,21 @@ public class QuestionController {
 	}
 	
 	@PostMapping
+	@Operation(summary = "Add a new question")
 	public ResponseEntity<QuestionDto> addNewQuestion(@RequestBody QuestionDto questionDto) {
 		service.saveQuestion(questionDto);
 		return new ResponseEntity<>(questionDto, HttpStatus.CREATED);
 	}
 	
 	@PutMapping
+	@Operation(summary = "Update question")
 	public ResponseEntity<QuestionDto> updateQuestion(@RequestBody QuestionDto questionDto) {
 		service.saveQuestion(questionDto);
 		return new ResponseEntity<>(questionDto, HttpStatus.ACCEPTED);
 	}
 	
 	@DeleteMapping("/{id}")
+	@Operation(summary = "Delete question")
 	public ResponseEntity<Integer> deleteQuestion(@PathVariable int id) {
 		QuestionDto question = service.getQuestionById(id);
 		if (question == null) {

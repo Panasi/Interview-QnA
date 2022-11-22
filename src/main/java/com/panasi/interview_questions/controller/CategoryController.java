@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.panasi.interview_questions.repository.dto.CategoryDto;
 import com.panasi.interview_questions.service.CategoryService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -27,6 +28,7 @@ public class CategoryController {
 	
 	
 	@GetMapping
+	@Operation(summary = "Get all categories")
 	public ResponseEntity<List<CategoryDto>> showAllCategories() {
 		List<CategoryDto> allCategoryDtos = service.getAllCategories();
 		if (allCategoryDtos == null) {
@@ -35,6 +37,7 @@ public class CategoryController {
 		return new ResponseEntity<>(allCategoryDtos, HttpStatus.OK);
 	}
 	@GetMapping("/{id}")
+	@Operation(summary = "Get a category by id")
 	public ResponseEntity<CategoryDto> showCategory(@PathVariable int id) {
 		CategoryDto categoryDto = service.getCategoryById(id);
 		if (categoryDto == null) {
@@ -44,18 +47,21 @@ public class CategoryController {
 	}
 	
 	@PostMapping
+	@Operation(summary = "Add a new category")
 	public ResponseEntity<CategoryDto> addNewCategory(@RequestBody CategoryDto categoryDto) {
 		service.saveCategory(categoryDto);
 		return new ResponseEntity<>(categoryDto, HttpStatus.CREATED);
 	}
 	
 	@PutMapping
+	@Operation(summary = "Update category")
 	public ResponseEntity<CategoryDto> updateCategory(@RequestBody CategoryDto categoryDto) {
 		service.saveCategory(categoryDto);
 		return new ResponseEntity<>(categoryDto, HttpStatus.ACCEPTED);
 	}
 	
 	@DeleteMapping("/{id}")
+	@Operation(summary = "Delete category")
 	public ResponseEntity<Integer> deleteCategory(@PathVariable int id) {
 		CategoryDto categoryDto = service.getCategoryById(id);
 		if (categoryDto == null) {
