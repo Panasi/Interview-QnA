@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>	
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet  id="1"  author="Panasi">  
+        <createTable  tableName="categories">  
+            <column  name="id"  type="int"  autoIncrement="true">  
+                <constraints  primaryKey="true"  nullable="false"/>  
+            </column>  
+            <column  name="name"  type="varchar(50)"> 
+            	<constraints  nullable="false"/> 
+            </column>
+        </createTable>  
+    </changeSet>  
+
+    <changeSet  id="2"  author="Panasi">  
+        <createTable  tableName="questions_and_answers">  
+            <column  name="id"  type="int"  autoIncrement="true">  
+                <constraints  primaryKey="true"  nullable="false"/>  
+            </column>
+            <column  name="question"  type="varchar(50)"> 
+            	<constraints  nullable="false"/>
+            </column>
+            <column  name="answer"  type="varchar(50)"/> 
+            <column  name="category"  type="varchar(50)"> 
+            	<constraints  nullable="false" foreignKeyName="fk_categories" references="categories(id)"/>
+            </column>
+        </createTable>  
+    </changeSet>   
+
+</databaseChangeLog>

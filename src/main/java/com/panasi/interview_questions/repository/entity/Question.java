@@ -34,7 +34,7 @@ public class Question {
 	private String answer;
 	
 	@ManyToOne
-	@JoinColumn(name = "category_id", nullable = false)
+	@JoinColumn(name = "category", nullable = false)
 	private Category category;
 
 }
