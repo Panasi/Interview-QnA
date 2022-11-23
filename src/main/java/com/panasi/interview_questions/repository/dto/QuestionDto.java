@@ -8,6 +8,6 @@ public class QuestionDto {
 	private int id;
 	private String question;
 	private String answer;
-	private CategoryDto categoryDto;
+	private CategoryDto category;
 
 }

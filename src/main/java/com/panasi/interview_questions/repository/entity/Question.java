@@ -24,13 +24,13 @@ public class Question {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id")
+	@Column(name = "id")
 	private int id;
 	
-	@Column(name="question", nullable = false)
+	@Column(name = "question", nullable = false)
 	private String question;
 	
-	@Column(name="answer", nullable = true)
+	@Column(name = "answer")
 	private String answer;
 	
 	@ManyToOne

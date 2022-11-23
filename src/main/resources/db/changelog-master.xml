@@ -9,7 +9,10 @@
         <createTable  tableName="categories">  
             <column  name="id"  type="int"  autoIncrement="true">  
                 <constraints  primaryKey="true"  nullable="false"/>  
-            </column>  
+            </column>
+            <column  name="parent_id"  type="int"> 
+            	<constraints  nullable="false"/>
+            </column> 
             <column  name="name"  type="varchar(50)"> 
             	<constraints  nullable="false"/> 
             </column>

@@ -25,6 +25,11 @@ public class CategoryService {
 		return allCategoryDtos;
 	}
 	
+	public List<CategoryDto> getAllSubcategories(int parentId) {
+		List<CategoryDto> allSubcategoryDtos = mapper.toCategoryDtos(categoryRepository.findAllByParentId(parentId));
+		return allSubcategoryDtos;
+	}
+	
 	public CategoryDto getCategoryById(int id) {
 		Optional<Category> optional = categoryRepository.findById(id);
 		CategoryDto categoryDto = null;
@@ -40,6 +45,10 @@ public class CategoryService {
 	}
 	
 	public void deleteCategory(int id) {
+		List<Category> allSubcategoryDtos = categoryRepository.findAllByParentId(id);
+		allSubcategoryDtos.forEach(category -> {
+			categoryRepository.deleteById(category.getId());
+		});
 		categoryRepository.deleteById(id);
 	}
 

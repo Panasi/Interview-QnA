@@ -31,7 +31,7 @@ public class QuestionController {
 	@Operation(summary = "Get all questions")
 	public ResponseEntity<List<QuestionDto>> showAllQuestions() {
 		List<QuestionDto> allQuestionDtos = service.getAllQuestions();
-		if (allQuestionDtos == null) {
+		if (allQuestionDtos.isEmpty() || allQuestionDtos == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<>(allQuestionDtos, HttpStatus.OK);
@@ -41,7 +41,7 @@ public class QuestionController {
 	@Operation(summary = "Get all questions by their category id")
 	public ResponseEntity<List<QuestionDto>> showAllQuestionsByCategory(@PathVariable int id) {
 		List<QuestionDto> allQuestionDtos = service.getAllQuestionsByCategory(id);
-		if (allQuestionDtos.isEmpty()) {
+		if (allQuestionDtos.isEmpty() || allQuestionDtos == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<>(allQuestionDtos, HttpStatus.OK);
@@ -73,13 +73,14 @@ public class QuestionController {
 	
 	@DeleteMapping("/{id}")
 	@Operation(summary = "Delete question")
-	public ResponseEntity<Integer> deleteQuestion(@PathVariable int id) {
-		QuestionDto question = service.getQuestionById(id);
-		if (question == null) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-		service.deleteQuestion(id);
-		return new ResponseEntity<>(id, HttpStatus.OK);
+	public ResponseEntity<String> deleteQuestion(@PathVariable int id) {
+			QuestionDto question = service.getQuestionById(id);
+			if (question == null) {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			service.deleteQuestion(id);
+			String response = "Question " + id + " is deleted";
+			return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 }
