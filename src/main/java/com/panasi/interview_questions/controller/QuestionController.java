@@ -60,14 +60,14 @@ public class QuestionController {
 	@PostMapping
 	@Operation(summary = "Add a new question")
 	public ResponseEntity<QuestionDto> addNewQuestion(@RequestBody QuestionDto questionDto) {
-		service.saveQuestion(questionDto);
+		service.createQuestion(questionDto);
 		return new ResponseEntity<>(questionDto, HttpStatus.CREATED);
 	}
 	
-	@PutMapping
+	@PutMapping("/{id}")
 	@Operation(summary = "Update question")
-	public ResponseEntity<QuestionDto> updateQuestion(@RequestBody QuestionDto questionDto) {
-		service.saveQuestion(questionDto);
+	public ResponseEntity<QuestionDto> updateQuestion(@RequestBody QuestionDto questionDto, @PathVariable int id) {
+		service.updateQuestion(questionDto, id);
 		return new ResponseEntity<>(questionDto, HttpStatus.ACCEPTED);
 	}
 	

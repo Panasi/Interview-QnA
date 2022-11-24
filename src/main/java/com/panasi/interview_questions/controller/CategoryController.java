@@ -60,14 +60,14 @@ public class CategoryController {
 	@PostMapping
 	@Operation(summary = "Add a new category")
 	public ResponseEntity<CategoryDto> addNewCategory(@RequestBody CategoryDto categoryDto) {
-		service.saveCategory(categoryDto);
+		service.createCategory(categoryDto);
 		return new ResponseEntity<>(categoryDto, HttpStatus.CREATED);
 	}
 	
-	@PutMapping
+	@PutMapping("/{id}")
 	@Operation(summary = "Update category")
-	public ResponseEntity<CategoryDto> updateCategory(@RequestBody CategoryDto categoryDto) {
-		service.saveCategory(categoryDto);
+	public ResponseEntity<CategoryDto> updateCategory(@RequestBody CategoryDto categoryDto, @PathVariable int id) {
+		service.updateCategory(categoryDto, id);
 		return new ResponseEntity<>(categoryDto, HttpStatus.ACCEPTED);
 	}
 	

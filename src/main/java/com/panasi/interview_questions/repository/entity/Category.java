@@ -25,7 +25,7 @@ public class Category {
 	@Column(name = "id")
 	private int id;
 	
-	@Column(name = "parent_id", nullable = false)
+	@Column(name = "parent_id")
 	private int parentId;
 	
 	@Column(name = "name", nullable = false)
