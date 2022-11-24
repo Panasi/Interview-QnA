@@ -23,10 +23,10 @@ public class Category {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
-	private int id;
+	private Integer id;
 	
 	@Column(name = "parent_id")
-	private int parentId;
+	private Integer parentId;
 	
 	@Column(name = "name", nullable = false)
 	private String name;

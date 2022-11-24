@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class CategoryDto {
 	
-	private int id;
-	private int parentId;
+	private Integer id;
+	private Integer parentId;
 	private String name;
 
 }

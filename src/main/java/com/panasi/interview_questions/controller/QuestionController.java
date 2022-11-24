@@ -41,9 +41,6 @@ public class QuestionController {
 	@Operation(summary = "Get all questions by their category id")
 	public ResponseEntity<List<QuestionDto>> showAllQuestionsByCategory(@PathVariable int id) {
 		List<QuestionDto> allQuestionDtos = service.getAllQuestionsByCategory(id);
-		if (allQuestionDtos.isEmpty() || allQuestionDtos == null) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
 		return new ResponseEntity<>(allQuestionDtos, HttpStatus.OK);
 	}
 	

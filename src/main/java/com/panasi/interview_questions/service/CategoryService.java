@@ -64,6 +64,10 @@ public class CategoryService {
 			categoryRepository.deleteById(category.getId());
 		});
 		categoryRepository.deleteById(id);
+//		catch(DataIntegrityViolationException error) {
+//			String response = "Referential Integrity Violation. Delete questions first.";
+//			return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+//		}
 	}
 
 }

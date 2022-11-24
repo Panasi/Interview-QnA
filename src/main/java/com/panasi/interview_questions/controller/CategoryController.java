@@ -2,7 +2,6 @@ package com.panasi.interview_questions.controller;
 
 import java.util.List;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -51,9 +50,6 @@ public class CategoryController {
 	@Operation(summary = "Get all subcategories")
 	public ResponseEntity<List<CategoryDto>> showSubcategories(@PathVariable int id) {
 		List<CategoryDto> allCategoryDtos = service.getAllSubcategories(id);
-		if (allCategoryDtos.isEmpty() || allCategoryDtos == null) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
 		return new ResponseEntity<>(allCategoryDtos, HttpStatus.OK);
 	}
 	
@@ -74,18 +70,13 @@ public class CategoryController {
 	@DeleteMapping("/{id}")
 	@Operation(summary = "Delete category and subcategories")
 	public ResponseEntity<String> deleteCategory(@PathVariable int id) {
-		try {
-			CategoryDto categoryDto = service.getCategoryById(id);
-			if (categoryDto == null) {
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-			}
-			service.deleteCategory(id);
-			String response = "Category " + id + " and all its subcategories are deleted";
-			return new ResponseEntity<>(response, HttpStatus.OK);
-		} catch(DataIntegrityViolationException error) {
-			String response = "Referential Integrity Violation. Delete questions first.";
-			return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+		CategoryDto categoryDto = service.getCategoryById(id);
+		if (categoryDto == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
+		service.deleteCategory(id);
+		String response = "Category " + id + " and all its subcategories are deleted";
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 }
