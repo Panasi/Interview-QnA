@@ -31,18 +31,12 @@ public class CategoryController {
 	@Operation(summary = "Get all categories")
 	public ResponseEntity<List<CategoryDto>> showAllCategories() {
 		List<CategoryDto> allCategoryDtos = service.getAllCategories();
-		if (allCategoryDtos.isEmpty() || allCategoryDtos == null) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
 		return new ResponseEntity<>(allCategoryDtos, HttpStatus.OK);
 	}
 	@GetMapping("/{id}")
 	@Operation(summary = "Get a category by id")
 	public ResponseEntity<CategoryDto> showCategoryById(@PathVariable int id) {
 		CategoryDto categoryDto = service.getCategoryById(id);
-		if (categoryDto == null) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
 		return new ResponseEntity<>(categoryDto, HttpStatus.OK);
 	}
 	
@@ -70,10 +64,6 @@ public class CategoryController {
 	@DeleteMapping("/{id}")
 	@Operation(summary = "Delete category and subcategories")
 	public ResponseEntity<String> deleteCategory(@PathVariable int id) {
-		CategoryDto categoryDto = service.getCategoryById(id);
-		if (categoryDto == null) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
 		service.deleteCategory(id);
 		String response = "Category " + id + " and all its subcategories are deleted";
 		return new ResponseEntity<>(response, HttpStatus.OK);

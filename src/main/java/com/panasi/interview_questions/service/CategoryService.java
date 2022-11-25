@@ -2,7 +2,6 @@ package com.panasi.interview_questions.service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -32,11 +31,8 @@ public class CategoryService {
 	}
 	
 	public CategoryDto getCategoryById(int id) {
-		Optional<Category> optional = categoryRepository.findById(id);
-		CategoryDto categoryDto = null;
-		if (optional.isPresent()) {
-			categoryDto = mapper.toCategoryDto(optional.get());
-		}
+		Category category = categoryRepository.findById(id).get();
+		CategoryDto	categoryDto = mapper.toCategoryDto(category);
 		return categoryDto;
 	}
 	
@@ -64,10 +60,6 @@ public class CategoryService {
 			categoryRepository.deleteById(category.getId());
 		});
 		categoryRepository.deleteById(id);
-//		catch(DataIntegrityViolationException error) {
-//			String response = "Referential Integrity Violation. Delete questions first.";
-//			return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
-//		}
 	}
 
 }

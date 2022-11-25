@@ -2,7 +2,6 @@ package com.panasi.interview_questions.service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -35,12 +34,9 @@ public class QuestionService {
 	}
 	
 	public QuestionDto getQuestionById(int id) {
-		Optional<Question> optional = questionRepository.findById(id);
-		QuestionDto question = null;
-		if (optional.isPresent()) {
-			question = questionMapper.toQuestionDto(optional.get());
-		}
-		return question;
+		Question question = questionRepository.findById(id).get();
+		QuestionDto	questionDto = questionMapper.toQuestionDto(question);
+		return questionDto;
 	}
 	
 	public void createQuestion(QuestionDto questionDto) {
