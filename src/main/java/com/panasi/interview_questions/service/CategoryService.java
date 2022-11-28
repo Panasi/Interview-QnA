@@ -20,30 +20,35 @@ public class CategoryService {
 	private final CategoryMapper mapper;
 	
 	
+	// Return all categories
 	public List<CategoryDto> getAllCategories() {
 		List<CategoryDto> allCategoryDtos = mapper.toCategoryDtos(categoryRepository.findAll());
 		return allCategoryDtos;
 	}
 	
+	// Return subcategories of category
 	public List<CategoryDto> getAllSubcategories(int parentId) {
 		List<CategoryDto> allSubcategoryDtos = mapper.toCategoryDtos(categoryRepository.findAllByParentId(parentId));
 		return allSubcategoryDtos;
 	}
 	
-	public CategoryDto getCategoryById(int id) {
-		Category category = categoryRepository.findById(id).get();
+	// Return category by id
+	public CategoryDto getCategoryById(int categoryId) {
+		Category category = categoryRepository.findById(categoryId).get();
 		CategoryDto	categoryDto = mapper.toCategoryDto(category);
 		return categoryDto;
 	}
 	
+	// Add a new category
 	public void createCategory(CategoryDto categoryDto) {
 		Category category = mapper.toCategory(categoryDto);
 		categoryRepository.save(category);
 	}
 	
-	public void updateCategory(CategoryDto categoryDto, int id) {
-		Category category = categoryRepository.findById(id).get();
-		categoryDto.setId(id);
+	// Update certain category
+	public void updateCategory(CategoryDto categoryDto, int categoryId) {
+		Category category = categoryRepository.findById(categoryId).get();
+		categoryDto.setId(categoryId);
 		if (Objects.isNull(categoryDto.getParentId())) {
 			categoryDto.setParentId(category.getParentId());
 		}
@@ -54,12 +59,17 @@ public class CategoryService {
 		categoryRepository.save(updatedCategory);
 	}
 	
-	public void deleteCategory(int id) {
-		List<Category> allSubcategoryDtos = categoryRepository.findAllByParentId(id);
-		allSubcategoryDtos.forEach(category -> {
-			categoryRepository.deleteById(category.getId());
-		});
-		categoryRepository.deleteById(id);
+	// Delete certain category
+	public void deleteCategory(int categoryId) {
+		List<Category> allSubcategoryDtos = categoryRepository.findAllByParentId(categoryId);
+		if (allSubcategoryDtos.isEmpty()) {
+			categoryRepository.deleteById(categoryId);
+		} else {
+			allSubcategoryDtos.forEach(category -> {
+				deleteCategory(category.getId());
+			});
+			categoryRepository.deleteById(categoryId);
+		}
 	}
 
 }

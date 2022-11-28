@@ -32,7 +32,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	    ApiError apiError = new ApiError("Malformed JSON Request", ex.getMessage());
 	    return new ResponseEntity<>(apiError, status);
 	}
-
+	
 	@ExceptionHandler(Exception.class)
     protected ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
         ApiError apiError = new ApiError("Internal exception", ex.getMessage());
@@ -41,7 +41,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	
     @ExceptionHandler(NoSuchElementException.class)
     protected ResponseEntity<Object> handleNoSuchElementException(NoSuchElementException ex, WebRequest request) {
-        ApiError apiError = new ApiError("Element not found", ex.getMessage());
+        ApiError apiError = new ApiError("Element is not found", ex.getMessage());
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
     
@@ -56,13 +56,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     
     @ExceptionHandler(EmptyResultDataAccessException.class)
     protected ResponseEntity<Object> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex, WebRequest request) {
-        ApiError apiError = new ApiError("Element not found", ex.getMessage());
+        ApiError apiError = new ApiError("Element does not exist", ex.getMessage());
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
     
     @ExceptionHandler(DataIntegrityViolationException.class)
     protected ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
-        ApiError apiError = new ApiError("Element is binded", ex.getMessage());
+        ApiError apiError = new ApiError("Element is binded and can't be deleted", ex.getMessage());
         return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
     }
 

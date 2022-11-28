@@ -33,18 +33,19 @@ public class CategoryController {
 		List<CategoryDto> allCategoryDtos = service.getAllCategories();
 		return new ResponseEntity<>(allCategoryDtos, HttpStatus.OK);
 	}
-	@GetMapping("/{id}")
-	@Operation(summary = "Get a category by id")
-	public ResponseEntity<CategoryDto> showCategoryById(@PathVariable int id) {
-		CategoryDto categoryDto = service.getCategoryById(id);
-		return new ResponseEntity<>(categoryDto, HttpStatus.OK);
-	}
 	
 	@GetMapping("{id}/subcategories")
 	@Operation(summary = "Get all subcategories")
 	public ResponseEntity<List<CategoryDto>> showSubcategories(@PathVariable int id) {
 		List<CategoryDto> allCategoryDtos = service.getAllSubcategories(id);
 		return new ResponseEntity<>(allCategoryDtos, HttpStatus.OK);
+	}
+	
+	@GetMapping("/{id}")
+	@Operation(summary = "Get a category by id")
+	public ResponseEntity<CategoryDto> showCategoryById(@PathVariable int id) {
+		CategoryDto categoryDto = service.getCategoryById(id);
+		return new ResponseEntity<>(categoryDto, HttpStatus.OK);
 	}
 	
 	@PostMapping
@@ -62,7 +63,7 @@ public class CategoryController {
 	}
 	
 	@DeleteMapping("/{id}")
-	@Operation(summary = "Delete category and subcategories")
+	@Operation(summary = "Delete category and all subcategories")
 	public ResponseEntity<String> deleteCategory(@PathVariable int id) {
 		service.deleteCategory(id);
 		String response = "Category " + id + " and all its subcategories are deleted";

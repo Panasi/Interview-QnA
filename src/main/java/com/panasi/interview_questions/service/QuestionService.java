@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
+import com.panasi.interview_questions.repository.CategoryRepository;
 import com.panasi.interview_questions.repository.QuestionRepository;
 import com.panasi.interview_questions.repository.dto.CategoryDto;
 import com.panasi.interview_questions.repository.dto.QuestionDto;
@@ -19,34 +20,54 @@ import lombok.RequiredArgsConstructor;
 public class QuestionService {
 	
 	private final QuestionRepository questionRepository;
+	private final CategoryRepository categoryRepository;
 	private final QuestionMapper questionMapper;
 	private final CategoryMapper categoryMapper;
 	
 	
+	// Return all questions
 	public List<QuestionDto> getAllQuestions() {
 		List<QuestionDto> allQuestionDtos = questionMapper.toQuestionDtos(questionRepository.findAll());
 		return allQuestionDtos;
 	}
 	
-	public List<QuestionDto> getAllQuestionsByCategory(int id) {
-		List<QuestionDto> allQuestionDtos = questionMapper.toQuestionDtos(questionRepository.findAllByCategoryId(id));
+	// Return questions from certain category
+	public List<QuestionDto> getQuestionsFromCategory(int categoryId) {
+		List<QuestionDto> allQuestionDtos = questionMapper.toQuestionDtos(questionRepository.findAllByCategoryId(categoryId));
 		return allQuestionDtos;
 	}
 	
-	public QuestionDto getQuestionById(int id) {
-		Question question = questionRepository.findById(id).get();
+	// Return questions from certain category and all its subcategories
+	public List<QuestionDto> getQuestionsFromSubcategories(int categoryId, List<QuestionDto> result) {
+		List<QuestionDto> questionDtos = questionMapper.toQuestionDtos(questionRepository.findAllByCategoryId(categoryId));
+		result.addAll(questionDtos);
+		List<CategoryDto> allSubcategoryDtos = categoryMapper.toCategoryDtos(categoryRepository.findAllByParentId(categoryId));
+		if (allSubcategoryDtos.isEmpty()) {
+			return result;
+		}
+		allSubcategoryDtos.forEach(subcategory -> {
+			getQuestionsFromSubcategories(subcategory.getId(), result);
+		});
+		return result;
+	}
+	
+	// Return question by id
+	public QuestionDto getQuestionById(int questionId) {
+		Question question = questionRepository.findById(questionId).get();
 		QuestionDto	questionDto = questionMapper.toQuestionDto(question);
 		return questionDto;
 	}
 	
+	// Add a new question
 	public void createQuestion(QuestionDto questionDto) {
 		Question question = questionMapper.toQuestion(questionDto);
 		questionRepository.save(question);
 	}
 	
-	public void updateQuestion(QuestionDto questionDto, int id) {
-		Question question = questionRepository.findById(id).get();
-		questionDto.setId(id);
+	// Update certain question
+	public void updateQuestion(QuestionDto questionDto, int questionId) {
+		Question question = questionRepository.findById(questionId).get();
+		questionDto.setId(questionId);
 		if (Objects.isNull(questionDto.getQuestion())) {
 			questionDto.setQuestion(question.getQuestion());
 		}
@@ -61,8 +82,9 @@ public class QuestionService {
 		questionRepository.save(updatedQuestion);
 	}
 	
-	public void deleteQuestion(int id) {
-		questionRepository.deleteById(id);
+	// Delete certain question
+	public void deleteQuestion(int questionId) {
+		questionRepository.deleteById(questionId);
 	}
 
 }

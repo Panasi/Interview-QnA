@@ -1,5 +1,6 @@
 package com.panasi.interview_questions.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class QuestionController {
 	
 	private final QuestionService service;
 	
-	
+
 	@GetMapping
 	@Operation(summary = "Get all questions")
 	public ResponseEntity<List<QuestionDto>> showAllQuestions() {
@@ -35,10 +36,18 @@ public class QuestionController {
 	}
 	
 	@GetMapping("/category/{id}")
-	@Operation(summary = "Get all questions by their category id")
-	public ResponseEntity<List<QuestionDto>> showAllQuestionsByCategory(@PathVariable int id) {
-		List<QuestionDto> allQuestionDtos = service.getAllQuestionsByCategory(id);
+	@Operation(summary = "Get questions from certain category")
+	public ResponseEntity<List<QuestionDto>> showQuestionsFromCategory(@PathVariable int id) {
+		List<QuestionDto> allQuestionDtos = service.getQuestionsFromCategory(id);
 		return new ResponseEntity<>(allQuestionDtos, HttpStatus.OK);
+	}
+	
+	@GetMapping("/subcategory/{id}")
+	@Operation(summary = "Get questions from certain category and all its subcategories")
+	public ResponseEntity<List<QuestionDto>> showQuestionsFromSubcategories(@PathVariable int id) {
+		List<QuestionDto> result = new ArrayList<>();
+		List<QuestionDto> allSubQuestionDtos = service.getQuestionsFromSubcategories(id, result);
+		return new ResponseEntity<>(allSubQuestionDtos, HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
