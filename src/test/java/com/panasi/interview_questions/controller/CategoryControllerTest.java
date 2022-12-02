@@ -9,7 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import com.panasi.interview_questions.InterviewQuestionsApplication;
 		  webEnvironment = SpringBootTest.WebEnvironment.MOCK,
 		  classes = InterviewQuestionsApplication.class)
 @AutoConfigureMockMvc
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @TestPropertySource(locations = "classpath:application.properties")
 public class CategoryControllerTest {
 	
@@ -36,7 +38,7 @@ public class CategoryControllerTest {
 	                                         // Get
 	
 	@Test
-	public void showAllCategories_thenStatus200() throws Exception {
+	public void showAllCategories_then_Status200() throws Exception {
 
 	    mvc.perform(get("/categories")
 	      .contentType(MediaType.APPLICATION_JSON))
@@ -50,7 +52,7 @@ public class CategoryControllerTest {
 	}
 	
 	@Test
-	public void showSubcategories_thenStatus200() throws Exception {
+	public void showSubcategories_then_Status200() throws Exception {
 
 	    mvc.perform(get("/categories/1/subcategories")
 	      .contentType(MediaType.APPLICATION_JSON))
@@ -63,7 +65,7 @@ public class CategoryControllerTest {
 	}
 	
 	@Test
-	public void showCategoryById_thenStatus200() throws Exception {
+	public void showCategoryById_then_Status200() throws Exception {
 
 	    mvc.perform(get("/categories/1")
 	      .contentType(MediaType.APPLICATION_JSON))
@@ -74,7 +76,7 @@ public class CategoryControllerTest {
 	}
 	
 	@Test
-	public void showCategoryById_thenStatus404() throws Exception {
+	public void showCategoryById_then_Status404() throws Exception {
 
 	    mvc.perform(get("/categories/99")
 	      .contentType(MediaType.APPLICATION_JSON))
@@ -85,7 +87,7 @@ public class CategoryControllerTest {
 	}
 	
 	@Test
-	public void showCategoryById_thenStatus400() throws Exception {
+	public void showCategoryById_then_Status400() throws Exception {
 
 	    mvc.perform(get("/categories/wtf")
 	      .contentType(MediaType.APPLICATION_JSON))
@@ -98,7 +100,7 @@ public class CategoryControllerTest {
 											// Post
 	
 	@Test
-	public void addNewCategory_thenStatus201() throws Exception {
+	public void addNewCategory_then_Status201() throws Exception {
 
 	    mvc.perform(post("/categories")
 	      .contentType(MediaType.APPLICATION_JSON)
@@ -110,7 +112,7 @@ public class CategoryControllerTest {
 											// Put
 	
 	@Test
-	public void updateCategory_thenStatus202() throws Exception {
+	public void updateCategory_then_Status202() throws Exception {
 		
 	    mvc.perform(put("/categories/7")
 	      .contentType(MediaType.APPLICATION_JSON)
@@ -126,7 +128,7 @@ public class CategoryControllerTest {
 	}
 	
 	@Test
-	public void updateCategory_thenStatus404() throws Exception {
+	public void updateCategory_then_Status404() throws Exception {
 		
 	    mvc.perform(put("/categories/99")
 	      .contentType(MediaType.APPLICATION_JSON)
@@ -138,7 +140,7 @@ public class CategoryControllerTest {
 											// Delete
 	
 	@Test
-	public void deleteCategory_thenStatus200() throws Exception {
+	public void deleteCategory_then_Status200() throws Exception {
 		
 	    mvc.perform(delete("/categories/4")
 	      .contentType(MediaType.APPLICATION_JSON))
@@ -159,7 +161,7 @@ public class CategoryControllerTest {
 	}
 	
 	@Test
-	public void deleteCategory_thenStatus404() throws Exception {
+	public void deleteCategory_then_Status404() throws Exception {
 		
 	    mvc.perform(delete("/categories/99")
 	      .contentType(MediaType.APPLICATION_JSON))
@@ -171,7 +173,7 @@ public class CategoryControllerTest {
 	}
 	
 	@Test
-	public void deleteCategory_thenStatus409() throws Exception {
+	public void deleteCategory_then_Status409() throws Exception {
 		
 	    mvc.perform(delete("/categories/6")
 	      .contentType(MediaType.APPLICATION_JSON))

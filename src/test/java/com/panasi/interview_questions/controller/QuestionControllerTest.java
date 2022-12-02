@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import com.panasi.interview_questions.InterviewQuestionsApplication;
 		  webEnvironment = SpringBootTest.WebEnvironment.MOCK,
 		  classes = InterviewQuestionsApplication.class)
 @AutoConfigureMockMvc
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @TestPropertySource(locations = "classpath:application.properties")
 public class QuestionControllerTest {
 	
@@ -35,7 +38,7 @@ public class QuestionControllerTest {
 												// Get
 	
 	@Test
-	public void showAllQuestions_thenStatus200() throws Exception {
+	public void showAllQuestions_then_Status200() throws Exception {
 
 	    mvc.perform(get("/questions")
 	      .contentType(MediaType.APPLICATION_JSON))
@@ -47,7 +50,7 @@ public class QuestionControllerTest {
 	}
 	
 	@Test
-	public void showQuestionsFromCategory_thenStatus200() throws Exception {
+	public void showQuestionsFromCategory_then_Status200() throws Exception {
 
 	    mvc.perform(get("/questions/category/1")
 	      .contentType(MediaType.APPLICATION_JSON))
@@ -58,7 +61,7 @@ public class QuestionControllerTest {
 	}
 	
 	@Test
-	public void showQuestionsFromSubcategories_thenStatus200() throws Exception {
+	public void showQuestionsFromSubcategories_then_Status200() throws Exception {
 
 	    mvc.perform(get("/questions/subcategory/1")
 	      .contentType(MediaType.APPLICATION_JSON))
@@ -71,7 +74,7 @@ public class QuestionControllerTest {
 	}
 	
 	@Test
-	public void showQuestion_thenStatus200() throws Exception {
+	public void showQuestion_then_Status200() throws Exception {
 
 	    mvc.perform(get("/questions/1")
 	      .contentType(MediaType.APPLICATION_JSON))
@@ -81,7 +84,7 @@ public class QuestionControllerTest {
 	}
 	
 	@Test
-	public void showQuestion_thenStatus404() throws Exception {
+	public void showQuestion_then_Status404() throws Exception {
 
 	    mvc.perform(get("/questions/99")
 	      .contentType(MediaType.APPLICATION_JSON))
@@ -91,7 +94,7 @@ public class QuestionControllerTest {
 	}
 	
 	@Test
-	public void showQuestion_thenStatus400() throws Exception {
+	public void showQuestion_then_Status400() throws Exception {
 
 	    mvc.perform(get("/questions/wtf")
 	      .contentType(MediaType.APPLICATION_JSON))
@@ -103,7 +106,7 @@ public class QuestionControllerTest {
 													// Post
 	
 	@Test
-	public void addNewQuestion_thenStatus201() throws Exception {
+	public void addNewQuestion_then_Status201() throws Exception {
 
 		mvc.perform(post("/questions")
 			      .contentType(MediaType.APPLICATION_JSON)
@@ -117,7 +120,7 @@ public class QuestionControllerTest {
 													// Put
 	
 	@Test
-	public void updateQuestion_thenStatus202() throws Exception {
+	public void updateQuestion_then_Status202() throws Exception {
 		
 	    mvc.perform(put("/questions/5")
 	      .contentType(MediaType.APPLICATION_JSON)
@@ -133,7 +136,7 @@ public class QuestionControllerTest {
 	}
 	
 	@Test
-	public void updateQuestion_thenStatus404() throws Exception {
+	public void updateQuestion_then_Status404() throws Exception {
 		
 	    mvc.perform(put("/questions/99")
 	      .contentType(MediaType.APPLICATION_JSON)
@@ -145,7 +148,7 @@ public class QuestionControllerTest {
 													// Delete
 	
 	@Test
-	public void deleteQuestion_thenStatus200() throws Exception {
+	public void deleteQuestion_then_Status200() throws Exception {
 		
 	    mvc.perform(delete("/questions/6")
 	      .contentType(MediaType.APPLICATION_JSON))
@@ -160,7 +163,7 @@ public class QuestionControllerTest {
 	}
 	
 	@Test
-	public void deleteQuestion_thenStatus404() throws Exception {
+	public void deleteQuestion_then_Status404() throws Exception {
 		
 	    mvc.perform(delete("/questions/99")
 	      .contentType(MediaType.APPLICATION_JSON))
