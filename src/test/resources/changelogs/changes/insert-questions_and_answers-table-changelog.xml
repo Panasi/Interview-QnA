@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>	
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet  id="4"  author="Panasi">  
+        <insert tableName="questions_and_answers">  
+        	<column name="question"  value="What is Java?"/>
+        	<column name="answer"  value="Java is a programming language"/>
+        	<column name="category"  value="1"/>  
+    	</insert>
+    	<insert tableName="questions_and_answers">  
+        	<column name="question"  value="What is JVM?"/>
+        	<column name="answer"  value="JVM is a Java Virtual Machine"/>
+        	<column name="category"  value="1"/>  
+    	</insert>
+    	<insert tableName="questions_and_answers">  
+        	<column name="question"  value="What is Inheritance?"/>
+        	<column name="answer"  value="It is an OOP conception"/>
+        	<column name="category"  value="2"/>  
+    	</insert>
+    	<insert tableName="questions_and_answers">  
+        	<column name="question"  value="What is ArrayList?"/>
+        	<column name="answer"  value="It is a dynamic array"/>
+        	<column name="category"  value="3"/>  
+    	</insert>
+    	<insert tableName="questions_and_answers">  
+        	<column name="question"  value="What is Hibernate?"/>
+        	<column name="answer"  value="Java framework"/>
+        	<column name="category"  value="6"/>  
+    	</insert>
+    	<insert tableName="questions_and_answers">  
+        	<column name="question"  value="What is Hibernate Validator?"/>
+        	<column name="answer"  value="Data Validator"/>
+        	<column name="category"  value="6"/>  
+    	</insert>   
+    </changeSet>   
+
+</databaseChangeLog>
