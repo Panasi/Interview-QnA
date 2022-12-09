@@ -27,7 +27,7 @@ import com.panasi.interview_questions.InterviewQuestionsApplication;
 @SpringBootTest(
 		  webEnvironment = SpringBootTest.WebEnvironment.MOCK,
 		  classes = InterviewQuestionsApplication.class)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @TestPropertySource(locations = "classpath:application.properties")
 public class CategoryControllerTest {
