@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.panasi.interview_questions.payload.MessageResponse;
 import com.panasi.interview_questions.repository.dto.CategoryDto;
 import com.panasi.interview_questions.service.CategoryService;
 
@@ -29,6 +31,7 @@ public class CategoryController {
 	
 	@GetMapping
 	@Operation(summary = "Get all categories")
+	@PreAuthorize("hasRole('ROLE_USER')")
 	public ResponseEntity<List<CategoryDto>> showAllCategories() {
 		List<CategoryDto> allCategoryDtos = service.getAllCategories();
 		return new ResponseEntity<>(allCategoryDtos, HttpStatus.OK);
@@ -64,10 +67,10 @@ public class CategoryController {
 	
 	@DeleteMapping("/{id}")
 	@Operation(summary = "Delete category and all subcategories")
-	public ResponseEntity<String> deleteCategory(@PathVariable int id) {
+	public ResponseEntity<?> deleteCategory(@PathVariable int id) {
 		service.deleteCategory(id);
-		String response = "Category " + id + " and all its subcategories are deleted";
-		return new ResponseEntity<>(response, HttpStatus.OK);
+		String message = "Category " + id + " and all its subcategories are deleted";
+		return new ResponseEntity<>(new MessageResponse(message), HttpStatus.OK);
 	}
 
 }

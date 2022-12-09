@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.panasi.interview_questions.payload.MessageResponse;
 import com.panasi.interview_questions.repository.dto.QuestionDto;
 import com.panasi.interview_questions.service.QuestionService;
 
@@ -73,10 +74,10 @@ public class QuestionController {
 	
 	@DeleteMapping("/{id}")
 	@Operation(summary = "Delete question")
-	public ResponseEntity<String> deleteQuestion(@PathVariable int id) {
+	public ResponseEntity<?> deleteQuestion(@PathVariable int id) {
 			service.deleteQuestion(id);
-			String response = "Question " + id + " is deleted";
-			return new ResponseEntity<>(response, HttpStatus.OK);
+			String message = "Question " + id + " is deleted";
+			return new ResponseEntity<>(new MessageResponse(message), HttpStatus.OK);
 	}
 
 }

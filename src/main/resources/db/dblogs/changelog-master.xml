@@ -6,6 +6,10 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
     
     <include file="/db/dblogs/changes/create-categories-table-changelog.xml"/>
-    <include file="/db/dblogs/changes/create-questions_and_answers-table-changelog.xml"/>   
+    <include file="/db/dblogs/changes/create-questions_and_answers-table-changelog.xml"/>
+    <include file="/db/dblogs/changes/create-roles-table-changelog.xml"/>
+    <include file="/db/dblogs/changes/create-users-table-changelog.xml"/>
+    <include file="/db/dblogs/changes/create-user_roles-table-changelog.xml"/>
+    <include file="/db/dblogs/changes/insert-roles-table-changelog.xml"/>  
 
 </databaseChangeLog>
