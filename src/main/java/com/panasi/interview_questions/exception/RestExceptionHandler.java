@@ -8,13 +8,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
@@ -64,6 +64,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
         ApiError apiError = new ApiError("Element is binded and can't be deleted", ex.getMessage());
         return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
+    }
+    
+    @ExceptionHandler(BadCredentialsException.class)
+    protected ResponseEntity<Object> handleAllExceptions(BadCredentialsException ex, WebRequest request) {
+        ApiError apiError = new ApiError("Invalid password", ex.getMessage());
+        return new ResponseEntity<>(apiError, HttpStatus.FORBIDDEN);
     }
 
 }
