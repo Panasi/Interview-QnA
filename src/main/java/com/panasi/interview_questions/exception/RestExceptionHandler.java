@@ -67,7 +67,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
     
     @ExceptionHandler(BadCredentialsException.class)
-    protected ResponseEntity<Object> handleAllExceptions(BadCredentialsException ex, WebRequest request) {
+    protected ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException ex, WebRequest request) {
         ApiError apiError = new ApiError("Invalid password", ex.getMessage());
         return new ResponseEntity<>(apiError, HttpStatus.FORBIDDEN);
     }
