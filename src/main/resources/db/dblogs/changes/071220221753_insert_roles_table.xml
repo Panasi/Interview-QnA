@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet  id="6"  author="Panasi">  
+    <changeSet  id="071220221753_insert_roles_table"  author="Panasi">  
         <insert tableName="roles">  
         	<column name="name"  value="ROLE_USER"/>  
     	</insert>

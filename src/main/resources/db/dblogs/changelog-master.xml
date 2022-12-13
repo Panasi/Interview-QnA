@@ -5,11 +5,11 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
     
-    <include file="/db/dblogs/changes/create-categories-table-changelog.xml"/>
-    <include file="/db/dblogs/changes/create-questions_and_answers-table-changelog.xml"/>
-    <include file="/db/dblogs/changes/create-roles-table-changelog.xml"/>
-    <include file="/db/dblogs/changes/create-users-table-changelog.xml"/>
-    <include file="/db/dblogs/changes/create-user_roles-table-changelog.xml"/>
-    <include file="/db/dblogs/changes/insert-roles-table-changelog.xml"/>  
+    <include file="/db/dblogs/changes/241120221517_create_categories_table.xml"/>
+    <include file="/db/dblogs/changes/241120221530_create_questions_and_answers_table.xml"/>
+    <include file="/db/dblogs/changes/071220221705_create_roles_table.xml"/>
+    <include file="/db/dblogs/changes/071220221748_create_users_table.xml"/>
+    <include file="/db/dblogs/changes/071220221746_create_user_roles_table.xml"/>
+    <include file="/db/dblogs/changes/071220221753_insert_roles_table.xml"/>  
 
 </databaseChangeLog>

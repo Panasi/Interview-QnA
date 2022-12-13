@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet  id="3"  author="Panasi">  
+    <changeSet  id="241120221615_insert_categories_table"  author="Panasi">  
         <insert tableName="categories">  
         	<column name="name"  value="Java"/>  
     	</insert>

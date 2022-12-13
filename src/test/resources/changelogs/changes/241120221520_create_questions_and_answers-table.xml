@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet  id="2"  author="Panasi">  
+    <changeSet  id="241120221520_create_questions_and_answers-table"  author="Panasi">  
         <createTable  tableName="questions_and_answers">  
             <column  name="id"  type="int"  autoIncrement="true">  
                 <constraints  primaryKey="true"  nullable="false"/>  

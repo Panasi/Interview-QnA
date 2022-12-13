@@ -5,9 +5,9 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
     
-    <include file="/changelogs/changes/create-categories-table-changelog.xml"/>
-    <include file="/changelogs/changes/create-questions_and_answers-table-changelog.xml"/>
-    <include file="/changelogs/changes/insert-categories-table-changelog.xml"/>
-    <include file="/changelogs/changes/insert-questions_and_answers-table-changelog.xml"/>   
+    <include file="/changelogs/changes/241120221517_create_categories_table.xml"/>
+    <include file="/changelogs/changes/241120221520_create_questions_and_answers-table.xml"/>
+    <include file="/changelogs/changes/241120221615_insert_categories_table.xml"/>
+    <include file="/changelogs/changes/241120221630_insert_questions_and_answers-table.xml"/>   
 
 </databaseChangeLog>
