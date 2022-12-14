@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>	
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet  id="131220221614_insert_answers_table"  author="Panasi">  
+        <insert tableName="answers">  
+        	<column name="name"  value="Java is a programming language"/>
+        	<column name="question_id"  value="1"/>  
+    	</insert>
+    	<insert tableName="answers">  
+        	<column name="name"  value="Java is OOP language"/>
+        	<column name="question_id"  value="1"/>  
+    	</insert>
+    	<insert tableName="answers">  
+        	<column name="name"  value="Java is language"/>
+        	<column name="question_id"  value="1"/>  
+    	</insert>
+    	<insert tableName="answers">  
+        	<column name="name"  value="Java is ..."/>
+        	<column name="question_id"  value="1"/>  
+    	</insert>  
+    </changeSet>   
+
+</databaseChangeLog>

@@ -8,6 +8,10 @@
     <include file="/changelogs/changes/241120221517_create_categories_table.xml"/>
     <include file="/changelogs/changes/241120221520_create_questions_and_answers-table.xml"/>
     <include file="/changelogs/changes/241120221615_insert_categories_table.xml"/>
-    <include file="/changelogs/changes/241120221630_insert_questions_and_answers-table.xml"/>   
+    <include file="/changelogs/changes/241120221630_insert_questions_and_answers-table.xml"/>
+    <include file="/changelogs/changes/131220221522_create_questions_table.xml"/>
+    <include file="/changelogs/changes/131220221526_create_answers_table.xml"/>
+    <include file="/changelogs/changes/131220221531_insert_questions_from_qaa_table_and_drop_qaa_table.xml"/>
+    <include file="/changelogs/changes/131220221614_insert_answers_table.xml"/>   
 
 </databaseChangeLog>

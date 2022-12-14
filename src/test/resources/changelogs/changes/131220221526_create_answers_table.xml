@@ -5,19 +5,18 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet  id="241120221520_create_questions_and_answers_table"  author="Panasi">  
-        <createTable  tableName="questions_and_answers">  
+    <changeSet  id="131220221526_create_answers_table"  author="Panasi">  
+        <createTable  tableName="answers">  
             <column  name="id"  type="int"  autoIncrement="true">  
                 <constraints  primaryKey="true"  nullable="false"/>  
             </column>
-            <column  name="question"  type="varchar(50)"> 
+            <column  name="name"  type="varchar(50)">
             	<constraints  nullable="false"/>
             </column>
-            <column  name="answer"  type="varchar(50)"/> 
-            <column  name="category"  type="varchar(50)"> 
-            	<constraints  nullable="false" foreignKeyName="fk_categories" references="categories(id)"/>
+            <column  name="question_id"  type="int">
+            	<constraints  nullable="false" foreignKeyName="fk_questions" references="questions(id)"/>
             </column>
         </createTable>  
-    </changeSet>
+    </changeSet>    
 
 </databaseChangeLog>

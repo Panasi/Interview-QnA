@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet  id="241120221630_insert_questions_and_answers-table"  author="Panasi">  
+    <changeSet  id="241120221630_insert_questions_and_answers_table"  author="Panasi">  
         <insert tableName="questions_and_answers">  
         	<column name="question"  value="What is Java?"/>
         	<column name="answer"  value="Java is a programming language"/>
