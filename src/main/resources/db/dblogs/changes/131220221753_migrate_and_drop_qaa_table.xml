@@ -5,8 +5,10 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet  id="131220221753_drop_qaa_table"  author="Panasi"> 
+    <changeSet  id="131220221753_migrate_and_drop_qaa_table"  author="Panasi"> 
     	<sql>
+    		INSERT INTO questions (name, category) SELECT question, category FROM questions_and_answers;
+    		INSERT INTO answers (name, question_id) SELECT answer, id FROM questions_and_answers;
     		DROP TABLE questions_and_answers;
     	</sql>   
     </changeSet>   
