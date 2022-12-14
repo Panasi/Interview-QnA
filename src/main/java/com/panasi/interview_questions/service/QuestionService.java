@@ -7,9 +7,11 @@ import org.springframework.stereotype.Service;
 
 import com.panasi.interview_questions.repository.CategoryRepository;
 import com.panasi.interview_questions.repository.QuestionRepository;
+import com.panasi.interview_questions.repository.dto.AnswerDto;
 import com.panasi.interview_questions.repository.dto.CategoryDto;
 import com.panasi.interview_questions.repository.dto.QuestionDto;
 import com.panasi.interview_questions.repository.entity.Question;
+import com.panasi.interview_questions.service.mappers.AnswerMapper;
 import com.panasi.interview_questions.service.mappers.CategoryMapper;
 import com.panasi.interview_questions.service.mappers.QuestionMapper;
 
@@ -23,6 +25,7 @@ public class QuestionService {
 	private final CategoryRepository categoryRepository;
 	private final QuestionMapper questionMapper;
 	private final CategoryMapper categoryMapper;
+	private final AnswerMapper answerMapper;
 	
 	
 	// Return all questions
@@ -68,11 +71,12 @@ public class QuestionService {
 	public void updateQuestion(QuestionDto questionDto, int questionId) {
 		Question question = questionRepository.findById(questionId).get();
 		questionDto.setId(questionId);
-		if (Objects.isNull(questionDto.getQuestion())) {
-			questionDto.setQuestion(question.getQuestion());
+		if (Objects.isNull(questionDto.getName())) {
+			questionDto.setName(question.getName());
 		}
-		if (Objects.isNull(questionDto.getAnswer())) {
-			questionDto.setAnswer(question.getAnswer());
+		if (Objects.isNull(questionDto.getAnswers())) {
+			List<AnswerDto> answerDtos = answerMapper.toAnswerDtos(question.getAnswers());
+			questionDto.setAnswers(answerDtos);
 		}
 		if (Objects.isNull(questionDto.getCategory())) {
 			CategoryDto categoryDto = categoryMapper.toCategoryDto(question.getCategory());

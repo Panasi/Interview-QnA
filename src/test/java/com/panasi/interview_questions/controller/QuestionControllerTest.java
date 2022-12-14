@@ -44,9 +44,9 @@ public class QuestionControllerTest {
 	      .contentType(MediaType.APPLICATION_JSON))
 	      .andExpect(status().isOk())
 	      .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-	      .andExpect(jsonPath("$[0].question", is("What is Java?")))
-	      .andExpect(jsonPath("$[1].question", is("What is JVM?")))
-	      .andExpect(jsonPath("$[2].question", is("What is Inheritance?")));
+	      .andExpect(jsonPath("$[0].name", is("What is Java?")))
+	      .andExpect(jsonPath("$[1].name", is("What is JVM?")))
+	      .andExpect(jsonPath("$[2].name", is("What is Inheritance?")));
 	}
 	
 	@Test
@@ -56,8 +56,8 @@ public class QuestionControllerTest {
 	      .contentType(MediaType.APPLICATION_JSON))
 	      .andExpect(status().isOk())
 	      .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-	      .andExpect(jsonPath("$[0].question", is("What is Java?")))
-	      .andExpect(jsonPath("$[1].question", is("What is JVM?")));
+	      .andExpect(jsonPath("$[0].name", is("What is Java?")))
+	      .andExpect(jsonPath("$[1].name", is("What is JVM?")));
 	}
 	
 	@Test
@@ -67,10 +67,10 @@ public class QuestionControllerTest {
 	      .contentType(MediaType.APPLICATION_JSON))
 	      .andExpect(status().isOk())
 	      .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-	      .andExpect(jsonPath("$[0].question", is("What is Java?")))
-	      .andExpect(jsonPath("$[1].question", is("What is JVM?")))
-	      .andExpect(jsonPath("$[2].question", is("What is Inheritance?")))
-	      .andExpect(jsonPath("$[3].question", is("What is ArrayList?")));
+	      .andExpect(jsonPath("$[0].name", is("What is Java?")))
+	      .andExpect(jsonPath("$[1].name", is("What is JVM?")))
+	      .andExpect(jsonPath("$[2].name", is("What is Inheritance?")))
+	      .andExpect(jsonPath("$[3].name", is("What is ArrayList?")));
 	}
 	
 	@Test
@@ -80,7 +80,7 @@ public class QuestionControllerTest {
 	      .contentType(MediaType.APPLICATION_JSON))
 	      .andExpect(status().isOk())
 	      .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-	      .andExpect(jsonPath("question", is("What is Java?")));
+	      .andExpect(jsonPath("name", is("What is Java?")));
 	}
 	
 	@Test
@@ -110,7 +110,7 @@ public class QuestionControllerTest {
 
 		mvc.perform(post("/questions")
 			      .contentType(MediaType.APPLICATION_JSON)
-			      .content("{\"question\": \"RandomQuestion\","
+			      .content("{\"name\": \"RandomQuestion\","
 			      		+ "\"category\": {"
 			      		+ "\"id\": 6,"
 			      		+ "\"name\": \"Hibernate\"}}"))
@@ -124,14 +124,14 @@ public class QuestionControllerTest {
 		
 	    mvc.perform(put("/questions/5")
 	      .contentType(MediaType.APPLICATION_JSON)
-	      .content("{\"answer\": \"Java Library\"}"))
+	      .content("{\"name\": \"What is Hibernate updated\"}"))
 	      .andExpect(status().isAccepted());
 	    
 	    mvc.perform(get("/questions/5")
 	  	  .contentType(MediaType.APPLICATION_JSON))
 	  	  .andExpect(status().isOk())
 	  	  .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-	  	  .andExpect(jsonPath("answer", is("Java Library")));
+	  	  .andExpect(jsonPath("name", is("What is Hibernate updated")));
 
 	}
 	
@@ -140,7 +140,7 @@ public class QuestionControllerTest {
 		
 	    mvc.perform(put("/questions/99")
 	      .contentType(MediaType.APPLICATION_JSON)
-	      .content("{\"answer\": \"Java Library\"}"))
+	      .content("{\"name\": \"Random question\"}"))
 	      .andExpect(status().isNotFound());
 
 	}
