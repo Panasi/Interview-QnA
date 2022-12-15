@@ -63,10 +63,11 @@ public class QuestionService {
 	}
 	
 	// Add a new question
-	public void createQuestion(QuestionRequest questionRequest) {
+	public void createQuestion(QuestionRequest questionRequest, String userName) {
 		QuestionDto questionDto = new QuestionDto();
 		questionDto.setName(questionRequest.getName());
 		questionDto.setCategoryId(questionRequest.getCategoryId());
+		questionDto.setAuthor(userName);
 		Question question = questionMapper.toQuestion(questionDto);
 		questionRepository.save(question);
 	}
@@ -76,6 +77,7 @@ public class QuestionService {
 		Question question = questionRepository.findById(questionId).get();
 		QuestionDto questionDto = new QuestionDto();
 		questionDto.setId(questionId);
+		questionDto.setAuthor(question.getAuthor());
 		if (Objects.isNull(questionRequest.getName())) {
 			questionDto.setName(question.getName());
 		} else {

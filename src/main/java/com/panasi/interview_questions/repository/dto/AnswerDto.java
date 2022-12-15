@@ -8,5 +8,6 @@ public class AnswerDto {
 	private Integer id;
 	private String name;
 	private Integer questionId;
+	private String author;
 	
 }

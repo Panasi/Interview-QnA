@@ -30,5 +30,8 @@ public class Answer {
 	
 	@Column(name = "question_id", nullable = false)
 	private Integer questionId;
+	
+	@Column(name = "author")
+	private String author;
 
 }

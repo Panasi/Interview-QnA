@@ -38,5 +38,8 @@ public class Question {
 	@OneToMany
 	@JoinColumn(name = "question_id")
 	private List<Answer> answers;
+	
+	@Column(name = "author")
+	private String author;
 
 }

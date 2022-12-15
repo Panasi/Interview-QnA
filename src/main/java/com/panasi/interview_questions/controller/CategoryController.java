@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +23,7 @@ import com.panasi.interview_questions.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/categories")
@@ -51,6 +54,7 @@ public class CategoryController {
 	}
 	
 	@PostMapping
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@Operation(summary = "Add a new category")
 	public ResponseEntity<CategoryRequest> addNewCategory(@RequestBody CategoryRequest categoryRequest) {
 		service.createCategory(categoryRequest);
@@ -58,6 +62,7 @@ public class CategoryController {
 	}
 	
 	@PutMapping("/{id}")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@Operation(summary = "Update category")
 	public ResponseEntity<CategoryRequest> updateCategory(@RequestBody CategoryRequest categoryRequest, @PathVariable int id) {
 		service.updateCategory(categoryRequest, id);
@@ -65,6 +70,7 @@ public class CategoryController {
 	}
 	
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@Operation(summary = "Delete category and all subcategories")
 	public ResponseEntity<?> deleteCategory(@PathVariable int id) {
 		service.deleteCategory(id);

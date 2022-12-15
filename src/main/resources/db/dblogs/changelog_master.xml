@@ -15,5 +15,6 @@
     <include file="/db/dblogs/changes/131220221247_create_answers_table.xml"/>
     <include file="/db/dblogs/changes/131220221753_migrate_and_drop_qaa_table.xml"/>
     <include file="/db/dblogs/changes/151220221526_rename_category_col_in_questions_table.xml"/>
+    <include file="/db/dblogs/changes/151220221920_add_author_to_questions_and_answers_tables.xml"/>
 
 </databaseChangeLog>

@@ -3,8 +3,12 @@ package com.panasi.interview_questions.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +26,7 @@ import com.panasi.interview_questions.service.QuestionService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/questions")
@@ -60,13 +65,16 @@ public class QuestionController {
 	}
 	
 	@PostMapping
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@Operation(summary = "Add a new question")
-	public ResponseEntity<QuestionRequest> addNewQuestion(@RequestBody QuestionRequest questionRequest) {
-		service.createQuestion(questionRequest);
+	public ResponseEntity<QuestionRequest> addNewQuestion(@RequestBody QuestionRequest questionRequest, HttpServletRequest request) {
+		String userName = request.getUserPrincipal().getName();
+		service.createQuestion(questionRequest, userName);
 		return new ResponseEntity<>(questionRequest, HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/{id}")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@Operation(summary = "Update question")
 	public ResponseEntity<QuestionRequest> updateQuestion(@RequestBody QuestionRequest questionRequest, @PathVariable int id) {
 		service.updateQuestion(questionRequest, id);
@@ -74,6 +82,7 @@ public class QuestionController {
 	}
 	
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@Operation(summary = "Delete question")
 	public ResponseEntity<?> deleteQuestion(@PathVariable int id) {
 			service.deleteQuestion(id);

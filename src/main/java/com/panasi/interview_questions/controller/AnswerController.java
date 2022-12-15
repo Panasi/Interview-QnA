@@ -2,8 +2,12 @@ package com.panasi.interview_questions.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +25,7 @@ import com.panasi.interview_questions.service.AnswerService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/answers")
@@ -51,13 +56,16 @@ public class AnswerController {
 	}
 	
 	@PostMapping()
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@Operation(summary = "Add a new answer")
-	public ResponseEntity<AnswerRequest> addNewAnswer(@RequestBody AnswerRequest answerRequest) {
-		service.createAnswer(answerRequest);
+	public ResponseEntity<AnswerRequest> addNewAnswer(@RequestBody AnswerRequest answerRequest, HttpServletRequest request) {
+		String userName = request.getUserPrincipal().getName();
+		service.createAnswer(answerRequest, userName);
 		return new ResponseEntity<>(answerRequest, HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/{id}")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@Operation(summary = "Update answer")
 	public ResponseEntity<AnswerRequest> updateAnswer(@RequestBody AnswerRequest answerRequest, @PathVariable int id) {
 		service.updateAnswer(answerRequest, id);
@@ -65,6 +73,7 @@ public class AnswerController {
 	}
 	
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@Operation(summary = "Delete answer")
 	public ResponseEntity<?> deleteAnswer(@PathVariable int id) {
 		service.deleteAnswer(id);

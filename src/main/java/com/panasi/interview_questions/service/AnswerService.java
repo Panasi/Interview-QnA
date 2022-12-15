@@ -20,6 +20,7 @@ public class AnswerService {
 	private final AnswerRepository answerRepository;
 	private final AnswerMapper mapper;
 	
+	
 	// Return all answers
 	public List<AnswerDto> getAllAnswers() {
 		List<AnswerDto> allAnswerDtos = mapper.toAnswerDtos(answerRepository.findAll());
@@ -40,10 +41,11 @@ public class AnswerService {
 	}
 	
 	// Add a new answer
-	public void createAnswer(AnswerRequest answerRequest) {
+	public void createAnswer(AnswerRequest answerRequest, String userName) {
 		AnswerDto answerDto = new AnswerDto();
 		answerDto.setName(answerRequest.getName());
 		answerDto.setQuestionId(answerRequest.getQuestionId());
+		answerDto.setAuthor(userName);
 		Answer answer = mapper.toAnswer(answerDto);
 		answerRepository.save(answer);
 	}
@@ -53,6 +55,7 @@ public class AnswerService {
 		Answer answer = answerRepository.findById(answerId).get();
 		AnswerDto answerDto = new AnswerDto();
 		answerDto.setId(answerId);
+		answerDto.setAuthor(answer.getAuthor());
 		if (Objects.isNull(answerRequest.getName())) {
 			answerDto.setName(answer.getName());
 		} else {

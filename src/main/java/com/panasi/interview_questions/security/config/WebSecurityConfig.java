@@ -58,10 +58,11 @@ public class WebSecurityConfig {
 	    http.cors().and().csrf().disable()
 	        .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 	        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-	        .authorizeRequests().antMatchers("/auth/**", "/h2-console/*").permitAll()
+	        .authorizeRequests().antMatchers("/auth/**", "/categories/**", "/questions/**", "/answers/**").permitAll()
 	        .antMatchers("/swagger.html").hasRole("ADMIN")
 	        .antMatchers("/swagger-ui/**").hasRole("ADMIN")
 	        .antMatchers("/api-docs/**").hasRole("ADMIN")
+	        .antMatchers("/h2-console/**").hasRole("ADMIN")
 	        .anyRequest().authenticated();
 	    
 	    http.authenticationProvider(authenticationProvider());
