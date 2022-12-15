@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
+import com.panasi.interview_questions.payload.QuestionRequest;
 import com.panasi.interview_questions.repository.CategoryRepository;
 import com.panasi.interview_questions.repository.QuestionRepository;
 import com.panasi.interview_questions.repository.dto.AnswerDto;
@@ -62,26 +63,31 @@ public class QuestionService {
 	}
 	
 	// Add a new question
-	public void createQuestion(QuestionDto questionDto) {
+	public void createQuestion(QuestionRequest questionRequest) {
+		QuestionDto questionDto = new QuestionDto();
+		questionDto.setName(questionRequest.getName());
+		questionDto.setCategoryId(questionRequest.getCategoryId());
 		Question question = questionMapper.toQuestion(questionDto);
 		questionRepository.save(question);
 	}
 	
 	// Update certain question
-	public void updateQuestion(QuestionDto questionDto, int questionId) {
+	public void updateQuestion(QuestionRequest questionRequest, int questionId) {
 		Question question = questionRepository.findById(questionId).get();
+		QuestionDto questionDto = new QuestionDto();
 		questionDto.setId(questionId);
-		if (Objects.isNull(questionDto.getName())) {
+		if (Objects.isNull(questionRequest.getName())) {
 			questionDto.setName(question.getName());
+		} else {
+			questionDto.setName(questionRequest.getName());
 		}
-		if (Objects.isNull(questionDto.getAnswers())) {
-			List<AnswerDto> answerDtos = answerMapper.toAnswerDtos(question.getAnswers());
-			questionDto.setAnswers(answerDtos);
+		if (Objects.isNull(questionRequest.getCategoryId())) {
+			questionDto.setCategoryId(question.getCategoryId());
+		} else {
+			questionDto.setCategoryId(questionRequest.getCategoryId());
 		}
-		if (Objects.isNull(questionDto.getCategory())) {
-			CategoryDto categoryDto = categoryMapper.toCategoryDto(question.getCategory());
-			questionDto.setCategory(categoryDto);
-		}
+		List<AnswerDto> answerDtos = answerMapper.toAnswerDtos(question.getAnswers());
+		questionDto.setAnswers(answerDtos);
 		Question updatedQuestion = questionMapper.toQuestion(questionDto);
 		questionRepository.save(updatedQuestion);
 	}

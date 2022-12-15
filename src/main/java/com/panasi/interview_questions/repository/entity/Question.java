@@ -8,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -33,12 +32,11 @@ public class Question {
 	@Column(name = "name", nullable = false)
 	private String name;
 	
+	@Column(name = "category_id", nullable = false)
+	private Integer categoryId;
+	
 	@OneToMany
 	@JoinColumn(name = "question_id")
 	private List<Answer> answers;
-	
-	@ManyToOne
-	@JoinColumn(name = "category", nullable = false)
-	private Category category;
 
 }

@@ -7,7 +7,7 @@ INSERT INTO categories (name, parent_id) VALUES
 ('Hibernate', null),
 ('PHP', null);
 
-INSERT INTO questions (name, category) VALUES
+INSERT INTO questions (name, category_id) VALUES
 ('What is Java?', 1),
 ('What is JVM?', 1),
 ('What is Inheritance?', 2),

@@ -9,7 +9,7 @@ public class QuestionDto {
 	
 	private Integer id;
 	private String name;
+	private Integer categoryId;
 	private List<AnswerDto> answers;
-	private CategoryDto category;
 
 }

@@ -1,10 +1,14 @@
 package com.panasi.interview_questions.repository.entity;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -25,10 +29,14 @@ public class Category {
 	@Column(name = "id")
 	private Integer id;
 	
+	@Column(name = "name", nullable = false)
+	private String name;
+	
 	@Column(name = "parent_id")
 	private Integer parentId;
 	
-	@Column(name = "name", nullable = false)
-	private String name;
+	@OneToMany
+	@JoinColumn(name = "category_id")
+	private List<Question> questions;
 
 }

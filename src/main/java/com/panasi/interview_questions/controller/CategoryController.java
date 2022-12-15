@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.panasi.interview_questions.payload.CategoryRequest;
 import com.panasi.interview_questions.payload.MessageResponse;
 import com.panasi.interview_questions.repository.dto.CategoryDto;
 import com.panasi.interview_questions.service.CategoryService;
@@ -51,16 +52,16 @@ public class CategoryController {
 	
 	@PostMapping
 	@Operation(summary = "Add a new category")
-	public ResponseEntity<CategoryDto> addNewCategory(@RequestBody CategoryDto categoryDto) {
-		service.createCategory(categoryDto);
-		return new ResponseEntity<>(categoryDto, HttpStatus.CREATED);
+	public ResponseEntity<CategoryRequest> addNewCategory(@RequestBody CategoryRequest categoryRequest) {
+		service.createCategory(categoryRequest);
+		return new ResponseEntity<>(categoryRequest, HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/{id}")
 	@Operation(summary = "Update category")
-	public ResponseEntity<CategoryDto> updateCategory(@RequestBody CategoryDto categoryDto, @PathVariable int id) {
-		service.updateCategory(categoryDto, id);
-		return new ResponseEntity<>(categoryDto, HttpStatus.ACCEPTED);
+	public ResponseEntity<CategoryRequest> updateCategory(@RequestBody CategoryRequest categoryRequest, @PathVariable int id) {
+		service.updateCategory(categoryRequest, id);
+		return new ResponseEntity<>(categoryRequest, HttpStatus.ACCEPTED);
 	}
 	
 	@DeleteMapping("/{id}")

@@ -110,10 +110,9 @@ public class QuestionControllerTest {
 
 		mvc.perform(post("/questions")
 			      .contentType(MediaType.APPLICATION_JSON)
-			      .content("{\"name\": \"RandomQuestion\","
-			      		+ "\"category\": {"
-			      		+ "\"id\": 6,"
-			      		+ "\"name\": \"Hibernate\"}}"))
+			      .content("{\"name\": \"RandomQuestion\", "
+					      	+ "\"categoryId\": 6}")
+					.characterEncoding("utf-8"))
 			      .andExpect(status().isCreated());
 	}
 	

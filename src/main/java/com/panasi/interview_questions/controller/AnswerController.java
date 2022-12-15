@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.panasi.interview_questions.payload.AnswerRequest;
 import com.panasi.interview_questions.payload.MessageResponse;
 import com.panasi.interview_questions.repository.dto.AnswerDto;
 import com.panasi.interview_questions.service.AnswerService;
@@ -51,16 +52,16 @@ public class AnswerController {
 	
 	@PostMapping()
 	@Operation(summary = "Add a new answer")
-	public ResponseEntity<AnswerDto> addNewAnswer(@RequestBody AnswerDto answerDto) {
-		service.createAnswer(answerDto);
-		return new ResponseEntity<>(answerDto, HttpStatus.CREATED);
+	public ResponseEntity<AnswerRequest> addNewAnswer(@RequestBody AnswerRequest answerRequest) {
+		service.createAnswer(answerRequest);
+		return new ResponseEntity<>(answerRequest, HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/{id}")
 	@Operation(summary = "Update answer")
-	public ResponseEntity<AnswerDto> updateAnswer(@RequestBody AnswerDto answerDto, @PathVariable int id) {
-		service.updateAnswer(answerDto, id);
-		return new ResponseEntity<>(answerDto, HttpStatus.ACCEPTED);
+	public ResponseEntity<AnswerRequest> updateAnswer(@RequestBody AnswerRequest answerRequest, @PathVariable int id) {
+		service.updateAnswer(answerRequest, id);
+		return new ResponseEntity<>(answerRequest, HttpStatus.ACCEPTED);
 	}
 	
 	@DeleteMapping("/{id}")

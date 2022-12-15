@@ -13,6 +13,7 @@
     <include file="/db/dblogs/changes/071220221753_insert_roles_table.xml"/>
     <include file="/db/dblogs/changes/131220221300_create_questions_table.xml"/>
     <include file="/db/dblogs/changes/131220221247_create_answers_table.xml"/>
-    <include file="/db/dblogs/changes/131220221753_migrate_and_drop_qaa_table.xml"/>  
+    <include file="/db/dblogs/changes/131220221753_migrate_and_drop_qaa_table.xml"/>
+    <include file="/db/dblogs/changes/151220221526_rename_category_col_in_questions_table.xml"/>
 
 </databaseChangeLog>

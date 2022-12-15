@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.panasi.interview_questions.payload.MessageResponse;
+import com.panasi.interview_questions.payload.QuestionRequest;
 import com.panasi.interview_questions.repository.dto.QuestionDto;
 import com.panasi.interview_questions.service.QuestionService;
 
@@ -60,16 +61,16 @@ public class QuestionController {
 	
 	@PostMapping
 	@Operation(summary = "Add a new question")
-	public ResponseEntity<QuestionDto> addNewQuestion(@RequestBody QuestionDto questionDto) {
-		service.createQuestion(questionDto);
-		return new ResponseEntity<>(questionDto, HttpStatus.CREATED);
+	public ResponseEntity<QuestionRequest> addNewQuestion(@RequestBody QuestionRequest questionRequest) {
+		service.createQuestion(questionRequest);
+		return new ResponseEntity<>(questionRequest, HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/{id}")
 	@Operation(summary = "Update question")
-	public ResponseEntity<QuestionDto> updateQuestion(@RequestBody QuestionDto questionDto, @PathVariable int id) {
-		service.updateQuestion(questionDto, id);
-		return new ResponseEntity<>(questionDto, HttpStatus.ACCEPTED);
+	public ResponseEntity<QuestionRequest> updateQuestion(@RequestBody QuestionRequest questionRequest, @PathVariable int id) {
+		service.updateQuestion(questionRequest, id);
+		return new ResponseEntity<>(questionRequest, HttpStatus.ACCEPTED);
 	}
 	
 	@DeleteMapping("/{id}")
