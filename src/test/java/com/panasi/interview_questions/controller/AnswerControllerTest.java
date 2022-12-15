@@ -12,22 +12,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.panasi.interview_questions.InterviewQuestionsApplication;
-
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(
-		  webEnvironment = SpringBootTest.WebEnvironment.MOCK,
-		  classes = InterviewQuestionsApplication.class)
-@AutoConfigureMockMvc(addFilters = true)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@AutoConfigureMockMvc
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @TestPropertySource(locations = "classpath:application.properties")
 public class AnswerControllerTest {
@@ -100,6 +94,7 @@ public class AnswerControllerTest {
 												// Post
 
 	@Test
+	@WithMockUser(roles = "USER", username = "Panasi")
 	public void addNewAnswer_then_Status201() throws Exception {
 		
 		mvc.perform(post("/answers")
@@ -113,6 +108,7 @@ public class AnswerControllerTest {
 												// Put
 	
 	@Test
+	@WithMockUser(roles = "USER", username = "Panasi")
 	public void updateAnswer_then_Status202() throws Exception {
 		
 		mvc.perform(put("/answers/3")
@@ -130,6 +126,7 @@ public class AnswerControllerTest {
 	}
 	
 	@Test
+	@WithMockUser(roles = "USER", username = "Panasi")
 	public void updateAnswer_then_Status404() throws Exception {
 		
 	    mvc.perform(put("/answers/99")
@@ -142,6 +139,7 @@ public class AnswerControllerTest {
 												// Delete
 	
 	@Test
+	@WithMockUser(roles = "USER", username = "Panasi")
 	public void deleteAnswer_then_Status200() throws Exception {
 		
 	    mvc.perform(delete("/answers/4")
@@ -157,6 +155,7 @@ public class AnswerControllerTest {
 	}
 	
 	@Test
+	@WithMockUser(roles = "USER", username = "Panasi")
 	public void deleteAnswer_then_Status404() throws Exception {
 		
 	    mvc.perform(delete("/answers/99")
