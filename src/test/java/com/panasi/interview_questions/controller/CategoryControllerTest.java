@@ -94,7 +94,7 @@ public class CategoryControllerTest {
 											// Post
 	
 	@Test
-	@WithMockUser(roles = "USER", username = "Panasi")
+	@WithMockUser(roles = "ADMIN", username = "Admin")
 	public void addNewCategory_then_Status201() throws Exception {
 
 	    mvc.perform(post("/categories")
@@ -107,7 +107,7 @@ public class CategoryControllerTest {
 											// Put
 	
 	@Test
-	@WithMockUser(roles = "USER", username = "Panasi")
+	@WithMockUser(roles = "ADMIN", username = "Admin")
 	public void updateCategory_then_Status202() throws Exception {
 		
 	    mvc.perform(put("/categories/7")
@@ -124,7 +124,7 @@ public class CategoryControllerTest {
 	}
 	
 	@Test
-	@WithMockUser(roles = "USER", username = "Panasi")
+	@WithMockUser(roles = "ADMIN", username = "Admin")
 	public void updateCategory_then_Status404() throws Exception {
 		
 	    mvc.perform(put("/categories/99")
@@ -137,7 +137,7 @@ public class CategoryControllerTest {
 											// Delete
 	
 	@Test
-	@WithMockUser(roles = "USER", username = "Panasi")
+	@WithMockUser(roles = "ADMIN", username = "Admin")
 	public void deleteCategory_then_Status200() throws Exception {
 		
 	    mvc.perform(delete("/categories/4")
@@ -159,7 +159,7 @@ public class CategoryControllerTest {
 	}
 	
 	@Test
-	@WithMockUser(roles = "USER", username = "Panasi")
+	@WithMockUser(roles = "ADMIN", username = "Admin")
 	public void deleteCategory_then_Status404() throws Exception {
 		
 	    mvc.perform(delete("/categories/99")
@@ -172,7 +172,7 @@ public class CategoryControllerTest {
 	}
 	
 	@Test
-	@WithMockUser(roles = "USER", username = "Panasi")
+	@WithMockUser(roles = "ADMIN", username = "Admin")
 	public void deleteCategory_then_Status409() throws Exception {
 		
 	    mvc.perform(delete("/categories/6")

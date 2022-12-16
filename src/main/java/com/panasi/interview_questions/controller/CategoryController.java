@@ -54,7 +54,7 @@ public class CategoryController {
 	}
 	
 	@PostMapping
-	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	@Operation(summary = "Add a new category")
 	public ResponseEntity<CategoryRequest> addNewCategory(@RequestBody CategoryRequest categoryRequest) {
 		service.createCategory(categoryRequest);
@@ -62,7 +62,7 @@ public class CategoryController {
 	}
 	
 	@PutMapping("/{id}")
-	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	@Operation(summary = "Update category")
 	public ResponseEntity<CategoryRequest> updateCategory(@RequestBody CategoryRequest categoryRequest, @PathVariable int id) {
 		service.updateCategory(categoryRequest, id);
@@ -70,7 +70,7 @@ public class CategoryController {
 	}
 	
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	@Operation(summary = "Delete category and all subcategories")
 	public ResponseEntity<?> deleteCategory(@PathVariable int id) {
 		service.deleteCategory(id);
