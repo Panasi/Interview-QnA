@@ -8,10 +8,8 @@ import org.springframework.stereotype.Service;
 import com.panasi.interview_questions.payload.CategoryRequest;
 import com.panasi.interview_questions.repository.CategoryRepository;
 import com.panasi.interview_questions.repository.dto.CategoryDto;
-import com.panasi.interview_questions.repository.dto.QuestionDto;
 import com.panasi.interview_questions.repository.entity.Category;
 import com.panasi.interview_questions.service.mappers.CategoryMapper;
-import com.panasi.interview_questions.service.mappers.QuestionMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,7 +19,6 @@ public class CategoryService {
 	
 	private final CategoryRepository categoryRepository;
 	private final CategoryMapper categoryMapper;
-	private final QuestionMapper questionMapper;
 	
 	
 	// Return all categories
@@ -67,8 +64,6 @@ public class CategoryService {
 		} else {
 			categoryDto.setParentId(categoryRequest.getParentId());
 		}
-		List<QuestionDto> questionDtos = questionMapper.toQuestionDtos(category.getQuestions());
-		categoryDto.setQuestions(questionDtos);
 		Category updatedCategory = categoryMapper.toCategory(categoryDto);
 		categoryRepository.save(updatedCategory);
 	}
