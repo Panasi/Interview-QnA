@@ -1,5 +1,6 @@
 package com.panasi.interview_questions.repository.entity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -44,5 +45,8 @@ public class Question {
 	
 	@Column(name = "user_id")
 	private Integer authorId;
+	
+	@Column(name = "date")
+	private LocalDateTime date;
 
 }

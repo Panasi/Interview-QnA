@@ -1,5 +1,6 @@
 package com.panasi.interview_questions.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,11 +48,13 @@ public class AnswerService {
 		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String authorName = userDetails.getUsername();
 		int authorId = userDetails.getId();
+		LocalDateTime dateTime = LocalDateTime.now();
 		AnswerDto answerDto = new AnswerDto();
 		answerDto.setName(answerRequest.getName());
 		answerDto.setQuestionId(answerRequest.getQuestionId());
 		answerDto.setAuthorName(authorName);
 		answerDto.setAuthorId(authorId);
+		answerDto.setDate(dateTime);
 		Answer answer = mapper.toAnswer(answerDto);
 		answerRepository.save(answer);
 	}
@@ -59,10 +62,12 @@ public class AnswerService {
 	// Update certain answer
 	public void updateAnswer(AnswerRequest answerRequest, int answerId) {
 		Answer answer = answerRepository.findById(answerId).get();
+		LocalDateTime dateTime = LocalDateTime.now();
 		AnswerDto answerDto = new AnswerDto();
 		answerDto.setId(answerId);
 		answerDto.setAuthorName(answer.getAuthorName());
 		answerDto.setAuthorId(answer.getAuthorId());
+		answerDto.setDate(dateTime);
 		if (Objects.isNull(answerRequest.getName())) {
 			answerDto.setName(answer.getName());
 		} else {
