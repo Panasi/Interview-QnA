@@ -31,7 +31,10 @@ public class Answer {
 	@Column(name = "question_id", nullable = false)
 	private Integer questionId;
 	
-	@Column(name = "author")
-	private String author;
+	@Column(name = "user_name")
+	private String authorName;
+	
+	@Column(name = "user_id")
+	private Integer authorId;
 
 }

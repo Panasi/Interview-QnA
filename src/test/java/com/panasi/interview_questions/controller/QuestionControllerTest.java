@@ -107,7 +107,7 @@ public class QuestionControllerTest {
 			      .contentType(MediaType.APPLICATION_JSON)
 			      .content("{\"name\": \"RandomQuestion\", "
 					      	+ "\"categoryId\": 6}")
-					.characterEncoding("utf-8"))
+				  .characterEncoding("utf-8"))
 			      .andExpect(status().isCreated());
 	}
 	

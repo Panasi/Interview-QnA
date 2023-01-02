@@ -39,7 +39,10 @@ public class Question {
 	@JoinColumn(name = "question_id")
 	private List<Answer> answers;
 	
-	@Column(name = "author")
-	private String author;
+	@Column(name = "user_name")
+	private String authorName;
+	
+	@Column(name = "user_id")
+	private Integer authorId;
 
 }

@@ -3,8 +3,6 @@ package com.panasi.interview_questions.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -67,9 +65,8 @@ public class QuestionController {
 	@PostMapping
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@Operation(summary = "Add a new question")
-	public ResponseEntity<QuestionRequest> addNewQuestion(@RequestBody QuestionRequest questionRequest, HttpServletRequest request) {
-		String userName = request.getUserPrincipal().getName();
-		service.createQuestion(questionRequest, userName);
+	public ResponseEntity<QuestionRequest> addNewQuestion(@RequestBody QuestionRequest questionRequest) {
+		service.createQuestion(questionRequest);
 		return new ResponseEntity<>(questionRequest, HttpStatus.CREATED);
 	}
 	

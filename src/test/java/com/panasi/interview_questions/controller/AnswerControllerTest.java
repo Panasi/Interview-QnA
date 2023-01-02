@@ -100,7 +100,8 @@ public class AnswerControllerTest {
 		mvc.perform(post("/answers")
 		  .contentType(MediaType.APPLICATION_JSON)
 		  .content("{\"name\": \"RandomAnswer\","
-			      	+ "\"questionId\": 1}"))
+			      	+ "\"questionId\": 1}")
+		  .characterEncoding("utf-8"))
 		  .andExpect(status().isCreated());
 		
 	}

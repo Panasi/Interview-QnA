@@ -3,6 +3,7 @@ package com.panasi.interview_questions.service;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.panasi.interview_questions.payload.QuestionRequest;
@@ -12,6 +13,7 @@ import com.panasi.interview_questions.repository.dto.AnswerDto;
 import com.panasi.interview_questions.repository.dto.CategoryDto;
 import com.panasi.interview_questions.repository.dto.QuestionDto;
 import com.panasi.interview_questions.repository.entity.Question;
+import com.panasi.interview_questions.security.service.UserDetailsImpl;
 import com.panasi.interview_questions.service.mappers.AnswerMapper;
 import com.panasi.interview_questions.service.mappers.CategoryMapper;
 import com.panasi.interview_questions.service.mappers.QuestionMapper;
@@ -63,11 +65,15 @@ public class QuestionService {
 	}
 	
 	// Add a new question
-	public void createQuestion(QuestionRequest questionRequest, String userName) {
+	public void createQuestion(QuestionRequest questionRequest) {
+		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String authorName = userDetails.getUsername();
+		int authorId = userDetails.getId();
 		QuestionDto questionDto = new QuestionDto();
 		questionDto.setName(questionRequest.getName());
 		questionDto.setCategoryId(questionRequest.getCategoryId());
-		questionDto.setAuthor(userName);
+		questionDto.setAuthorName(authorName);
+		questionDto.setAuthorId(authorId);
 		Question question = questionMapper.toQuestion(questionDto);
 		questionRepository.save(question);
 	}
@@ -77,7 +83,7 @@ public class QuestionService {
 		Question question = questionRepository.findById(questionId).get();
 		QuestionDto questionDto = new QuestionDto();
 		questionDto.setId(questionId);
-		questionDto.setAuthor(question.getAuthor());
+		questionDto.setAuthorName(question.getAuthorName());
 		if (Objects.isNull(questionRequest.getName())) {
 			questionDto.setName(question.getName());
 		} else {

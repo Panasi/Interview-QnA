@@ -11,6 +11,7 @@ public class QuestionDto {
 	private String name;
 	private Integer categoryId;
 	private List<AnswerDto> answers;
-	private String author;
+	private String authorName;
+	private Integer authorId;
 
 }

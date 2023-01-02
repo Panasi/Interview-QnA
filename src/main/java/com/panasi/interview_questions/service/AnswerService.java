@@ -3,12 +3,14 @@ package com.panasi.interview_questions.service;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.panasi.interview_questions.payload.AnswerRequest;
 import com.panasi.interview_questions.repository.AnswerRepository;
 import com.panasi.interview_questions.repository.dto.AnswerDto;
 import com.panasi.interview_questions.repository.entity.Answer;
+import com.panasi.interview_questions.security.service.UserDetailsImpl;
 import com.panasi.interview_questions.service.mappers.AnswerMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -41,11 +43,15 @@ public class AnswerService {
 	}
 	
 	// Add a new answer
-	public void createAnswer(AnswerRequest answerRequest, String userName) {
+	public void createAnswer(AnswerRequest answerRequest) {
+		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String authorName = userDetails.getUsername();
+		int authorId = userDetails.getId();
 		AnswerDto answerDto = new AnswerDto();
 		answerDto.setName(answerRequest.getName());
 		answerDto.setQuestionId(answerRequest.getQuestionId());
-		answerDto.setAuthor(userName);
+		answerDto.setAuthorName(authorName);
+		answerDto.setAuthorId(authorId);
 		Answer answer = mapper.toAnswer(answerDto);
 		answerRepository.save(answer);
 	}
@@ -55,7 +61,8 @@ public class AnswerService {
 		Answer answer = answerRepository.findById(answerId).get();
 		AnswerDto answerDto = new AnswerDto();
 		answerDto.setId(answerId);
-		answerDto.setAuthor(answer.getAuthor());
+		answerDto.setAuthorName(answer.getAuthorName());
+		answerDto.setAuthorId(answer.getAuthorId());
 		if (Objects.isNull(answerRequest.getName())) {
 			answerDto.setName(answer.getName());
 		} else {

@@ -59,9 +59,7 @@ public class WebSecurityConfig {
 	        .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 	        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 	        .authorizeRequests().antMatchers("/auth/**", "/categories/**", "/questions/**", "/answers/**").permitAll()
-	        .antMatchers("/swagger.html").hasRole("ADMIN")
-	        .antMatchers("/swagger-ui/**").hasRole("ADMIN")
-	        .antMatchers("/api-docs/**").hasRole("ADMIN")
+	        .antMatchers("/swagger.html", "/swagger-ui/**", "/api-docs/**").hasRole("ADMIN")
 	        .antMatchers("/h2-console/**").hasRole("ADMIN")
 	        .anyRequest().authenticated();
 	    
