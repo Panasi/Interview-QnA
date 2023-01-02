@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
+import com.panasi.interview_questions.payload.CategoryRequest;
 import com.panasi.interview_questions.repository.CategoryRepository;
 import com.panasi.interview_questions.repository.dto.CategoryDto;
 import com.panasi.interview_questions.repository.entity.Category;
@@ -17,45 +18,53 @@ import lombok.RequiredArgsConstructor;
 public class CategoryService {
 	
 	private final CategoryRepository categoryRepository;
-	private final CategoryMapper mapper;
+	private final CategoryMapper categoryMapper;
 	
 	
 	// Return all categories
 	public List<CategoryDto> getAllCategories() {
-		List<CategoryDto> allCategoryDtos = mapper.toCategoryDtos(categoryRepository.findAll());
+		List<CategoryDto> allCategoryDtos = categoryMapper.toCategoryDtos(categoryRepository.findAll());
 		return allCategoryDtos;
 	}
 	
 	// Return subcategories of category
 	public List<CategoryDto> getAllSubcategories(int parentId) {
-		List<CategoryDto> allSubcategoryDtos = mapper.toCategoryDtos(categoryRepository.findAllByParentId(parentId));
+		List<CategoryDto> allSubcategoryDtos = categoryMapper.toCategoryDtos(categoryRepository.findAllByParentId(parentId));
 		return allSubcategoryDtos;
 	}
 	
 	// Return category by id
 	public CategoryDto getCategoryById(int categoryId) {
 		Category category = categoryRepository.findById(categoryId).get();
-		CategoryDto	categoryDto = mapper.toCategoryDto(category);
+		CategoryDto	categoryDto = categoryMapper.toCategoryDto(category);
 		return categoryDto;
 	}
 	
 	// Add a new category
-	public void createCategory(CategoryDto categoryDto) {
-		Category category = mapper.toCategory(categoryDto);
+	public void createCategory(CategoryRequest categoryRequest) {
+		CategoryDto categoryDto = new CategoryDto();
+		categoryDto.setName(categoryRequest.getName());
+		categoryDto.setParentId(categoryRequest.getParentId());
+		Category category = categoryMapper.toCategory(categoryDto);
 		categoryRepository.save(category);
 	}
 	
 	// Update certain category
-	public void updateCategory(CategoryDto categoryDto, int categoryId) {
+	public void updateCategory(CategoryRequest categoryRequest, int categoryId) {
 		Category category = categoryRepository.findById(categoryId).get();
+		CategoryDto categoryDto = new CategoryDto();
 		categoryDto.setId(categoryId);
-		if (Objects.isNull(categoryDto.getParentId())) {
-			categoryDto.setParentId(category.getParentId());
-		}
-		if (Objects.isNull(categoryDto.getName())) {
+		if (Objects.isNull(categoryRequest.getName())) {
 			categoryDto.setName(category.getName());
+		} else {
+			categoryDto.setName(categoryRequest.getName());
 		}
-		Category updatedCategory = mapper.toCategory(categoryDto);
+		if (Objects.isNull(categoryRequest.getParentId())) {
+			categoryDto.setParentId(category.getParentId());
+		} else {
+			categoryDto.setParentId(categoryRequest.getParentId());
+		}
+		Category updatedCategory = categoryMapper.toCategory(categoryDto);
 		categoryRepository.save(updatedCategory);
 	}
 	

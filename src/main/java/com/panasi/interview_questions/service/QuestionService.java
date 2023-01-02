@@ -1,16 +1,20 @@
 package com.panasi.interview_questions.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.panasi.interview_questions.payload.QuestionRequest;
 import com.panasi.interview_questions.repository.CategoryRepository;
 import com.panasi.interview_questions.repository.QuestionRepository;
 import com.panasi.interview_questions.repository.dto.AnswerDto;
 import com.panasi.interview_questions.repository.dto.CategoryDto;
 import com.panasi.interview_questions.repository.dto.QuestionDto;
 import com.panasi.interview_questions.repository.entity.Question;
+import com.panasi.interview_questions.security.service.UserDetailsImpl;
 import com.panasi.interview_questions.service.mappers.AnswerMapper;
 import com.panasi.interview_questions.service.mappers.CategoryMapper;
 import com.panasi.interview_questions.service.mappers.QuestionMapper;
@@ -62,26 +66,41 @@ public class QuestionService {
 	}
 	
 	// Add a new question
-	public void createQuestion(QuestionDto questionDto) {
+	public void createQuestion(QuestionRequest questionRequest) {
+		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String authorName = userDetails.getUsername();
+		int authorId = userDetails.getId();
+		LocalDateTime dateTime = LocalDateTime.now(); 
+		QuestionDto questionDto = new QuestionDto();
+		questionDto.setName(questionRequest.getName());
+		questionDto.setCategoryId(questionRequest.getCategoryId());
+		questionDto.setAuthorName(authorName);
+		questionDto.setAuthorId(authorId);
+		questionDto.setDate(dateTime);
 		Question question = questionMapper.toQuestion(questionDto);
 		questionRepository.save(question);
 	}
 	
 	// Update certain question
-	public void updateQuestion(QuestionDto questionDto, int questionId) {
+	public void updateQuestion(QuestionRequest questionRequest, int questionId) {
 		Question question = questionRepository.findById(questionId).get();
+		LocalDateTime dateTime = LocalDateTime.now();
+		QuestionDto questionDto = new QuestionDto();
 		questionDto.setId(questionId);
-		if (Objects.isNull(questionDto.getName())) {
+		questionDto.setAuthorName(question.getAuthorName());
+		questionDto.setDate(dateTime);
+		if (Objects.isNull(questionRequest.getName())) {
 			questionDto.setName(question.getName());
+		} else {
+			questionDto.setName(questionRequest.getName());
 		}
-		if (Objects.isNull(questionDto.getAnswers())) {
-			List<AnswerDto> answerDtos = answerMapper.toAnswerDtos(question.getAnswers());
-			questionDto.setAnswers(answerDtos);
+		if (Objects.isNull(questionRequest.getCategoryId())) {
+			questionDto.setCategoryId(question.getCategoryId());
+		} else {
+			questionDto.setCategoryId(questionRequest.getCategoryId());
 		}
-		if (Objects.isNull(questionDto.getCategory())) {
-			CategoryDto categoryDto = categoryMapper.toCategoryDto(question.getCategory());
-			questionDto.setCategory(categoryDto);
-		}
+		List<AnswerDto> answerDtos = answerMapper.toAnswerDtos(question.getAnswers());
+		questionDto.setAnswers(answerDtos);
 		Question updatedQuestion = questionMapper.toQuestion(questionDto);
 		questionRepository.save(updatedQuestion);
 	}

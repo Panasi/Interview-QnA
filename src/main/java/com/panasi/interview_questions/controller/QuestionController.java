@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,12 +17,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.panasi.interview_questions.payload.MessageResponse;
+import com.panasi.interview_questions.payload.QuestionRequest;
 import com.panasi.interview_questions.repository.dto.QuestionDto;
 import com.panasi.interview_questions.service.QuestionService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/questions")
@@ -59,20 +63,23 @@ public class QuestionController {
 	}
 	
 	@PostMapping
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@Operation(summary = "Add a new question")
-	public ResponseEntity<QuestionDto> addNewQuestion(@RequestBody QuestionDto questionDto) {
-		service.createQuestion(questionDto);
-		return new ResponseEntity<>(questionDto, HttpStatus.CREATED);
+	public ResponseEntity<QuestionRequest> addNewQuestion(@RequestBody QuestionRequest questionRequest) {
+		service.createQuestion(questionRequest);
+		return new ResponseEntity<>(questionRequest, HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/{id}")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@Operation(summary = "Update question")
-	public ResponseEntity<QuestionDto> updateQuestion(@RequestBody QuestionDto questionDto, @PathVariable int id) {
-		service.updateQuestion(questionDto, id);
-		return new ResponseEntity<>(questionDto, HttpStatus.ACCEPTED);
+	public ResponseEntity<QuestionRequest> updateQuestion(@RequestBody QuestionRequest questionRequest, @PathVariable int id) {
+		service.updateQuestion(questionRequest, id);
+		return new ResponseEntity<>(questionRequest, HttpStatus.ACCEPTED);
 	}
 	
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@Operation(summary = "Delete question")
 	public ResponseEntity<?> deleteQuestion(@PathVariable int id) {
 			service.deleteQuestion(id);
