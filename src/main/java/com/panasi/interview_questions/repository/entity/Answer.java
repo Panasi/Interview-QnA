@@ -41,5 +41,8 @@ public class Answer {
 	
 	@Column(name = "date")
 	private LocalDateTime date;
+	
+	@Column(name = "is_private")
+	private Boolean isPrivate;
 
 }

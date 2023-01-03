@@ -15,5 +15,6 @@ public class QuestionDto {
 	private String authorName;
 	private Integer authorId;
 	private LocalDateTime date;
+	private Boolean isPrivate;
 
 }

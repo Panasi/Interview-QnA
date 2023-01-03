@@ -13,5 +13,6 @@ public class AnswerDto {
 	private String authorName;
 	private Integer authorId;
 	private LocalDateTime date;
+	private Boolean isPrivate;
 	
 }

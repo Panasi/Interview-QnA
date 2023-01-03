@@ -74,6 +74,7 @@ public class QuestionService {
 		QuestionDto questionDto = new QuestionDto();
 		questionDto.setName(questionRequest.getName());
 		questionDto.setCategoryId(questionRequest.getCategoryId());
+		questionDto.setIsPrivate(questionRequest.getIsPrivate());
 		questionDto.setAuthorName(authorName);
 		questionDto.setAuthorId(authorId);
 		questionDto.setDate(dateTime);
@@ -98,6 +99,11 @@ public class QuestionService {
 			questionDto.setCategoryId(question.getCategoryId());
 		} else {
 			questionDto.setCategoryId(questionRequest.getCategoryId());
+		}
+		if (Objects.isNull(questionRequest.getIsPrivate())) {
+			questionDto.setIsPrivate(question.getIsPrivate());
+		} else {
+			questionDto.setIsPrivate(questionRequest.getIsPrivate());
 		}
 		List<AnswerDto> answerDtos = answerMapper.toAnswerDtos(question.getAnswers());
 		questionDto.setAnswers(answerDtos);

@@ -52,6 +52,7 @@ public class AnswerService {
 		AnswerDto answerDto = new AnswerDto();
 		answerDto.setName(answerRequest.getName());
 		answerDto.setQuestionId(answerRequest.getQuestionId());
+		answerDto.setIsPrivate(answerRequest.getIsPrivate());
 		answerDto.setAuthorName(authorName);
 		answerDto.setAuthorId(authorId);
 		answerDto.setDate(dateTime);
@@ -77,6 +78,11 @@ public class AnswerService {
 			answerDto.setQuestionId(answer.getQuestionId());
 		} else {
 			answerDto.setQuestionId(answerRequest.getQuestionId());
+		}
+		if (Objects.isNull(answerRequest.getIsPrivate())) {
+			answerDto.setIsPrivate(answer.getIsPrivate());
+		} else {
+			answerDto.setIsPrivate(answerRequest.getIsPrivate());
 		}
 		Answer updatedAnswer = mapper.toAnswer(answerDto);
 		answerRepository.save(updatedAnswer);
