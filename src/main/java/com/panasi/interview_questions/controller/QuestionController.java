@@ -62,6 +62,14 @@ public class QuestionController {
 		return new ResponseEntity<>(allQuestionDtos, HttpStatus.OK);
 	}
 	
+	@GetMapping("/private")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	@Operation(summary = "Get all private questions")
+	public ResponseEntity<List<QuestionDto>> showAllPrivateQuestions() {
+		List<QuestionDto> allQuestionDtos = service.getAllPrivateQuestions();
+		return new ResponseEntity<>(allQuestionDtos, HttpStatus.OK);
+	}
+	
 	@GetMapping("/{id}")
 	@Operation(summary = "Get a question by id")
 	public ResponseEntity<QuestionDto> showQuestion(@PathVariable int id) {

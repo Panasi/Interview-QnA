@@ -3,6 +3,7 @@ package com.panasi.interview_questions.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,17 @@ public class AnswerService {
 	public List<AnswerDto> getAllPublicAnswers() {
 		List<AnswerDto> allAnswerDtos = mapper.toAnswerDtos(answerRepository.findAllByIsPrivate(false));
 		return allAnswerDtos;
+	}
+	
+	// Return all public answers
+	public List<AnswerDto> getAllPrivateAnswers() {
+		List<AnswerDto> allPrivateAnswerDtos = mapper.toAnswerDtos(answerRepository.findAllByIsPrivate(true));
+		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		int authorId = userDetails.getId();
+		List<AnswerDto> privateAnswersDtos = allPrivateAnswerDtos.stream()
+                .filter(answer -> answer.getAuthorId() == authorId)
+                .collect(Collectors.toList());
+		return privateAnswersDtos;
 	}
 	
 	// Return answer by id

@@ -3,6 +3,7 @@ package com.panasi.interview_questions.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -59,10 +60,21 @@ public class QuestionService {
 	}
 	
 	// Return all public questions
-		public List<QuestionDto> getAllPublicQuestions() {
-			List<QuestionDto> allQuestionDtos = questionMapper.toQuestionDtos(questionRepository.findAllByIsPrivate(false));
-			return allQuestionDtos;
-		}
+	public List<QuestionDto> getAllPublicQuestions() {
+		List<QuestionDto> allQuestionDtos = questionMapper.toQuestionDtos(questionRepository.findAllByIsPrivate(false));
+		return allQuestionDtos;
+	}
+	
+	// Return all private questions
+	public List<QuestionDto> getAllPrivateQuestions() {
+		List<QuestionDto> allPrivateQuestionDtos = questionMapper.toQuestionDtos(questionRepository.findAllByIsPrivate(true));
+		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		int authorId = userDetails.getId();
+		List<QuestionDto> privateQuestionsDtos = allPrivateQuestionDtos.stream()
+                .filter(question -> question.getAuthorId() == authorId)
+                .collect(Collectors.toList());
+		return privateQuestionsDtos;
+	}
 	
 	// Return question by id
 	public QuestionDto getQuestionById(int questionId) {

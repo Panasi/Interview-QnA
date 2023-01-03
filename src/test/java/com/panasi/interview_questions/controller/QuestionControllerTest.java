@@ -80,6 +80,19 @@ public class QuestionControllerTest {
 	}
 	
 	@Test
+	@WithMockUser(roles = "USER", username = "Panasi")
+	public void showPrivateQuestions_then_Status200() throws Exception {
+		
+		mvc.perform(get("/questions/private")
+		  .contentType(MediaType.APPLICATION_JSON))
+		  .andExpect(status().isOk())
+	      .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+	      .andExpect(jsonPath("$[0].name", is("What is Java?")))
+		  .andExpect(jsonPath("$[1].name", is("What is JVM?")));
+		
+	}
+	
+	@Test
 	public void showQuestion_then_Status200() throws Exception {
 
 	    mvc.perform(get("/questions/1")

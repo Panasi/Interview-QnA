@@ -70,6 +70,19 @@ public class AnswerControllerTest {
 	}
 	
 	@Test
+	@WithMockUser(roles = "USER", username = "Panasi")
+	public void showAllPrivateAnswers_then_Status200() throws Exception {
+		
+		mvc.perform(get("/answers/private")
+		  .contentType(MediaType.APPLICATION_JSON))
+		  .andExpect(status().isOk())
+		  .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+		  .andExpect(jsonPath("$[0].name", is("Java is a programming language")))
+		  .andExpect(jsonPath("$[0].questionId", is(1)));
+		
+	}
+	
+	@Test
 	public void showAnswerById_then_Status200() throws Exception {
 		
 		mvc.perform(get("/answers/1")
