@@ -55,6 +55,13 @@ public class QuestionController {
 		return new ResponseEntity<>(allSubQuestionDtos, HttpStatus.OK);
 	}
 	
+	@GetMapping("/public")
+	@Operation(summary = "Get all public questions")
+	public ResponseEntity<List<QuestionDto>> showAllPublicQuestions() {
+		List<QuestionDto> allQuestionDtos = service.getAllPublicQuestions();
+		return new ResponseEntity<>(allQuestionDtos, HttpStatus.OK);
+	}
+	
 	@GetMapping("/{id}")
 	@Operation(summary = "Get a question by id")
 	public ResponseEntity<QuestionDto> showQuestion(@PathVariable int id) {

@@ -36,6 +36,12 @@ public class AnswerService {
 		return allAnswerDtos;
 	}
 	
+	// Return all public answers
+	public List<AnswerDto> getAllPublicAnswers() {
+		List<AnswerDto> allAnswerDtos = mapper.toAnswerDtos(answerRepository.findAllByIsPrivate(false));
+		return allAnswerDtos;
+	}
+	
 	// Return answer by id
 	public AnswerDto getAnswerById(int answerId) {
 		Answer answer = answerRepository.findById(answerId).get();

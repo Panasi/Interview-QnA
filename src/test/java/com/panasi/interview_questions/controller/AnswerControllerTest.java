@@ -58,6 +58,18 @@ public class AnswerControllerTest {
 	}
 	
 	@Test
+	public void showAllPublicAnswers_then_Status200() throws Exception {
+		
+		mvc.perform(get("/answers/public")
+		  .contentType(MediaType.APPLICATION_JSON))
+		  .andExpect(status().isOk())
+		  .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+		  .andExpect(jsonPath("$[0].name", is("Java is OOP language")))
+		  .andExpect(jsonPath("$[0].questionId", is(1)));
+		
+	}
+	
+	@Test
 	public void showAnswerById_then_Status200() throws Exception {
 		
 		mvc.perform(get("/answers/1")

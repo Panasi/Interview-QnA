@@ -68,6 +68,18 @@ public class QuestionControllerTest {
 	}
 	
 	@Test
+	public void showPublicQuestions_then_Status200() throws Exception {
+		
+		mvc.perform(get("/questions/public")
+		  .contentType(MediaType.APPLICATION_JSON))
+		  .andExpect(status().isOk())
+	      .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+	      .andExpect(jsonPath("$[0].name", is("What is Inheritance?")))
+		  .andExpect(jsonPath("$[1].name", is("What is ArrayList?")));
+		
+	}
+	
+	@Test
 	public void showQuestion_then_Status200() throws Exception {
 
 	    mvc.perform(get("/questions/1")

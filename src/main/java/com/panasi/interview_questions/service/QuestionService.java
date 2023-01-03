@@ -58,6 +58,12 @@ public class QuestionService {
 		return result;
 	}
 	
+	// Return all public questions
+		public List<QuestionDto> getAllPublicQuestions() {
+			List<QuestionDto> allQuestionDtos = questionMapper.toQuestionDtos(questionRepository.findAllByIsPrivate(false));
+			return allQuestionDtos;
+		}
+	
 	// Return question by id
 	public QuestionDto getQuestionById(int questionId) {
 		Question question = questionRepository.findById(questionId).get();
