@@ -5,10 +5,10 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet  id="020120231450_add_date_to_answers_and_questions_tables"  author="Panasi"> 
+    <changeSet  id="020120231750_add_access_to_answers_and_questions_tables"  author="Panasi"> 
     	<sql>
-    		ALTER TABLE questions ADD date DATETIME;
-    		ALTER TABLE answers ADD date DATETIME;
+    		ALTER TABLE questions ADD is_private BOOLEAN DEFAULT false NOT NULL;
+    		ALTER TABLE answers ADD is_private BOOLEAN DEFAULT false NOT NULL;
     	</sql>   
     </changeSet>   
 

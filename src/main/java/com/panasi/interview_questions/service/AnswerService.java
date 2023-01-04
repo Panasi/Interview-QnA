@@ -3,6 +3,7 @@ package com.panasi.interview_questions.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,23 @@ public class AnswerService {
 		return allAnswerDtos;
 	}
 	
+	// Return all public answers
+	public List<AnswerDto> getAllPublicAnswers() {
+		List<AnswerDto> allAnswerDtos = mapper.toAnswerDtos(answerRepository.findAllByIsPrivate(false));
+		return allAnswerDtos;
+	}
+	
+	// Return all private answers
+	public List<AnswerDto> getAllPrivateAnswers() {
+		List<AnswerDto> allPrivateAnswerDtos = mapper.toAnswerDtos(answerRepository.findAllByIsPrivate(true));
+		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		int authorId = userDetails.getId();
+		List<AnswerDto> privateAnswersDtos = allPrivateAnswerDtos.stream()
+                .filter(answer -> answer.getAuthorId() == authorId)
+                .collect(Collectors.toList());
+		return privateAnswersDtos;
+	}
+	
 	// Return answer by id
 	public AnswerDto getAnswerById(int answerId) {
 		Answer answer = answerRepository.findById(answerId).get();
@@ -52,6 +70,7 @@ public class AnswerService {
 		AnswerDto answerDto = new AnswerDto();
 		answerDto.setName(answerRequest.getName());
 		answerDto.setQuestionId(answerRequest.getQuestionId());
+		answerDto.setIsPrivate(answerRequest.getIsPrivate());
 		answerDto.setAuthorName(authorName);
 		answerDto.setAuthorId(authorId);
 		answerDto.setDate(dateTime);
@@ -77,6 +96,11 @@ public class AnswerService {
 			answerDto.setQuestionId(answer.getQuestionId());
 		} else {
 			answerDto.setQuestionId(answerRequest.getQuestionId());
+		}
+		if (Objects.isNull(answerRequest.getIsPrivate())) {
+			answerDto.setIsPrivate(answer.getIsPrivate());
+		} else {
+			answerDto.setIsPrivate(answerRequest.getIsPrivate());
 		}
 		Answer updatedAnswer = mapper.toAnswer(answerDto);
 		answerRepository.save(updatedAnswer);

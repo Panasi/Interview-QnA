@@ -10,4 +10,5 @@ import com.panasi.interview_questions.repository.entity.Question;
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Integer> {
 	public List<Question> findAllByCategoryId(int id);
+	public List<Question> findAllByIsPrivate(Boolean isPrivate);
 }

@@ -3,6 +3,7 @@ package com.panasi.interview_questions.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -58,6 +59,23 @@ public class QuestionService {
 		return result;
 	}
 	
+	// Return all public questions
+	public List<QuestionDto> getAllPublicQuestions() {
+		List<QuestionDto> allQuestionDtos = questionMapper.toQuestionDtos(questionRepository.findAllByIsPrivate(false));
+		return allQuestionDtos;
+	}
+	
+	// Return all private questions
+	public List<QuestionDto> getAllPrivateQuestions() {
+		List<QuestionDto> allPrivateQuestionDtos = questionMapper.toQuestionDtos(questionRepository.findAllByIsPrivate(true));
+		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		int authorId = userDetails.getId();
+		List<QuestionDto> privateQuestionsDtos = allPrivateQuestionDtos.stream()
+                .filter(question -> question.getAuthorId() == authorId)
+                .collect(Collectors.toList());
+		return privateQuestionsDtos;
+	}
+	
 	// Return question by id
 	public QuestionDto getQuestionById(int questionId) {
 		Question question = questionRepository.findById(questionId).get();
@@ -74,6 +92,7 @@ public class QuestionService {
 		QuestionDto questionDto = new QuestionDto();
 		questionDto.setName(questionRequest.getName());
 		questionDto.setCategoryId(questionRequest.getCategoryId());
+		questionDto.setIsPrivate(questionRequest.getIsPrivate());
 		questionDto.setAuthorName(authorName);
 		questionDto.setAuthorId(authorId);
 		questionDto.setDate(dateTime);
@@ -98,6 +117,11 @@ public class QuestionService {
 			questionDto.setCategoryId(question.getCategoryId());
 		} else {
 			questionDto.setCategoryId(questionRequest.getCategoryId());
+		}
+		if (Objects.isNull(questionRequest.getIsPrivate())) {
+			questionDto.setIsPrivate(question.getIsPrivate());
+		} else {
+			questionDto.setIsPrivate(questionRequest.getIsPrivate());
 		}
 		List<AnswerDto> answerDtos = answerMapper.toAnswerDtos(question.getAnswers());
 		questionDto.setAnswers(answerDtos);
