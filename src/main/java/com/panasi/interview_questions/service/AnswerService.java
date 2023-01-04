@@ -43,7 +43,7 @@ public class AnswerService {
 		return allAnswerDtos;
 	}
 	
-	// Return all public answers
+	// Return all private answers
 	public List<AnswerDto> getAllPrivateAnswers() {
 		List<AnswerDto> allPrivateAnswerDtos = mapper.toAnswerDtos(answerRepository.findAllByIsPrivate(true));
 		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
