@@ -20,3 +20,9 @@ INSERT INTO answers (name, question_id, is_private) VALUES
 ('Java is OOP language', 1, false),
 ('Java is language', 1, false),
 ('Java is ...', 1, false);
+
+INSERT INTO comments (content, rate, answer_id) VALUES
+('This in not a complete answer.', 3, 1),
+('Not bad.', 5, 1),
+('WTF?', 1, 2),
+('Perfect!', 5, 2);
