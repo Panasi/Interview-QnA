@@ -20,5 +20,6 @@
     <include file="/db/dblogs/changes/020120231450_add_date_to_answers_and_questions_tables.xml"/>
     <include file="/db/dblogs/changes/020120231750_add_access_to_answers_and_questions_tables.xml"/>
     <include file="/db/dblogs/changes/050120231510_create_comments_table.xml"/>
+    <include file="/db/dblogs/changes/090120231548_delete_username_from_comments_table.xml"/>
 
 </databaseChangeLog>

@@ -45,9 +45,6 @@ public class Comment {
 	@Column(name = "date")
 	private LocalDateTime date;
 	
-	@Column(name = "user_name")
-	private String authorName;
-	
 	@Column(name = "user_id")
 	private Integer authorId;
 

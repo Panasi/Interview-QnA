@@ -45,14 +45,12 @@ public class CommentService {
 	// Add a new comment
 	public void createComment(@Valid CommentRequest commentRequest) {
 		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		String authorName = userDetails.getUsername();
 		int authorId = userDetails.getId();
 		LocalDateTime dateTime = LocalDateTime.now();
 		CommentDto commentDto = new CommentDto();
 		commentDto.setContent(commentRequest.getContent());
 		commentDto.setRate(commentRequest.getRate());
 		commentDto.setAnswerId(commentRequest.getAnswerId());
-		commentDto.setAuthorName(authorName);
 		commentDto.setAuthorId(authorId);
 		commentDto.setDate(dateTime);
 		Comment comment = mapper.toComment(commentDto);
@@ -65,7 +63,6 @@ public class CommentService {
 		LocalDateTime dateTime = LocalDateTime.now();
 		CommentDto commentDto = new CommentDto();
 		commentDto.setId(comment.getId());
-		commentDto.setAuthorName(comment.getAuthorName());
 		commentDto.setAuthorId(comment.getAuthorId());
 		commentDto.setDate(dateTime);
 		commentDto.setAnswerId(comment.getAnswerId());

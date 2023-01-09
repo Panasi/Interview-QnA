@@ -12,7 +12,6 @@ public class CommentDto {
 	private Integer rate;
 	private Integer answerId;
 	private LocalDateTime date;
-	private String authorName;
 	private Integer authorId;
 
 }
