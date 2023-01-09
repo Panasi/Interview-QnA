@@ -74,6 +74,7 @@ public class AnswerService {
 		answerDto.setAuthorName(authorName);
 		answerDto.setAuthorId(authorId);
 		answerDto.setDate(dateTime);
+		answerDto.setRating(null);
 		Answer answer = mapper.toAnswer(answerDto);
 		answerRepository.save(answer);
 	}
@@ -87,6 +88,7 @@ public class AnswerService {
 		answerDto.setAuthorName(answer.getAuthorName());
 		answerDto.setAuthorId(answer.getAuthorId());
 		answerDto.setDate(dateTime);
+		answerDto.setRating(answer.getRating());
 		if (Objects.isNull(answerRequest.getName())) {
 			answerDto.setName(answer.getName());
 		} else {

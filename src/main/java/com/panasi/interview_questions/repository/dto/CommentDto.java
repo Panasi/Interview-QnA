@@ -5,15 +5,14 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 @Data
-public class AnswerDto {
+public class CommentDto {
 	
 	private Integer id;
-	private String name;
-	private Integer questionId;
+	private String content;
+	private Integer rate;
+	private Integer answerId;
+	private LocalDateTime date;
 	private String authorName;
 	private Integer authorId;
-	private LocalDateTime date;
-	private Boolean isPrivate;
-	private Double rating;
-	
+
 }
