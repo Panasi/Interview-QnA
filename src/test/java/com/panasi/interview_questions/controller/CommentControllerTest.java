@@ -35,20 +35,6 @@ public class CommentControllerTest {
 													// Get
 	
 	@Test
-	public void showAllComments_then_Status200() throws Exception {
-		
-		mvc.perform(get("/comments")
-		  .contentType(MediaType.APPLICATION_JSON))
-		  .andExpect(status().isOk())
-		  .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-		  .andExpect(jsonPath("$[0].content", is("This in not a complete answer.")))
-		  .andExpect(jsonPath("$[0].rate", is(3)))
-		  .andExpect(jsonPath("$[1].content", is("Not bad.")))
-		  .andExpect(jsonPath("$[1].rate", is(5)));
-		
-	}
-	
-	@Test
 	public void showAllCommentsToAnswer_then_Status200() throws Exception {
 		
 		mvc.perform(get("/comments/answer/1")

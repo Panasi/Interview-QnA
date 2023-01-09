@@ -28,12 +28,6 @@ public class CommentService {
 	private final CommentMapper mapper;
 	
 	
-	// Return all comments
-	public List<CommentDto> getAllComments() {
-		List<CommentDto> allCommentDtos = mapper.toCommentDtos(commentRepository.findAll());
-		return allCommentDtos;
-	}
-	
 	// Return all comments to answer
 	public List<CommentDto> getAllCommentsToAnswer(int answerId) {
 		List<CommentDto> allCommentDtos = mapper.toCommentDtos(commentRepository.findAllByAnswerId(answerId));

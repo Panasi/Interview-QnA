@@ -32,13 +32,6 @@ public class CommentController {
 	private final CommentService service;
 	
 	
-	@GetMapping
-	@Operation(summary = "Get all comments")
-	public ResponseEntity<List<CommentDto>> showAllComments() {
-		List<CommentDto> allCommentDtos = service.getAllComments();
-		return new ResponseEntity<>(allCommentDtos, HttpStatus.OK);
-	}
-	
 	@GetMapping("/answer/{id}")
 	@Operation(summary = "Get all comments to the answer")
 	public ResponseEntity<List<CommentDto>> showAllCommentsToAnswer(@PathVariable int id) {
