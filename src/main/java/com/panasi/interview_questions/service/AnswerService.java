@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.panasi.interview_questions.payload.AnswerRequest;
 import com.panasi.interview_questions.repository.AnswerRepository;
+import com.panasi.interview_questions.repository.CommentRepository;
 import com.panasi.interview_questions.repository.dto.AnswerDto;
 import com.panasi.interview_questions.repository.entity.Answer;
 import com.panasi.interview_questions.security.service.UserDetailsImpl;
@@ -22,24 +23,36 @@ import lombok.RequiredArgsConstructor;
 public class AnswerService {
 	
 	private final AnswerRepository answerRepository;
+	private final CommentRepository commentRepository;
 	private final AnswerMapper mapper;
 	
+	// Set answer rating
+	public void setAnswerRating(List<AnswerDto> answerDtos) {
+		answerDtos.stream().forEach(answer -> {
+			int answerId = answer.getId();
+			double rating = commentRepository.getRating(answerId);
+			answer.setRating(rating);
+		});
+	}
 	
 	// Return all answers
 	public List<AnswerDto> getAllAnswers() {
 		List<AnswerDto> allAnswerDtos = mapper.toAnswerDtos(answerRepository.findAll());
+		setAnswerRating(allAnswerDtos);
 		return allAnswerDtos;
 	}
 	
 	// Return all answers to the question
 	public List<AnswerDto> getAllAnswersToQuestion(int questionId) {
 		List<AnswerDto> allAnswerDtos = mapper.toAnswerDtos(answerRepository.findAllByQuestionId(questionId));
+		setAnswerRating(allAnswerDtos);
 		return allAnswerDtos;
 	}
 	
 	// Return all public answers
 	public List<AnswerDto> getAllPublicAnswers() {
 		List<AnswerDto> allAnswerDtos = mapper.toAnswerDtos(answerRepository.findAllByIsPrivate(false));
+		setAnswerRating(allAnswerDtos);
 		return allAnswerDtos;
 	}
 	
@@ -51,6 +64,7 @@ public class AnswerService {
 		List<AnswerDto> privateAnswersDtos = allPrivateAnswerDtos.stream()
                 .filter(answer -> answer.getAuthorId() == authorId)
                 .collect(Collectors.toList());
+		setAnswerRating(privateAnswersDtos);
 		return privateAnswersDtos;
 	}
 	
@@ -58,6 +72,8 @@ public class AnswerService {
 	public AnswerDto getAnswerById(int answerId) {
 		Answer answer = answerRepository.findById(answerId).get();
 		AnswerDto answerDto = mapper.toAnswerDto(answer);
+		double rating = commentRepository.getRating(answerId);
+		answerDto.setRating(rating);
 		return answerDto;
 	}
 	
@@ -74,7 +90,6 @@ public class AnswerService {
 		answerDto.setAuthorName(authorName);
 		answerDto.setAuthorId(authorId);
 		answerDto.setDate(dateTime);
-		answerDto.setRating(null);
 		Answer answer = mapper.toAnswer(answerDto);
 		answerRepository.save(answer);
 	}
@@ -88,7 +103,6 @@ public class AnswerService {
 		answerDto.setAuthorName(answer.getAuthorName());
 		answerDto.setAuthorId(answer.getAuthorId());
 		answerDto.setDate(dateTime);
-		answerDto.setRating(answer.getRating());
 		if (Objects.isNull(answerRequest.getName())) {
 			answerDto.setName(answer.getName());
 		} else {

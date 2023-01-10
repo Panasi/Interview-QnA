@@ -40,7 +40,7 @@ public class CommentController {
 	}
 	
 	@GetMapping("/{id}")
-	@Operation(summary = "Get all comments by id")
+	@Operation(summary = "Get comment by id")
 	public ResponseEntity<CommentDto> showCommentById(@PathVariable int id) {
 		CommentDto commentDto = service.getCommentById(id);
 		return new ResponseEntity<>(commentDto, HttpStatus.OK);

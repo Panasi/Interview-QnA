@@ -48,26 +48,8 @@ public class Answer {
 	@Column(name = "is_private")
 	private Boolean isPrivate;
 	
-	@Column(name = "rating")
-	private Double rating;
-	
 	@OneToMany
 	@JoinColumn(name = "answer_id")
 	private List<Comment> comments;
-	
-	public Double getRating() {
-		if (comments.size() < 1) {
-			return null;
-		}
-		Double sumOfRates = 0.0;
-		for (int i = 0; i < comments.size(); i++) {
-			Integer rate = comments.get(i).getRate();
-			sumOfRates+= rate;
-			
-		}
-		Double rating = sumOfRates / comments.size();
-		Double roundedRating = Math.round(rating * 10.0) / 10.0;
-		return roundedRating;
-	}
 
 }
