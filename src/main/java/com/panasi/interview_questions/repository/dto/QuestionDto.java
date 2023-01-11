@@ -14,5 +14,6 @@ public class QuestionDto {
 	private Integer authorId;
 	private LocalDateTime date;
 	private Boolean isPrivate;
+	private Double rating;
 
 }

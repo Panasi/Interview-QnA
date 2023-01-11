@@ -17,7 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.panasi.interview_questions.payload.CommentRequest;
 import com.panasi.interview_questions.payload.MessageResponse;
-import com.panasi.interview_questions.repository.dto.CommentDto;
+import com.panasi.interview_questions.repository.dto.AnswerCommentDto;
+import com.panasi.interview_questions.repository.dto.QuestionCommentDto;
 import com.panasi.interview_questions.service.CommentService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,41 +33,80 @@ public class CommentController {
 	private final CommentService service;
 	
 	
-	@GetMapping("/answer/{id}")
-	@Operation(summary = "Get all comments to the answer")
-	public ResponseEntity<List<CommentDto>> showAllCommentsToAnswer(@PathVariable int id) {
-		List<CommentDto> allCommentDtos = service.getAllCommentsToAnswer(id);
+	@GetMapping("/toquestion/{id}")
+	@Operation(summary = "Get all comments to the question")
+	public ResponseEntity<List<QuestionCommentDto>> showAllCommentsToQuestion(@PathVariable int id) {
+		List<QuestionCommentDto> allCommentDtos = service.getAllCommentsToQuestion(id);
 		return new ResponseEntity<>(allCommentDtos, HttpStatus.OK);
 	}
 	
-	@GetMapping("/{id}")
-	@Operation(summary = "Get comment by id")
-	public ResponseEntity<CommentDto> showCommentById(@PathVariable int id) {
-		CommentDto commentDto = service.getCommentById(id);
+	@GetMapping("/toanswer/{id}")
+	@Operation(summary = "Get all comments to the answer")
+	public ResponseEntity<List<AnswerCommentDto>> showAllCommentsToAnswer(@PathVariable int id) {
+		List<AnswerCommentDto> allCommentDtos = service.getAllCommentsToAnswer(id);
+		return new ResponseEntity<>(allCommentDtos, HttpStatus.OK);
+	}
+	
+	@GetMapping("/question/{id}")
+	@Operation(summary = "Get question comment by id")
+	public ResponseEntity<QuestionCommentDto> showQuestionCommentById(@PathVariable int id) {
+		QuestionCommentDto commentDto = service.getQuestionCommentById(id);
 		return new ResponseEntity<>(commentDto, HttpStatus.OK);
 	}
 	
-	@PostMapping
+	@GetMapping("/answer/{id}")
+	@Operation(summary = "Get answer comment by id")
+	public ResponseEntity<AnswerCommentDto> showAnswerCommentById(@PathVariable int id) {
+		AnswerCommentDto commentDto = service.getAnswerCommentById(id);
+		return new ResponseEntity<>(commentDto, HttpStatus.OK);
+	}
+	
+	@PostMapping("/question")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	@Operation(summary = "Add a new comment")
-	public ResponseEntity<CommentRequest> addNewComment(@RequestBody CommentRequest commentRequest) {
-		service.createComment(commentRequest);
+	@Operation(summary = "Add a new question comment")
+	public ResponseEntity<CommentRequest> addNewQuestionComment(@RequestBody CommentRequest commentRequest) {
+		service.createQuestionComment(commentRequest);
 		return new ResponseEntity<>(commentRequest, HttpStatus.CREATED);
 	}
 	
-	@PutMapping("/{id}")
+	@PostMapping("/answer")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	@Operation(summary = "Update comment")
-	public ResponseEntity<CommentRequest> updateComment(@RequestBody CommentRequest commentRequest, @PathVariable int id) {
-		service.updateComment(commentRequest, id);
+	@Operation(summary = "Add a new answer comment")
+	public ResponseEntity<CommentRequest> addNewAnswerComment(@RequestBody CommentRequest commentRequest) {
+		service.createAnswerComment(commentRequest);
+		return new ResponseEntity<>(commentRequest, HttpStatus.CREATED);
+	}
+	
+	@PutMapping("/question/{id}")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	@Operation(summary = "Update question comment")
+	public ResponseEntity<CommentRequest> updateQuestionComment(@RequestBody CommentRequest commentRequest, @PathVariable int id) {
+		service.updateQuestionComment(commentRequest, id);
 		return new ResponseEntity<>(commentRequest, HttpStatus.ACCEPTED);
 	}
 	
-	@DeleteMapping("/{id}")
+	@PutMapping("/answer/{id}")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	@Operation(summary = "Delete comment")
-	public ResponseEntity<?> deleteComment(@PathVariable int id) {
-		service.deleteComment(id);
+	@Operation(summary = "Update answer comment")
+	public ResponseEntity<CommentRequest> updateAnswerComment(@RequestBody CommentRequest commentRequest, @PathVariable int id) {
+		service.updateAnswerComment(commentRequest, id);
+		return new ResponseEntity<>(commentRequest, HttpStatus.ACCEPTED);
+	}
+	
+	@DeleteMapping("/question/{id}")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	@Operation(summary = "Delete question comment")
+	public ResponseEntity<?> deleteQuestionComment(@PathVariable int id) {
+		service.deleteQuestionComment(id);
+		String message = "Comment " + id + " deleted";
+		return new ResponseEntity<>(new MessageResponse(message), HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/answer/{id}")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	@Operation(summary = "Delete answer comment")
+	public ResponseEntity<?> deleteAnswerComment(@PathVariable int id) {
+		service.deleteAnswerComment(id);
 		String message = "Comment " + id + " deleted";
 		return new ResponseEntity<>(new MessageResponse(message), HttpStatus.OK);
 	}

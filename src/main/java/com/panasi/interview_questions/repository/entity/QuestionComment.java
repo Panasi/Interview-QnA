@@ -18,12 +18,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "comments")
+@Table(name = "question_comments")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Comment {
+public class QuestionComment {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,8 +39,8 @@ public class Comment {
 	@Max(5)
 	private Integer rate;
 	
-	@Column(name = "answer_id", nullable = false)
-	private Integer answerId;
+	@Column(name = "question_id", nullable = false)
+	private Integer questionId;
 	
 	@Column(name = "date")
 	private LocalDateTime date;

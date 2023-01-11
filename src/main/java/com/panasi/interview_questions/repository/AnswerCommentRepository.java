@@ -7,11 +7,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.panasi.interview_questions.repository.entity.Comment;
+import com.panasi.interview_questions.repository.entity.AnswerComment;
 
 @Repository
-public interface CommentRepository extends JpaRepository<Comment, Integer> {
-	public List<Comment> findAllByAnswerId(int answerId);
-	@Query("SELECT AVG(rate) FROM Comment WHERE answer_id = answerId")
+public interface AnswerCommentRepository extends JpaRepository<AnswerComment, Integer> {
+	public List<AnswerComment> findAllByAnswerId(int answerId);
+	@Query("SELECT AVG(rate) FROM AnswerComment WHERE answer_id = answerId")
 	public double getRating(@Param("answerId")int answerId);
 }

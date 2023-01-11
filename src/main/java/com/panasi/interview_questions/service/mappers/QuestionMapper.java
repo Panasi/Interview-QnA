@@ -11,9 +11,11 @@ import com.panasi.interview_questions.repository.entity.Question;
 @Mapper(componentModel = "spring")
 public interface QuestionMapper {
 	
+	@Mapping(target = "rating", ignore = true)
 	QuestionDto toQuestionDto(Question question);
 	List<QuestionDto> toQuestionDtos(List<Question> questions);
 	@Mapping(target = "answers", ignore = true)
+	@Mapping(target = "comments", ignore = true)
 	Question toQuestion(QuestionDto QuestionDto);
 
 }

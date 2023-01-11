@@ -50,6 +50,6 @@ public class Answer {
 	
 	@OneToMany
 	@JoinColumn(name = "answer_id")
-	private List<Comment> comments;
+	private List<AnswerComment> comments;
 
 }

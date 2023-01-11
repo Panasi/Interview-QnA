@@ -22,5 +22,6 @@
     <include file="/db/dblogs/changes/050120231510_create_comments_table.xml"/>
     <include file="/db/dblogs/changes/090120231548_delete_username_from_comments_table.xml"/>
     <include file="/db/dblogs/changes/090120231616_delete_rating_from_answers_table.xml"/>
+    <include file="/db/dblogs/changes/110120231148_rename_comments_table.xml"/>
 
 </databaseChangeLog>

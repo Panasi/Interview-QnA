@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.panasi.interview_questions.payload.AnswerRequest;
 import com.panasi.interview_questions.repository.AnswerRepository;
-import com.panasi.interview_questions.repository.CommentRepository;
+import com.panasi.interview_questions.repository.AnswerCommentRepository;
 import com.panasi.interview_questions.repository.dto.AnswerDto;
 import com.panasi.interview_questions.repository.entity.Answer;
 import com.panasi.interview_questions.security.service.UserDetailsImpl;
@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class AnswerService {
 	
 	private final AnswerRepository answerRepository;
-	private final CommentRepository commentRepository;
+	private final AnswerCommentRepository commentRepository;
 	private final AnswerMapper mapper;
 	
 	// Set answer rating
