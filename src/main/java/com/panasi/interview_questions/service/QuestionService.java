@@ -11,12 +11,10 @@ import org.springframework.stereotype.Service;
 import com.panasi.interview_questions.payload.QuestionRequest;
 import com.panasi.interview_questions.repository.CategoryRepository;
 import com.panasi.interview_questions.repository.QuestionRepository;
-import com.panasi.interview_questions.repository.dto.AnswerDto;
 import com.panasi.interview_questions.repository.dto.CategoryDto;
 import com.panasi.interview_questions.repository.dto.QuestionDto;
 import com.panasi.interview_questions.repository.entity.Question;
 import com.panasi.interview_questions.security.service.UserDetailsImpl;
-import com.panasi.interview_questions.service.mappers.AnswerMapper;
 import com.panasi.interview_questions.service.mappers.CategoryMapper;
 import com.panasi.interview_questions.service.mappers.QuestionMapper;
 
@@ -30,7 +28,6 @@ public class QuestionService {
 	private final CategoryRepository categoryRepository;
 	private final QuestionMapper questionMapper;
 	private final CategoryMapper categoryMapper;
-	private final AnswerMapper answerMapper;
 	
 	
 	// Return all questions
@@ -123,8 +120,6 @@ public class QuestionService {
 		} else {
 			questionDto.setIsPrivate(questionRequest.getIsPrivate());
 		}
-		List<AnswerDto> answerDtos = answerMapper.toAnswerDtos(question.getAnswers());
-		questionDto.setAnswers(answerDtos);
 		Question updatedQuestion = questionMapper.toQuestion(questionDto);
 		questionRepository.save(updatedQuestion);
 	}

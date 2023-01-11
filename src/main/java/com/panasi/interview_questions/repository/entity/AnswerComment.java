@@ -1,16 +1,16 @@
 package com.panasi.interview_questions.repository.entity;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,42 +18,34 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "questions")
+@Table(name = "answer_comments")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Question {
+public class AnswerComment {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Integer id;
 	
-	@Column(name = "name", nullable = false)
-	private String name;
+	@Column(name = "content")
+	@Size(min = 1, max = 5)
+	private String content;
 	
-	@Column(name = "category_id", nullable = false)
-	private Integer categoryId;
+	@Column(name = "rate", nullable = false)
+	@Min(1)
+	@Max(5)
+	private Integer rate;
 	
-	@OneToMany
-	@JoinColumn(name = "question_id")
-	private List<Answer> answers;
-	
-	@Column(name = "user_name")
-	private String authorName;
-	
-	@Column(name = "user_id")
-	private Integer authorId;
+	@Column(name = "answer_id", nullable = false)
+	private Integer answerId;
 	
 	@Column(name = "date")
 	private LocalDateTime date;
 	
-	@Column(name = "is_private")
-	private Boolean isPrivate;
-	
-	@OneToMany
-	@JoinColumn(name = "question_id")
-	private List<QuestionComment> comments;
+	@Column(name = "user_id")
+	private Integer authorId;
 
 }
