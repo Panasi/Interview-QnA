@@ -26,9 +26,9 @@
             </column>
         </createTable>
         
-        <sql>
-    		ALTER TABLE answers ADD rating INTEGER;
-    	</sql>  
+        <addColumn tableName="answers">
+    		<column name="rating" type="int"></column>
+    	</addColumn>  
     </changeSet>
 
 </databaseChangeLog>

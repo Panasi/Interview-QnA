@@ -5,14 +5,15 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet  id="020120231157_rename_author_and_add_authorid"  author="Panasi"> 
-    	<sql>
-    		ALTER TABLE questions RENAME COLUMN author TO user_name;
-    		ALTER TABLE answers RENAME COLUMN author TO user_name;
-    		ALTER TABLE questions ADD user_id INTEGER;
-    		ALTER TABLE answers ADD user_id INTEGER;
-    		
-    	</sql>   
+    <changeSet  id="020120231157_rename_author_and_add_authorid"  author="Panasi">
+    	<renameColumn tableName="questions" oldColumnName="author" newColumnName="user_name" />
+    	<renameColumn tableName="answers" oldColumnName="author" newColumnName="user_name" />
+    	<addColumn tableName="questions">
+    		<column name="user_id" type="int"></column>
+    	</addColumn>
+    	<addColumn tableName="answers">
+    		<column name="user_id" type="int"></column>
+    	</addColumn>    
     </changeSet>   
 
 </databaseChangeLog>

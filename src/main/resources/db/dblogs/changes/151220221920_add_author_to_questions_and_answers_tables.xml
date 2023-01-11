@@ -5,11 +5,17 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet  id="151220221920_add_author_to_questions_and_answers_tables"  author="Panasi"> 
-    	<sql>
-    		ALTER TABLE answers ADD author varchar(50);
-    		ALTER TABLE questions ADD author varchar(50);
-    	</sql>   
+    <changeSet  id="151220221920_add_author_to_questions_and_answers_tables"  author="Panasi">
+    	<addColumn tableName="answers">
+    		<column name="author" type="varchar(50)">
+    			<constraints />
+    		</column>
+    	</addColumn>
+    	<addColumn tableName="questions">
+    		<column name="author" type="varchar(50)">
+    			<constraints />
+    		</column>
+    	</addColumn>  
     </changeSet>   
 
 </databaseChangeLog>

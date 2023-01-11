@@ -9,8 +9,8 @@
     	<sql>
     		INSERT INTO questions (name, category) SELECT question, category FROM questions_and_answers;
     		INSERT INTO answers (name, question_id) SELECT answer, id FROM questions_and_answers;
-    		DROP TABLE questions_and_answers;
-    	</sql>   
+    	</sql>
+    	<dropTable tableName="questions_and_answers"/>   
     </changeSet>   
 
 </databaseChangeLog>
