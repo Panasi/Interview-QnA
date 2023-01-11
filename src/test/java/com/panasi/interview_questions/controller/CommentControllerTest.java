@@ -35,6 +35,20 @@ public class CommentControllerTest {
 													// Get
 	
 	@Test
+	public void showAllCommentsToQuestion_then_Status200() throws Exception {
+		
+		mvc.perform(get("/comments/toquestion/1")
+		  .contentType(MediaType.APPLICATION_JSON))
+		  .andExpect(status().isOk())
+		  .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+		  .andExpect(jsonPath("$[0].content", is("I dont understand this question.")))
+		  .andExpect(jsonPath("$[0].rate", is(3)))
+		  .andExpect(jsonPath("$[1].content", is("Stupid question.")))
+		  .andExpect(jsonPath("$[1].rate", is(1)));
+		
+	}
+	
+	@Test
 	public void showAllCommentsToAnswer_then_Status200() throws Exception {
 		
 		mvc.perform(get("/comments/toanswer/1")
@@ -49,7 +63,19 @@ public class CommentControllerTest {
 	}
 	
 	@Test
-	public void showCommentById_then_Status200() throws Exception {
+	public void showQuestionCommentById_then_Status200() throws Exception {
+		
+		mvc.perform(get("/comments/question/2")
+		  .contentType(MediaType.APPLICATION_JSON))
+		  .andExpect(status().isOk())
+		  .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+		  .andExpect(jsonPath("content", is("Stupid question.")))
+		  .andExpect(jsonPath("rate", is(1)));
+		
+	}
+	
+	@Test
+	public void showAnswerCommentById_then_Status200() throws Exception {
 		
 		mvc.perform(get("/comments/answer/2")
 		  .contentType(MediaType.APPLICATION_JSON))
@@ -86,7 +112,21 @@ public class CommentControllerTest {
 	
 	@Test
 	@WithUserDetails("Panasi")
-	public void addComment_then_Status201() throws Exception {
+	public void addQuestionComment_then_Status201() throws Exception {
+		
+		mvc.perform(post("/comments/question")
+		  .contentType(MediaType.APPLICATION_JSON)
+		  .content("{\"content\": \"Random Comment\","
+				  	+ "\"rate\": 5,"
+			      	+ "\"parentId\": 1}")
+		  .characterEncoding("utf-8"))
+		  .andExpect(status().isCreated());
+		
+	}
+	
+	@Test
+	@WithUserDetails("Panasi")
+	public void addAnswerComment_then_Status201() throws Exception {
 		
 		mvc.perform(post("/comments/answer")
 		  .contentType(MediaType.APPLICATION_JSON)
@@ -102,7 +142,24 @@ public class CommentControllerTest {
 	
 	@Test
 	@WithUserDetails("Panasi")
-	public void updateComment_then_Status202() throws Exception {
+	public void updateQuestionComment_then_Status202() throws Exception {
+		
+		mvc.perform(put("/comments/question/3")
+		  .contentType(MediaType.APPLICATION_JSON)
+		  .content("{\"content\": \"Random Comment Updated\"}"))
+		  .andExpect(status().isAccepted());
+			    
+		mvc.perform(get("/comments/question/3")
+		  .contentType(MediaType.APPLICATION_JSON))
+		  .andExpect(status().isOk())
+		  .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+		  .andExpect(jsonPath("content", is("Random Comment Updated")));
+		
+	}
+	
+	@Test
+	@WithUserDetails("Panasi")
+	public void updateAnswerComment_then_Status202() throws Exception {
 		
 		mvc.perform(put("/comments/answer/3")
 		  .contentType(MediaType.APPLICATION_JSON)
@@ -132,7 +189,23 @@ public class CommentControllerTest {
 	
 	@Test
 	@WithUserDetails("Panasi")
-	public void deleteComment_then_Status200() throws Exception {
+	public void deleteQuestionComment_then_Status200() throws Exception {
+		
+	    mvc.perform(delete("/comments/question/4")
+	      .contentType(MediaType.APPLICATION_JSON))
+	      .andExpect(status().isOk());
+	    
+	    mvc.perform(get("/comments/question/4")
+	      .contentType(MediaType.APPLICATION_JSON))
+	      .andExpect(status().isNotFound())
+	      .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+	  	  .andExpect(jsonPath("message", is("Element is not found")));
+
+	}
+	
+	@Test
+	@WithUserDetails("Panasi")
+	public void deleteAnswerComment_then_Status200() throws Exception {
 		
 	    mvc.perform(delete("/comments/answer/4")
 	      .contentType(MediaType.APPLICATION_JSON))
