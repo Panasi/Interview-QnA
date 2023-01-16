@@ -24,9 +24,7 @@ public class SpringSecurityTestConfig {
 		
 		Set<Role> roles = new HashSet<>();
 		Role adminRole = new Role(1, ERole.ROLE_ADMIN);
-		Role userRole = new Role(1, ERole.ROLE_USER);
 		roles.add(adminRole);
-		roles.add(userRole);
 		User testUser = new User(1, "Panasi", "email@gmail.com", "password", roles);
 		UserDetailsImpl userDetails = UserDetailsImpl.build(testUser);
 		return new InMemoryUserDetailsManager(Arrays.asList(userDetails));

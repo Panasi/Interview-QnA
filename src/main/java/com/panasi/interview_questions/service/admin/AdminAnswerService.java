@@ -1,9 +1,8 @@
-package com.panasi.interview_questions.service;
+package com.panasi.interview_questions.service.admin;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -13,6 +12,7 @@ import com.panasi.interview_questions.repository.AnswerRepository;
 import com.panasi.interview_questions.repository.AnswerCommentRepository;
 import com.panasi.interview_questions.repository.dto.AnswerDto;
 import com.panasi.interview_questions.repository.entity.Answer;
+import com.panasi.interview_questions.repository.entity.AnswerComment;
 import com.panasi.interview_questions.security.service.UserDetailsImpl;
 import com.panasi.interview_questions.service.mappers.AnswerMapper;
 
@@ -20,60 +20,56 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class AnswerService {
+public class AdminAnswerService {
 	
 	private final AnswerRepository answerRepository;
 	private final AnswerCommentRepository commentRepository;
 	private final AnswerMapper mapper;
 	
 	// Set answer rating
-	public void setAnswerRating(List<AnswerDto> answerDtos) {
-		answerDtos.stream().forEach(answer -> {
-			int answerId = answer.getId();
-			double rating = commentRepository.getRating(answerId);
+	public void setAnswerRating(AnswerDto answer) {
+		int answerId = answer.getId();
+		List<AnswerComment> comments = commentRepository.findAllByAnswerId(answerId);
+		if (comments.isEmpty()) {
+			answer.setRating(null);
+		} else {
+			Double rating = commentRepository.getRating(answerId);
 			answer.setRating(rating);
-		});
+		}
 	}
 	
 	// Return all answers
 	public List<AnswerDto> getAllAnswers() {
 		List<AnswerDto> allAnswerDtos = mapper.toAnswerDtos(answerRepository.findAll());
-		setAnswerRating(allAnswerDtos);
-		return allAnswerDtos;
-	}
-	
-	// Return all answers to the question
-	public List<AnswerDto> getAllAnswersToQuestion(int questionId) {
-		List<AnswerDto> allAnswerDtos = mapper.toAnswerDtos(answerRepository.findAllByQuestionId(questionId));
-		setAnswerRating(allAnswerDtos);
+		allAnswerDtos.stream().forEach(answer -> setAnswerRating(answer));
 		return allAnswerDtos;
 	}
 	
 	// Return all public answers
 	public List<AnswerDto> getAllPublicAnswers() {
 		List<AnswerDto> allAnswerDtos = mapper.toAnswerDtos(answerRepository.findAllByIsPrivate(false));
-		setAnswerRating(allAnswerDtos);
+		allAnswerDtos.stream().forEach(answer -> setAnswerRating(answer));
 		return allAnswerDtos;
 	}
 	
-	// Return all private answers
-	public List<AnswerDto> getAllPrivateAnswers() {
-		List<AnswerDto> allPrivateAnswerDtos = mapper.toAnswerDtos(answerRepository.findAllByIsPrivate(true));
-		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		int authorId = userDetails.getId();
-		List<AnswerDto> privateAnswersDtos = allPrivateAnswerDtos.stream()
-                .filter(answer -> answer.getAuthorId() == authorId)
-                .collect(Collectors.toList());
-		setAnswerRating(privateAnswersDtos);
-		return privateAnswersDtos;
+	// Return all user answers
+	public List<AnswerDto> getUserAnswers(int authorId) {
+		List<AnswerDto> answerDtos = mapper.toAnswerDtos(answerRepository.findAllByAuthorId(authorId));
+		answerDtos.stream().forEach(answer -> setAnswerRating(answer));
+		return answerDtos;
 	}
 	
 	// Return answer by id
 	public AnswerDto getAnswerById(int answerId) {
 		Answer answer = answerRepository.findById(answerId).get();
 		AnswerDto answerDto = mapper.toAnswerDto(answer);
-		double rating = commentRepository.getRating(answerId);
-		answerDto.setRating(rating);
+		List<AnswerComment> comments = commentRepository.findAllByAnswerId(answerId);
+		if (comments.isEmpty()) {
+			answerDto.setRating(null);
+		} else {
+			Double rating = commentRepository.getRating(answerId);
+			answerDto.setRating(rating);
+		}
 		return answerDto;
 	}
 	

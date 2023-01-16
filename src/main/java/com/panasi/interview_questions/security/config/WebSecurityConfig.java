@@ -1,5 +1,8 @@
 package com.panasi.interview_questions.security.config;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +19,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.panasi.interview_questions.security.jwt.AuthEntryPointJwt;
 import com.panasi.interview_questions.security.jwt.AuthTokenFilter;
+import com.panasi.interview_questions.security.repository.entity.Role;
+import com.panasi.interview_questions.security.repository.entity.User;
+import com.panasi.interview_questions.security.service.UserDetailsImpl;
 import com.panasi.interview_questions.security.service.UserDetailsServiceImpl;
 
 @Configuration
@@ -54,8 +60,17 @@ public class WebSecurityConfig {
 	}
 	
 	@Bean
+	public UserDetailsImpl getAnonimus() {
+		Set<Role> roles = new HashSet<>();
+		User testUser = new User(0, "Guest", "guest@gmail.com", "password", roles);
+		UserDetailsImpl userDetails = UserDetailsImpl.build(testUser);
+		return userDetails;
+	}
+	
+	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 	    http.cors().and().csrf().disable()
+	    	.anonymous().principal(getAnonimus()).authorities("GUEST_ROLE").and()
 	        .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 	        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 	        .authorizeRequests().antMatchers("/auth/**", "/categories/**", "/questions/**", "/answers/**", "/comments/**").permitAll()

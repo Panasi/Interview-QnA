@@ -34,22 +34,10 @@ public class AnswerControllerTest {
     												// Get
 	
 	@Test
+	@WithUserDetails("Panasi")
 	public void showAllAnswers_then_Status200() throws Exception {
 	
-		mvc.perform(get("/answers")
-		  .contentType(MediaType.APPLICATION_JSON))
-		  .andExpect(status().isOk())
-		  .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-		  .andExpect(jsonPath("$[0].name", is("Java is a programming language")))
-		  .andExpect(jsonPath("$[0].questionId", is(1)))
-		  .andExpect(jsonPath("$[1].name", is("Java is OOP language")));
-		
-	}
-	
-	@Test
-	public void showAllAnswersToQuestion_then_Status200() throws Exception {
-		
-		mvc.perform(get("/answers/question/1")
+		mvc.perform(get("/answers/all")
 		  .contentType(MediaType.APPLICATION_JSON))
 		  .andExpect(status().isOk())
 		  .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -62,7 +50,7 @@ public class AnswerControllerTest {
 	@Test
 	public void showAllPublicAnswers_then_Status200() throws Exception {
 		
-		mvc.perform(get("/answers/public")
+		mvc.perform(get("/answers")
 		  .contentType(MediaType.APPLICATION_JSON))
 		  .andExpect(status().isOk())
 		  .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -73,9 +61,9 @@ public class AnswerControllerTest {
 	
 	@Test
 	@WithUserDetails("Panasi")
-	public void showAllPrivateAnswers_then_Status200() throws Exception {
+	public void showUserAnswers_then_Status200() throws Exception {
 		
-		mvc.perform(get("/answers/private")
+		mvc.perform(get("/answers/user/1")
 		  .contentType(MediaType.APPLICATION_JSON))
 		  .andExpect(status().isOk())
 		  .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
