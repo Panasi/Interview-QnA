@@ -73,7 +73,7 @@ public class UserAnswerController {
 			return new ResponseEntity<>(answerRequest, HttpStatus.ACCEPTED);
 		}
 		String message = "You can't update other users answers";
-		return new ResponseEntity<>(new MessageResponse(message), HttpStatus.OK);
+		return new ResponseEntity<>(new MessageResponse(message), HttpStatus.FORBIDDEN);
 	}
 
 }

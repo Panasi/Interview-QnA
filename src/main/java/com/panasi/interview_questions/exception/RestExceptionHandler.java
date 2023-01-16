@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,6 +38,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
         ApiError apiError = new ApiError("Internal exception", ex.getMessage());
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+    }
+	
+	@ExceptionHandler(AccessDeniedException.class)
+    protected ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
+        ApiError apiError = new ApiError("Access is denied", ex.getMessage());
+        return new ResponseEntity<>(apiError, HttpStatus.FORBIDDEN);
     }
 	
     @ExceptionHandler(NoSuchElementException.class)
