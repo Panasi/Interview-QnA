@@ -75,6 +75,8 @@ public class AdminAnswerService {
 	
 	// Add a new answer
 	public void createAnswer(AnswerRequest answerRequest) {
+		Object user = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		System.out.println(user);
 		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String authorName = userDetails.getUsername();
 		int authorId = userDetails.getId();

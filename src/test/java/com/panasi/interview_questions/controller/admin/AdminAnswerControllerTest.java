@@ -1,4 +1,4 @@
-package com.panasi.interview_questions.controller;
+package com.panasi.interview_questions.controller.admin;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @TestPropertySource(locations = "classpath:application.properties")
-public class AnswerControllerTest {
+public class AdminAnswerControllerTest {
 	
 	@Autowired
 	private MockMvc mvc;
@@ -32,60 +32,95 @@ public class AnswerControllerTest {
     												// Get
 	
 	@Test
-	@WithUserDetails("Panasi")
+	@WithUserDetails("Admin")
 	public void showAllAnswers_then_Status200() throws Exception {
 	
-		mvc.perform(get("/answers/all")
-		  .contentType(MediaType.APPLICATION_JSON))
-		  .andExpect(status().isOk())
-		  .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-		  .andExpect(jsonPath("$[0].name", is("Java is a programming language")))
-		  .andExpect(jsonPath("$[0].questionId", is(1)))
-		  .andExpect(jsonPath("$[1].name", is("Java is OOP language")));
+		mvc.perform(get("/admin/answers/all")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].name", is("Admin public answer")))
+			.andExpect(jsonPath("$[1].name", is("Admin private answer")))
+			.andExpect(jsonPath("$[2].name", is("User1 public answer")))
+			.andExpect(jsonPath("$[3].name", is("User1 private answer")))
+			.andExpect(jsonPath("$[4].name", is("User2 public answer")))
+			.andExpect(jsonPath("$[5].name", is("User2 private answer")));
 		
 	}
 	
 	@Test
+	@WithUserDetails("Admin")
 	public void showAllPublicAnswers_then_Status200() throws Exception {
 		
-		mvc.perform(get("/answers")
-		  .contentType(MediaType.APPLICATION_JSON))
-		  .andExpect(status().isOk())
-		  .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-		  .andExpect(jsonPath("$[0].name", is("Java is OOP language")))
-		  .andExpect(jsonPath("$[0].questionId", is(1)));
+		mvc.perform(get("/admin/answers")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].name", is("Admin public answer")))
+			.andExpect(jsonPath("$[1].name", is("User1 public answer")))
+			.andExpect(jsonPath("$[2].name", is("User2 public answer")));
 		
 	}
 	
 	@Test
-	@WithUserDetails("Panasi")
+	@WithUserDetails("Admin")
 	public void showUserAnswers_then_Status200() throws Exception {
 		
-		mvc.perform(get("/answers/user/1")
-		  .contentType(MediaType.APPLICATION_JSON))
-		  .andExpect(status().isOk())
-		  .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-		  .andExpect(jsonPath("$[0].name", is("Java is a programming language")))
-		  .andExpect(jsonPath("$[0].questionId", is(1)));
+		mvc.perform(get("/admin/answers/user/1")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].name", is("Admin public answer")))
+			.andExpect(jsonPath("$[1].name", is("Admin private answer")));
+		
+		mvc.perform(get("/admin/answers/user/2")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].name", is("User1 public answer")))
+			.andExpect(jsonPath("$[1].name", is("User1 private answer")));
+		
+		mvc.perform(get("/admin/answers/user/3")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].name", is("User2 public answer")))
+			.andExpect(jsonPath("$[1].name", is("User2 private answer")));
 		
 	}
 	
 	@Test
+	@WithUserDetails("Admin")
 	public void showAnswerById_then_Status200() throws Exception {
 		
-		mvc.perform(get("/answers/1")
-		  .contentType(MediaType.APPLICATION_JSON))
-		  .andExpect(status().isOk())
-		  .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-		  .andExpect(jsonPath("name", is("Java is a programming language")))
-	      .andExpect(jsonPath("questionId", is(1)));
+		mvc.perform(get("/admin/answers/1")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("name", is("Admin public answer")))
+			.andExpect(jsonPath("questionId", is(1)));
+		
+		mvc.perform(get("/admin/answers/3")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("name", is("User1 public answer")))
+			.andExpect(jsonPath("questionId", is(1)));
+		
+		mvc.perform(get("/admin/answers/6")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("name", is("User2 private answer")))
+			.andExpect(jsonPath("questionId", is(1)));
 		
 	}
 	
 	@Test
+	@WithUserDetails("Admin")
 	public void showAnswerById_then_Status404() throws Exception {
 		
-		mvc.perform(get("/answers/99")
+		mvc.perform(get("/admin/answers/99")
 		  .contentType(MediaType.APPLICATION_JSON))
 		  .andExpect(status().isNotFound())
 		  .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -94,9 +129,10 @@ public class AnswerControllerTest {
 	}
 	
 	@Test
+	@WithUserDetails("Admin")
 	public void showAnswerById_then_Status400() throws Exception {
 		
-		mvc.perform(get("/answers/wtf")
+		mvc.perform(get("/admin/answers/wtf")
 		  .contentType(MediaType.APPLICATION_JSON))
 		  .andExpect(status().isBadRequest())
 		  .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -107,10 +143,10 @@ public class AnswerControllerTest {
 												// Post
 
 	@Test
-	@WithUserDetails("Panasi")
+	@WithUserDetails(value = "Admin")
 	public void addNewAnswer_then_Status201() throws Exception {
 		
-		mvc.perform(post("/answers")
+		mvc.perform(post("/admin/answers")
 		  .contentType(MediaType.APPLICATION_JSON)
 		  .content("{\"name\": \"RandomAnswer\","
 			      	+ "\"questionId\": 1}")
@@ -122,30 +158,29 @@ public class AnswerControllerTest {
 												// Put
 	
 	@Test
-	@WithUserDetails("Panasi")
+	@WithUserDetails("Admin")
 	public void updateAnswer_then_Status202() throws Exception {
 		
-		mvc.perform(put("/answers/3")
+		mvc.perform(put("/admin/answers/7")
 		  .contentType(MediaType.APPLICATION_JSON)
-		  .content("{\"name\": \"Java is not a language\"}"))
+		  .content("{\"name\": \"Admin updated answer\"}"))
 		  .andExpect(status().isAccepted());
 			    
-		mvc.perform(get("/answers/3")
+		mvc.perform(get("/answers/7")
 		  .contentType(MediaType.APPLICATION_JSON))
 		  .andExpect(status().isOk())
 		  .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-		  .andExpect(jsonPath("name", is("Java is not a language")))
-		  .andExpect(jsonPath("questionId", is(1)));
+		  .andExpect(jsonPath("name", is("Admin updated answer")));
 		
 	}
 	
 	@Test
-	@WithUserDetails("Panasi")
+	@WithUserDetails("Admin")
 	public void updateAnswer_then_Status404() throws Exception {
 		
-	    mvc.perform(put("/answers/99")
+	    mvc.perform(put("/admin/answers/99")
 	      .contentType(MediaType.APPLICATION_JSON)
-	      .content("{\"name\": \"Random question\"}"))
+	      .content("{\"name\": \"Admin updated answer\"}"))
 	      .andExpect(status().isNotFound());
 
 	}
@@ -153,14 +188,14 @@ public class AnswerControllerTest {
 												// Delete
 	
 	@Test
-	@WithUserDetails("Panasi")
+	@WithUserDetails("Admin")
 	public void deleteAnswer_then_Status200() throws Exception {
 		
-	    mvc.perform(delete("/answers/4")
+	    mvc.perform(delete("/admin/answers/10")
 	      .contentType(MediaType.APPLICATION_JSON))
 	      .andExpect(status().isOk());
 	    
-	    mvc.perform(get("/answers/4")
+	    mvc.perform(get("/admin/answers/10")
 	      .contentType(MediaType.APPLICATION_JSON))
 	      .andExpect(status().isNotFound())
 	      .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -169,10 +204,10 @@ public class AnswerControllerTest {
 	}
 	
 	@Test
-	@WithUserDetails("Panasi")
+	@WithUserDetails("Admin")
 	public void deleteAnswer_then_Status404() throws Exception {
 		
-	    mvc.perform(delete("/answers/99")
+	    mvc.perform(delete("/admin/answers/99")
 	      .contentType(MediaType.APPLICATION_JSON))
 	      .andExpect(status().isNotFound())
 	      .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
