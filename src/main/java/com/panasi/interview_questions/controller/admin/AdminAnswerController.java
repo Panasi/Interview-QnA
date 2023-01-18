@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("admin/answers")
+@RequestMapping("/admin/answers")
 public class AdminAnswerController {
 	
 	private final AdminAnswerService service;
@@ -52,7 +52,7 @@ public class AdminAnswerController {
 	@PreAuthorize("hasRole('ADMIN')")
 	@Operation(summary = "Get all user answers")
 	public ResponseEntity<List<AnswerDto>> showUserAnswers(@PathVariable int authorId) {
-		List<AnswerDto> allAnswerDtos = service.getUserAnswers(authorId);
+		List<AnswerDto> allAnswerDtos = service.getAllUserAnswers(authorId);
 		return new ResponseEntity<>(allAnswerDtos, HttpStatus.OK);
 	}
 	

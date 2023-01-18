@@ -1,9 +1,8 @@
-package com.panasi.interview_questions.service;
+package com.panasi.interview_questions.service.user;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class QuestionService {
+public class UserQuestionService {
 	
 	private final QuestionRepository questionRepository;
 	private final CategoryRepository categoryRepository;
@@ -30,21 +29,19 @@ public class QuestionService {
 	private final CategoryMapper categoryMapper;
 	
 	
-	// Return all questions
-	public List<QuestionDto> getAllQuestions() {
-		List<QuestionDto> allQuestionDtos = questionMapper.toQuestionDtos(questionRepository.findAll());
-		return allQuestionDtos;
-	}
-	
 	// Return questions from certain category
 	public List<QuestionDto> getQuestionsFromCategory(int categoryId) {
-		List<QuestionDto> allQuestionDtos = questionMapper.toQuestionDtos(questionRepository.findAllByCategoryId(categoryId));
-		return allQuestionDtos;
+		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		List<Question> questions = questionRepository.findAllByCategoryIdAndUserId(categoryId, userDetails.getId());
+		List<QuestionDto> questionDtos = questionMapper.toQuestionDtos(questions);
+		return questionDtos;
 	}
 	
 	// Return questions from certain category and all its subcategories
 	public List<QuestionDto> getQuestionsFromSubcategories(int categoryId, List<QuestionDto> result) {
-		List<QuestionDto> questionDtos = questionMapper.toQuestionDtos(questionRepository.findAllByCategoryId(categoryId));
+		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		List<Question> questions = questionRepository.findAllByCategoryIdAndUserId(categoryId, userDetails.getId());
+		List<QuestionDto> questionDtos = questionMapper.toQuestionDtos(questions);
 		result.addAll(questionDtos);
 		List<CategoryDto> allSubcategoryDtos = categoryMapper.toCategoryDtos(categoryRepository.findAllByParentId(categoryId));
 		if (allSubcategoryDtos.isEmpty()) {
@@ -62,20 +59,25 @@ public class QuestionService {
 		return allQuestionDtos;
 	}
 	
-	// Return all private questions
-	public List<QuestionDto> getAllPrivateQuestions() {
-		List<QuestionDto> allPrivateQuestionDtos = questionMapper.toQuestionDtos(questionRepository.findAllByIsPrivate(true));
+	// Return all user questions
+	public List<QuestionDto> getAllUserQuestions(int authorId) {
 		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		int authorId = userDetails.getId();
-		List<QuestionDto> privateQuestionsDtos = allPrivateQuestionDtos.stream()
-                .filter(question -> question.getAuthorId() == authorId)
-                .collect(Collectors.toList());
-		return privateQuestionsDtos;
+		List<QuestionDto> questionDtos;
+		if (authorId == userDetails.getId()) {
+			questionDtos = questionMapper.toQuestionDtos(questionRepository.findAllByAuthorId(authorId));
+		} else {
+			questionDtos = questionMapper.toQuestionDtos(questionRepository.findAllByAuthorIdAndIsPrivate(authorId, false));
+		}
+		return questionDtos;
 	}
 	
 	// Return question by id
 	public QuestionDto getQuestionById(int questionId) {
+		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Question question = questionRepository.findById(questionId).get();
+		if (question.getIsPrivate() && question.getAuthorId() != userDetails.getId()) {
+			return null;
+		}
 		QuestionDto	questionDto = questionMapper.toQuestionDto(question);
 		return questionDto;
 	}
@@ -98,35 +100,35 @@ public class QuestionService {
 	}
 	
 	// Update certain question
-	public void updateQuestion(QuestionRequest questionRequest, int questionId) {
+	public boolean updateQuestion(QuestionRequest questionRequest, int questionId) {
+		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Question question = questionRepository.findById(questionId).get();
-		LocalDateTime dateTime = LocalDateTime.now();
-		QuestionDto questionDto = new QuestionDto();
-		questionDto.setId(questionId);
-		questionDto.setAuthorName(question.getAuthorName());
-		questionDto.setDate(dateTime);
-		if (Objects.isNull(questionRequest.getName())) {
-			questionDto.setName(question.getName());
-		} else {
-			questionDto.setName(questionRequest.getName());
+		if (question.getAuthorId() == userDetails.getId()) {
+			LocalDateTime dateTime = LocalDateTime.now();
+			QuestionDto questionDto = new QuestionDto();
+			questionDto.setId(questionId);
+			questionDto.setAuthorName(question.getAuthorName());
+			questionDto.setDate(dateTime);
+			if (Objects.isNull(questionRequest.getName())) {
+				questionDto.setName(question.getName());
+			} else {
+				questionDto.setName(questionRequest.getName());
+			}
+			if (Objects.isNull(questionRequest.getCategoryId())) {
+				questionDto.setCategoryId(question.getCategoryId());
+			} else {
+				questionDto.setCategoryId(questionRequest.getCategoryId());
+			}
+			if (Objects.isNull(questionRequest.getIsPrivate())) {
+				questionDto.setIsPrivate(question.getIsPrivate());
+			} else {
+				questionDto.setIsPrivate(questionRequest.getIsPrivate());
+			}
+			Question updatedQuestion = questionMapper.toQuestion(questionDto);
+			questionRepository.save(updatedQuestion);
+			return true;
 		}
-		if (Objects.isNull(questionRequest.getCategoryId())) {
-			questionDto.setCategoryId(question.getCategoryId());
-		} else {
-			questionDto.setCategoryId(questionRequest.getCategoryId());
-		}
-		if (Objects.isNull(questionRequest.getIsPrivate())) {
-			questionDto.setIsPrivate(question.getIsPrivate());
-		} else {
-			questionDto.setIsPrivate(questionRequest.getIsPrivate());
-		}
-		Question updatedQuestion = questionMapper.toQuestion(questionDto);
-		questionRepository.save(updatedQuestion);
-	}
-	
-	// Delete certain question
-	public void deleteQuestion(int questionId) {
-		questionRepository.deleteById(questionId);
+		return false;
 	}
 
 }

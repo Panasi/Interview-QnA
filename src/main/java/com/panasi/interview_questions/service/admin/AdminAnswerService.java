@@ -53,10 +53,10 @@ public class AdminAnswerService {
 	}
 	
 	// Return all user answers
-	public List<AnswerDto> getUserAnswers(int authorId) {
-		List<AnswerDto> answerDtos = mapper.toAnswerDtos(answerRepository.findAllByAuthorId(authorId));
-		answerDtos.stream().forEach(answer -> setAnswerRating(answer));
-		return answerDtos;
+	public List<AnswerDto> getAllUserAnswers(int authorId) {
+		List<AnswerDto> allAnswerDtos = mapper.toAnswerDtos(answerRepository.findAllByAuthorId(authorId));
+		allAnswerDtos.stream().forEach(answer -> setAnswerRating(answer));
+		return allAnswerDtos;
 	}
 	
 	// Return answer by id

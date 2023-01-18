@@ -1,4 +1,4 @@
-package com.panasi.interview_questions.controller;
+package com.panasi.interview_questions.controller.user;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.panasi.interview_questions.payload.MessageResponse;
 import com.panasi.interview_questions.payload.QuestionRequest;
 import com.panasi.interview_questions.repository.dto.QuestionDto;
-import com.panasi.interview_questions.service.QuestionService;
+import com.panasi.interview_questions.service.user.UserQuestionService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -28,30 +27,23 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/questions")
-public class QuestionController {
+public class UserQuestionController {
 	
-	private final QuestionService service;
+	private final UserQuestionService service;
 	
-
-	@GetMapping
-	@Operation(summary = "Get all questions")
-	public ResponseEntity<List<QuestionDto>> showAllQuestions() {
-		List<QuestionDto> allQuestionDtos = service.getAllQuestions();
-		return new ResponseEntity<>(allQuestionDtos, HttpStatus.OK);
-	}
 	
-	@GetMapping("/category/{id}")
+	@GetMapping("/category/{categoryId}")
 	@Operation(summary = "Get questions from certain category")
-	public ResponseEntity<List<QuestionDto>> showQuestionsFromCategory(@PathVariable int id) {
-		List<QuestionDto> allQuestionDtos = service.getQuestionsFromCategory(id);
+	public ResponseEntity<List<QuestionDto>> showQuestionsFromCategory(@PathVariable int categoryId) {
+		List<QuestionDto> allQuestionDtos = service.getQuestionsFromCategory(categoryId);
 		return new ResponseEntity<>(allQuestionDtos, HttpStatus.OK);
 	}
 	
-	@GetMapping("/subcategory/{id}")
+	@GetMapping("/subcategory/{categoryId}")
 	@Operation(summary = "Get questions from certain category and all its subcategories")
-	public ResponseEntity<List<QuestionDto>> showQuestionsFromSubcategories(@PathVariable int id) {
+	public ResponseEntity<List<QuestionDto>> showQuestionsFromSubcategories(@PathVariable int categoryId) {
 		List<QuestionDto> result = new ArrayList<>();
-		List<QuestionDto> allSubQuestionDtos = service.getQuestionsFromSubcategories(id, result);
+		List<QuestionDto> allSubQuestionDtos = service.getQuestionsFromSubcategories(categoryId, result);
 		return new ResponseEntity<>(allSubQuestionDtos, HttpStatus.OK);
 	}
 	
@@ -62,11 +54,11 @@ public class QuestionController {
 		return new ResponseEntity<>(allQuestionDtos, HttpStatus.OK);
 	}
 	
-	@GetMapping("/private")
+	@GetMapping("/user/{authorId}")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@Operation(summary = "Get all private questions")
-	public ResponseEntity<List<QuestionDto>> showAllPrivateQuestions() {
-		List<QuestionDto> allQuestionDtos = service.getAllPrivateQuestions();
+	public ResponseEntity<List<QuestionDto>> showAllPrivateQuestions(@PathVariable int authorId) {
+		List<QuestionDto> allQuestionDtos = service.getAllUserQuestions(authorId);
 		return new ResponseEntity<>(allQuestionDtos, HttpStatus.OK);
 	}
 	
@@ -88,18 +80,13 @@ public class QuestionController {
 	@PutMapping("/{id}")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@Operation(summary = "Update question")
-	public ResponseEntity<QuestionRequest> updateQuestion(@RequestBody QuestionRequest questionRequest, @PathVariable int id) {
-		service.updateQuestion(questionRequest, id);
-		return new ResponseEntity<>(questionRequest, HttpStatus.ACCEPTED);
-	}
-	
-	@DeleteMapping("/{id}")
-	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	@Operation(summary = "Delete question")
-	public ResponseEntity<?> deleteQuestion(@PathVariable int id) {
-			service.deleteQuestion(id);
-			String message = "Question " + id + " is deleted";
-			return new ResponseEntity<>(new MessageResponse(message), HttpStatus.OK);
+	public ResponseEntity<?> updateQuestion(@RequestBody QuestionRequest questionRequest, @PathVariable int id) {
+		boolean result = service.updateQuestion(questionRequest, id);
+		if (result) {
+			return new ResponseEntity<>(questionRequest, HttpStatus.ACCEPTED);
+		}
+		String message = "You can't update other users questions";
+		return new ResponseEntity<>(new MessageResponse(message), HttpStatus.FORBIDDEN);
 	}
 
 }
