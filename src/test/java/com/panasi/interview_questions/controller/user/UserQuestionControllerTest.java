@@ -1,4 +1,4 @@
-package com.panasi.interview_questions.controller;
+package com.panasi.interview_questions.controller.user;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @TestPropertySource(locations = "classpath:application.properties")
-public class QuestionControllerTest {
+public class UserQuestionControllerTest {
 	
 	@Autowired
 	private MockMvc mvc;
