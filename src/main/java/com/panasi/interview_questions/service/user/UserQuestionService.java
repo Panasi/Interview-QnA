@@ -108,6 +108,7 @@ public class UserQuestionService {
 			QuestionDto questionDto = new QuestionDto();
 			questionDto.setId(questionId);
 			questionDto.setAuthorName(question.getAuthorName());
+			questionDto.setAuthorId(question.getAuthorId());
 			questionDto.setDate(dateTime);
 			if (Objects.isNull(questionRequest.getName())) {
 				questionDto.setName(question.getName());

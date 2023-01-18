@@ -179,8 +179,8 @@ public class AdminQuestionControllerTest {
 
 		mvc.perform(post("/admin/questions")
 			.contentType(MediaType.APPLICATION_JSON)
-			.content("{\"name\": \"RandomQuestion\", "
-					+ "\"categoryId\": 1}"
+			.content("{\"name\": \"RandomQuestion\","
+				    + "\"categoryId\": 3,"
 					+ "\"isPrivate\": true }")
 			.characterEncoding("utf-8"))
 			.andExpect(status().isCreated());
@@ -198,7 +198,7 @@ public class AdminQuestionControllerTest {
 			.content("{\"name\": \"Admin updated question\"}"))
 			.andExpect(status().isAccepted());
 				    
-		mvc.perform(get("/questions/7")
+		mvc.perform(get("/admin/questions/7")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

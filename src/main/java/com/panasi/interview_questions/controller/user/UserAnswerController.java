@@ -51,7 +51,7 @@ public class UserAnswerController {
 		AnswerDto answerDto = service.getAnswerById(id);
 		if (answerDto == null) {
 			String message = "Answer " + id + " is private";
-			return new ResponseEntity<>(new MessageResponse(message), HttpStatus.OK);
+			return new ResponseEntity<>(new MessageResponse(message), HttpStatus.FORBIDDEN);
 		}
 		return new ResponseEntity<>(answerDto, HttpStatus.OK);
 	}

@@ -55,8 +55,7 @@ public class UserQuestionController {
 	}
 	
 	@GetMapping("/user/{authorId}")
-	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	@Operation(summary = "Get all private questions")
+	@Operation(summary = "Get all user questions")
 	public ResponseEntity<List<QuestionDto>> showAllPrivateQuestions(@PathVariable int authorId) {
 		List<QuestionDto> allQuestionDtos = service.getAllUserQuestions(authorId);
 		return new ResponseEntity<>(allQuestionDtos, HttpStatus.OK);
@@ -64,13 +63,17 @@ public class UserQuestionController {
 	
 	@GetMapping("/{id}")
 	@Operation(summary = "Get a question by id")
-	public ResponseEntity<QuestionDto> showQuestion(@PathVariable int id) {
+	public ResponseEntity<?> showQuestionById(@PathVariable int id) {
 		QuestionDto questionDto = service.getQuestionById(id);
+		if (questionDto == null) {
+			String message = "Question " + id + " is private";
+			return new ResponseEntity<>(new MessageResponse(message), HttpStatus.FORBIDDEN);
+		}
 		return new ResponseEntity<>(questionDto, HttpStatus.OK);
 	}
 	
 	@PostMapping
-	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	@PreAuthorize("hasRole('USER')")
 	@Operation(summary = "Add a new question")
 	public ResponseEntity<QuestionRequest> addNewQuestion(@RequestBody QuestionRequest questionRequest) {
 		service.createQuestion(questionRequest);
@@ -78,7 +81,7 @@ public class UserQuestionController {
 	}
 	
 	@PutMapping("/{id}")
-	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	@PreAuthorize("hasRole('USER')")
 	@Operation(summary = "Update question")
 	public ResponseEntity<?> updateQuestion(@RequestBody QuestionRequest questionRequest, @PathVariable int id) {
 		boolean result = service.updateQuestion(questionRequest, id);

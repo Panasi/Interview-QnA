@@ -125,7 +125,7 @@ public class UserAnswerControllerTest {
 		
 		mvc.perform(get("/answers/2")
 			.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
+			.andExpect(status().isForbidden())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("name").doesNotHaveJsonPath());
 		
