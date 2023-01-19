@@ -1,4 +1,4 @@
-package com.panasi.interview_questions.service;
+package com.panasi.interview_questions.service.admin;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @Validated
-public class CommentService {
+public class AdminCommentService {
 	
 	private final AnswerCommentRepository answerCommentRepository;
 	private final QuestionCommentRepository questionCommentRepository;
@@ -48,12 +48,25 @@ public class CommentService {
 		return allCommentDtos;
 	}
 	
+	// Return all author comments to all questions
+	public List<QuestionCommentDto> getAllUserCommentsToQuestions(int authorId) {
+		List<QuestionComment> allUserComments = questionCommentRepository.findAllByUserId(authorId);
+		List<QuestionCommentDto> allUserCommentDtos = questionCommentMapper.toCommentDtos(allUserComments);
+		return allUserCommentDtos;
+	}
+	
+	// Return all author comments to all answers
+	public List<AnswerCommentDto> getAllUserCommentsToAnswers(int authorId) {
+		List<AnswerComment> allUserComments = answerCommentRepository.findAllByUserId(authorId);
+		List<AnswerCommentDto> allUserCommentDtos = answerCommentMapper.toCommentDtos(allUserComments);
+		return allUserCommentDtos;
+	}
+	
 	// Return question comment by id
 	public QuestionCommentDto getQuestionCommentById(int commentId) {
 		QuestionComment comment = questionCommentRepository.findById(commentId).get();
 		QuestionCommentDto commentDto = questionCommentMapper.toCommentDto(comment);
 		return commentDto;
-			
 	}
 	
 	// Return answer comment by id
@@ -61,18 +74,17 @@ public class CommentService {
 		AnswerComment comment = answerCommentRepository.findById(commentId).get();
 		AnswerCommentDto commentDto = answerCommentMapper.toCommentDto(comment);
 		return commentDto;
-		
 	}
 	
 	// Add a new comment to question
-	public void createQuestionComment(@Valid CommentRequest commentRequest) {
+	public void createQuestionComment(@Valid CommentRequest commentRequest, int questionId) {
 		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		int authorId = userDetails.getId();
 		LocalDateTime dateTime = LocalDateTime.now();
 		QuestionCommentDto commentDto = new QuestionCommentDto();
 		commentDto.setContent(commentRequest.getContent());
 		commentDto.setRate(commentRequest.getRate());
-		commentDto.setQuestionId(commentRequest.getParentId());
+		commentDto.setQuestionId(questionId);
 		commentDto.setAuthorId(authorId);
 		commentDto.setDate(dateTime);
 		QuestionComment comment = questionCommentMapper.toComment(commentDto);
@@ -80,14 +92,14 @@ public class CommentService {
 	}
 	
 	// Add a new comment to answer
-	public void createAnswerComment(@Valid CommentRequest commentRequest) {
+	public void createAnswerComment(@Valid CommentRequest commentRequest, int answerId) {
 		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		int authorId = userDetails.getId();
 		LocalDateTime dateTime = LocalDateTime.now();
 		AnswerCommentDto commentDto = new AnswerCommentDto();
 		commentDto.setContent(commentRequest.getContent());
 		commentDto.setRate(commentRequest.getRate());
-		commentDto.setAnswerId(commentRequest.getParentId());
+		commentDto.setAnswerId(answerId);
 		commentDto.setAuthorId(authorId);
 		commentDto.setDate(dateTime);
 		AnswerComment comment = answerCommentMapper.toComment(commentDto);

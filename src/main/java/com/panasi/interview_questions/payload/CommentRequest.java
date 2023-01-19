@@ -14,6 +14,5 @@ public class CommentRequest {
 	@Min(1)
 	@Max(5)
 	private Integer rate;
-	private Integer parentId;
 
 }
