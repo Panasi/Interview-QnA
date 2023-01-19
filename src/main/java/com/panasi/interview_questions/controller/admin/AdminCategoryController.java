@@ -1,4 +1,4 @@
-package com.panasi.interview_questions.controller;
+package com.panasi.interview_questions.controller.admin;
 
 import java.util.List;
 
@@ -26,20 +26,22 @@ import lombok.RequiredArgsConstructor;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/categories")
-public class CategoryController {
+@RequestMapping("/admin/categories")
+public class AdminCategoryController {
 	
 	private final CategoryService service;
 	
 	
 	@GetMapping
+	@PreAuthorize("hasRole('ADMIN')")
 	@Operation(summary = "Get all categories")
 	public ResponseEntity<List<CategoryDto>> showAllCategories() {
 		List<CategoryDto> allCategoryDtos = service.getAllCategories();
 		return new ResponseEntity<>(allCategoryDtos, HttpStatus.OK);
 	}
 	
-	@GetMapping("{id}/subcategories")
+	@GetMapping("/{id}/subcategories")
+	@PreAuthorize("hasRole('ADMIN')")
 	@Operation(summary = "Get all subcategories")
 	public ResponseEntity<List<CategoryDto>> showSubcategories(@PathVariable int id) {
 		List<CategoryDto> allCategoryDtos = service.getAllSubcategories(id);
@@ -47,6 +49,7 @@ public class CategoryController {
 	}
 	
 	@GetMapping("/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	@Operation(summary = "Get a category by id")
 	public ResponseEntity<CategoryDto> showCategoryById(@PathVariable int id) {
 		CategoryDto categoryDto = service.getCategoryById(id);

@@ -9,13 +9,11 @@ INSERT INTO user_roles (user_id, role_id) VALUES
 (3, 1);
 
 INSERT INTO categories (name, parent_id) VALUES
-('Java', null),
-('Java OOP', 1),
-('Java Collections', null),
-('Spring', null),
-('Spring Boot', null),
-('Hibernate', null),
-('PHP', null);
+('Category1', null),
+('Category2', 1),
+('Category3', null),
+('Category4', null),
+('Category5', null);
 
 INSERT INTO questions (name, user_id, category_id, is_private) VALUES
 ('Admin public question', 1, 1, false),
