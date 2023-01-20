@@ -43,14 +43,20 @@ INSERT INTO answers (name, user_id, question_id, is_private) VALUES
 ('User1 answer for delete', 2, 1, true),
 ('User2 answer for delete', 3, 1, true);
 
-INSERT INTO answer_comments (content, rate, answer_id) VALUES
-('This in not a complete answer.', 3, 1),
-('Not bad.', 5, 1),
-('WTF?', 1, 2),
-('Perfect!', 5, 2);
+INSERT INTO question_comments (content, rate, question_id, user_id) VALUES
+('Comment1', 1, 1, 2),
+('Comment2', 2, 1, 2),
+('Comment3', 3, 2, 3),
+('Comment4', 4, 2, 3),
+('Comment5', 5, 4, 3),
+('Comment6', 5, 6, 3),
+('Comment7', 5, 6, 3);
 
-INSERT INTO question_comments (content, rate, question_id) VALUES
-('I dont understand this question.', 3, 1),
-('Stupid question.', 1, 1),
-('WTF?', 1, 2),
-('Perfect!', 5, 2);
+INSERT INTO answer_comments (content, rate, answer_id, user_id) VALUES
+('Comment1', 1, 1, 2),
+('Comment2', 2, 1, 2),
+('Comment3', 3, 2, 3),
+('Comment4', 4, 2, 3),
+('Comment5', 5, 4, 3),
+('Comment6', 5, 6, 3),
+('Comment7', 5, 6, 3);

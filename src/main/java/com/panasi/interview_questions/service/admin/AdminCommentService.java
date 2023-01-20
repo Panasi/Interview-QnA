@@ -50,14 +50,14 @@ public class AdminCommentService {
 	
 	// Return all author comments to all questions
 	public List<QuestionCommentDto> getAllUserCommentsToQuestions(int authorId) {
-		List<QuestionComment> allUserComments = questionCommentRepository.findAllByUserId(authorId);
+		List<QuestionComment> allUserComments = questionCommentRepository.findAllByAuthorId(authorId);
 		List<QuestionCommentDto> allUserCommentDtos = questionCommentMapper.toCommentDtos(allUserComments);
 		return allUserCommentDtos;
 	}
 	
 	// Return all author comments to all answers
 	public List<AnswerCommentDto> getAllUserCommentsToAnswers(int authorId) {
-		List<AnswerComment> allUserComments = answerCommentRepository.findAllByUserId(authorId);
+		List<AnswerComment> allUserComments = answerCommentRepository.findAllByAuthorId(authorId);
 		List<AnswerCommentDto> allUserCommentDtos = answerCommentMapper.toCommentDtos(allUserComments);
 		return allUserCommentDtos;
 	}

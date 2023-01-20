@@ -52,7 +52,7 @@ public class AdminCommentController {
 	@GetMapping("/user/{userId}/questions")
 	@PreAuthorize("hasRole('ADMIN')")
 	@Operation(summary = "Get all user comments to the question")
-	public ResponseEntity<List<QuestionCommentDto>> showAllUserCommentsToQuestions(int userId) {
+	public ResponseEntity<List<QuestionCommentDto>> showAllUserCommentsToQuestions(@PathVariable int userId) {
 		List<QuestionCommentDto> allCommentDtos = service.getAllUserCommentsToQuestions(userId);
 		return new ResponseEntity<>(allCommentDtos, HttpStatus.OK);
 	}
@@ -60,7 +60,7 @@ public class AdminCommentController {
 	@GetMapping("/user/{userId}/answers")
 	@PreAuthorize("hasRole('ADMIN')")
 	@Operation(summary = "Get all user comments to the answer")
-	public ResponseEntity<List<AnswerCommentDto>> showAllUserCommentsToAnswers(int userId) {
+	public ResponseEntity<List<AnswerCommentDto>> showAllUserCommentsToAnswers(@PathVariable int userId) {
 		List<AnswerCommentDto> allCommentDtos = service.getAllUserCommentsToAnswers(userId);
 		return new ResponseEntity<>(allCommentDtos, HttpStatus.OK);
 	}

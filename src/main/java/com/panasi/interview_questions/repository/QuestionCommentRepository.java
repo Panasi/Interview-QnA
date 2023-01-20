@@ -12,7 +12,7 @@ import com.panasi.interview_questions.repository.entity.QuestionComment;
 @Repository
 public interface QuestionCommentRepository extends JpaRepository<QuestionComment, Integer> {
 	public List<QuestionComment> findAllByQuestionId(int questionId);
-	public List<QuestionComment> findAllByUserId(int authorId);
+	public List<QuestionComment> findAllByAuthorId(int authorId);
 	@Query("SELECT AVG(rate) FROM QuestionComment WHERE question_id = questionId")
 	public double getRating(@Param("questionId")int questionId);
 }

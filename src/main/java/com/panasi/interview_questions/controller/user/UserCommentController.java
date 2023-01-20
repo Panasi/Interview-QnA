@@ -104,29 +104,28 @@ public class UserCommentController {
 		return new ResponseEntity<>(new MessageResponse(message), HttpStatus.FORBIDDEN);
 	}
 	
-	@PutMapping("/question/{id}")
+	@PutMapping("/questions/comment/{id}")
 	@PreAuthorize("hasRole('USER')")
 	@Operation(summary = "Update question comment")
 	public ResponseEntity<?> updateQuestionComment(@RequestBody CommentRequest commentRequest, @PathVariable int id) {
 		boolean result = service.updateQuestionComment(commentRequest, id);
 		if (result) {
-			return new ResponseEntity<>(commentRequest, HttpStatus.CREATED);
+			return new ResponseEntity<>(commentRequest, HttpStatus.ACCEPTED);
 		}
 		String message = "You can't update another user's question";
 		return new ResponseEntity<>(new MessageResponse(message), HttpStatus.FORBIDDEN);
 	}
 	
-	@PutMapping("/answer/{id}")
+	@PutMapping("/answers/comment/{id}")
 	@PreAuthorize("hasRole('USER')")
 	@Operation(summary = "Update answer comment")
 	public ResponseEntity<?> updateAnswerComment(@RequestBody CommentRequest commentRequest, @PathVariable int id) {
 		boolean result = service.updateAnswerComment(commentRequest, id);
 		if (result) {
-			return new ResponseEntity<>(commentRequest, HttpStatus.CREATED);
+			return new ResponseEntity<>(commentRequest, HttpStatus.ACCEPTED);
 		}
 		String message = "You can't update another user's answer";
 		return new ResponseEntity<>(new MessageResponse(message), HttpStatus.FORBIDDEN);
 	}
-	
 
 }
