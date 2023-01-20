@@ -6,6 +6,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -73,7 +74,9 @@ public class WebSecurityConfig {
 	    	.anonymous().principal(getAnonimus()).authorities("GUEST_ROLE").and()
 	        .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 	        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-	        .authorizeRequests().antMatchers("/auth/**", "/categories/**", "/questions/**", "/answers/**", "/comments/**").permitAll()
+	        .authorizeRequests()
+	        .antMatchers(HttpMethod.GET, "/questions/**", "/categories/**", "/answers/**").permitAll()
+	        .antMatchers("/admin/**").hasRole("ADMIN")
 	        .antMatchers("/swagger.html", "/swagger-ui/**", "/api-docs/**").hasRole("ADMIN")
 	        .antMatchers("/h2-console/**").hasRole("ADMIN")
 	        .anyRequest().authenticated();

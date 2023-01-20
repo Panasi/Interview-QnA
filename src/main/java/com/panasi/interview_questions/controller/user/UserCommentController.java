@@ -112,7 +112,7 @@ public class UserCommentController {
 		if (result) {
 			return new ResponseEntity<>(commentRequest, HttpStatus.ACCEPTED);
 		}
-		String message = "You can't update another user's question";
+		String message = "You can't update another user's comment";
 		return new ResponseEntity<>(new MessageResponse(message), HttpStatus.FORBIDDEN);
 	}
 	
@@ -124,7 +124,7 @@ public class UserCommentController {
 		if (result) {
 			return new ResponseEntity<>(commentRequest, HttpStatus.ACCEPTED);
 		}
-		String message = "You can't update another user's answer";
+		String message = "You can't update another user's comment";
 		return new ResponseEntity<>(new MessageResponse(message), HttpStatus.FORBIDDEN);
 	}
 

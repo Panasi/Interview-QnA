@@ -261,7 +261,8 @@ public class UserCommentControllerTest {
 		mvc.perform(put("/comments/questions/comment/6")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content("{\"content\": \"Random Comment Updated\"}"))
-			.andExpect(status().isForbidden());
+			.andExpect(status().isForbidden())
+			.andExpect(jsonPath("message", is("You can't update another user's comment")));
 		
 	}
 	

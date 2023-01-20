@@ -1,8 +1,10 @@
-package com.panasi.interview_questions.controller.user;
+package com.panasi.interview_questions.controller.guest;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -14,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -22,7 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @TestPropertySource(locations = "classpath:application.properties")
-public class UserCategoryControllerTest {
+public class GuestCategoryControllerTest {
 	
 	@Autowired
 	private MockMvc mvc;
@@ -30,7 +31,6 @@ public class UserCategoryControllerTest {
 	                                         // Get
 	
 	@Test
-	@WithUserDetails("User1")
 	public void showAllCategories_then_Status200() throws Exception {
 
 	    mvc.perform(get("/categories")
@@ -45,7 +45,6 @@ public class UserCategoryControllerTest {
 	}
 	
 	@Test
-	@WithUserDetails("User2")
 	public void showSubcategories_then_Status200() throws Exception {
 
 	    mvc.perform(get("/categories/1/subcategories")
@@ -59,7 +58,6 @@ public class UserCategoryControllerTest {
 	}
 	
 	@Test
-	@WithUserDetails("User1")
 	public void showCategoryById_then_Status200() throws Exception {
 
 	    mvc.perform(get("/categories/2")
@@ -72,7 +70,6 @@ public class UserCategoryControllerTest {
 	}
 	
 	@Test
-	@WithUserDetails("User2")
 	public void showCategoryById_then_Status404() throws Exception {
 
 	    mvc.perform(get("/categories/99")
@@ -84,7 +81,6 @@ public class UserCategoryControllerTest {
 	}
 	
 	@Test
-	@WithUserDetails("User1")
 	public void showCategoryById_then_Status400() throws Exception {
 
 	    mvc.perform(get("/categories/wtf")
@@ -98,13 +94,35 @@ public class UserCategoryControllerTest {
 											// Post
 	
 	@Test
-	@WithUserDetails("User1")
-	public void addNewCategory_then_Status403() throws Exception {
+	public void addNewCategory_then_Status401() throws Exception {
 
 	    mvc.perform(post("/admin/categories")
 	    	.contentType(MediaType.APPLICATION_JSON)
 	    	.content("{\"name\": \"RandomCategory\"}"))
-	    	.andExpect(status().isForbidden());
+	    	.andExpect(status().isUnauthorized());
+
+	}
+	
+											// Put
+	
+	@Test
+	public void updateCategory_then_Status401() throws Exception {
+		
+	    mvc.perform(put("/admin/categories/4")
+	    	.contentType(MediaType.APPLICATION_JSON)
+	    	.content("{\"name\": \"Category4 updated\"}"))
+	    	.andExpect(status().isUnauthorized());
+
+	}
+	
+											// Delete
+	
+	@Test
+	public void deleteCategory_then_Status401() throws Exception {
+		
+	    mvc.perform(delete("/admin/categories/5")
+	    	.contentType(MediaType.APPLICATION_JSON))
+	    	.andExpect(status().isUnauthorized());
 
 	}
 
