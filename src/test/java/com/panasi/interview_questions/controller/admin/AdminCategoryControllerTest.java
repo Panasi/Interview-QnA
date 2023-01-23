@@ -19,11 +19,14 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @TestPropertySource(locations = "classpath:application.properties")
+@Transactional
 public class AdminCategoryControllerTest {
 	
 	@Autowired
@@ -172,6 +175,7 @@ public class AdminCategoryControllerTest {
 	
 	@Test
 	@WithUserDetails("Admin")
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public void deleteCategory_then_Status409() throws Exception {
 		
 	    mvc.perform(delete("/admin/categories/1")

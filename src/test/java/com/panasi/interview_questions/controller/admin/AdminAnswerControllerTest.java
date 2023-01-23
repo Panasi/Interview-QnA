@@ -19,11 +19,13 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @TestPropertySource(locations = "classpath:application.properties")
+@Transactional
 public class AdminAnswerControllerTest {
 	
 	@Autowired
@@ -58,7 +60,8 @@ public class AdminAnswerControllerTest {
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$[0].name", is("Admin public answer")))
 			.andExpect(jsonPath("$[1].name", is("User1 public answer")))
-			.andExpect(jsonPath("$[2].name", is("User2 public answer")));
+			.andExpect(jsonPath("$[2].name", is("User2 public answer")))
+			.andExpect(jsonPath("$[3].name").doesNotHaveJsonPath());
 		
 	}
 	
