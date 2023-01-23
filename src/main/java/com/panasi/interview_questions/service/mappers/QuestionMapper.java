@@ -16,6 +16,6 @@ public interface QuestionMapper {
 	List<QuestionDto> toQuestionDtos(List<Question> questions);
 	@Mapping(target = "answers", ignore = true)
 	@Mapping(target = "comments", ignore = true)
-	Question toQuestion(QuestionDto QuestionDto);
+	Question toQuestion(QuestionDto questionDto);
 
 }
