@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.panasi.interview_questions.payload.MessageResponse;
 import com.panasi.interview_questions.payload.QuestionRequest;
+import com.panasi.interview_questions.repository.dto.FullQuestionDto;
 import com.panasi.interview_questions.repository.dto.QuestionDto;
 import com.panasi.interview_questions.service.admin.AdminQuestionService;
 
@@ -76,9 +77,9 @@ public class AdminQuestionController {
 	
 	@GetMapping("/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	@Operation(summary = "Get a question by id")
-	public ResponseEntity<QuestionDto> showQuestion(@PathVariable int id) {
-		QuestionDto questionDto = service.getQuestionById(id);
+	@Operation(summary = "Get a full question with answers and comments by id")
+	public ResponseEntity<FullQuestionDto> showQuestion(@PathVariable int id) {
+		FullQuestionDto questionDto = service.getQuestionById(id);
 		return new ResponseEntity<>(questionDto, HttpStatus.OK);
 	}
 	

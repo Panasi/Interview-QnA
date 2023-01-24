@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.panasi.interview_questions.payload.AnswerRequest;
 import com.panasi.interview_questions.payload.MessageResponse;
 import com.panasi.interview_questions.repository.dto.AnswerDto;
+import com.panasi.interview_questions.repository.dto.FullAnswerDto;
 import com.panasi.interview_questions.service.user.UserAnswerService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,9 +47,9 @@ public class UserAnswerController {
 	}
 	
 	@GetMapping("/{id}")
-	@Operation(summary = "Get a answer by id")
+	@Operation(summary = "Get a full answer with comments by id")
 	public ResponseEntity<?> showAnswerById(@PathVariable int id) {
-		AnswerDto answerDto = service.getAnswerById(id);
+		FullAnswerDto answerDto = service.getAnswerById(id);
 		if (answerDto == null) {
 			String message = "Answer " + id + " is private";
 			return new ResponseEntity<>(new MessageResponse(message), HttpStatus.FORBIDDEN);

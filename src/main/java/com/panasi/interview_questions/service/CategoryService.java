@@ -52,20 +52,13 @@ public class CategoryService {
 	// Update certain category
 	public void updateCategory(CategoryRequest categoryRequest, int categoryId) {
 		Category category = categoryRepository.findById(categoryId).get();
-		CategoryDto categoryDto = new CategoryDto();
-		categoryDto.setId(categoryId);
-		if (Objects.isNull(categoryRequest.getName())) {
-			categoryDto.setName(category.getName());
-		} else {
-			categoryDto.setName(categoryRequest.getName());
+		if (Objects.nonNull(categoryRequest.getName())) {
+			category.setName(categoryRequest.getName());
 		}
-		if (Objects.isNull(categoryRequest.getParentId())) {
-			categoryDto.setParentId(category.getParentId());
-		} else {
-			categoryDto.setParentId(categoryRequest.getParentId());
+		if (Objects.nonNull(categoryRequest.getParentId())) {
+			category.setParentId(categoryRequest.getParentId());
 		}
-		Category updatedCategory = categoryMapper.toCategory(categoryDto);
-		categoryRepository.save(updatedCategory);
+		categoryRepository.save(category);
 	}
 	
 	// Delete certain category

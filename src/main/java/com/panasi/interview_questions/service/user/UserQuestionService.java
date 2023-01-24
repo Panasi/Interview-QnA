@@ -8,13 +8,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.panasi.interview_questions.payload.QuestionRequest;
+import com.panasi.interview_questions.repository.AnswerCommentRepository;
 import com.panasi.interview_questions.repository.CategoryRepository;
 import com.panasi.interview_questions.repository.QuestionRepository;
 import com.panasi.interview_questions.repository.dto.CategoryDto;
+import com.panasi.interview_questions.repository.dto.FullAnswerDto;
+import com.panasi.interview_questions.repository.dto.FullQuestionDto;
 import com.panasi.interview_questions.repository.dto.QuestionDto;
+import com.panasi.interview_questions.repository.entity.AnswerComment;
 import com.panasi.interview_questions.repository.entity.Question;
 import com.panasi.interview_questions.security.service.UserDetailsImpl;
 import com.panasi.interview_questions.service.mappers.CategoryMapper;
+import com.panasi.interview_questions.service.mappers.FullQuestionMapper;
 import com.panasi.interview_questions.service.mappers.QuestionMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -27,7 +32,21 @@ public class UserQuestionService {
 	private final CategoryRepository categoryRepository;
 	private final QuestionMapper questionMapper;
 	private final CategoryMapper categoryMapper;
+	private final FullQuestionMapper fullQuestionMapper;
+	private final AnswerCommentRepository commentRepository;
 	
+	
+	// Set answer rating
+	public void setAnswerRating(FullAnswerDto answer) {
+		int answerId = answer.getId();
+		List<AnswerComment> comments = commentRepository.findAllByAnswerId(answerId);
+		if (comments.isEmpty()) {
+			answer.setRating(null);
+		} else {
+			Double rating = commentRepository.getRating(answerId);
+			answer.setRating(rating);
+		}
+	}
 	
 	// Return questions from certain category
 	public List<QuestionDto> getQuestionsFromCategory(int categoryId) {
@@ -72,13 +91,14 @@ public class UserQuestionService {
 	}
 	
 	// Return question by id
-	public QuestionDto getQuestionById(int questionId) {
+	public FullQuestionDto getQuestionById(int questionId) {
 		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Question question = questionRepository.findById(questionId).get();
 		if (question.getIsPrivate() && question.getAuthorId() != userDetails.getId()) {
 			return null;
 		}
-		QuestionDto	questionDto = questionMapper.toQuestionDto(question);
+		FullQuestionDto	questionDto = fullQuestionMapper.toFullQuestionDto(question);
+		questionDto.getAnswers().forEach(answer -> setAnswerRating(answer));
 		return questionDto;
 	}
 	
@@ -105,28 +125,17 @@ public class UserQuestionService {
 		Question question = questionRepository.findById(questionId).get();
 		if (question.getAuthorId() == userDetails.getId()) {
 			LocalDateTime dateTime = LocalDateTime.now();
-			QuestionDto questionDto = new QuestionDto();
-			questionDto.setId(questionId);
-			questionDto.setAuthorName(question.getAuthorName());
-			questionDto.setAuthorId(question.getAuthorId());
-			questionDto.setDate(dateTime);
-			if (Objects.isNull(questionRequest.getName())) {
-				questionDto.setName(question.getName());
-			} else {
-				questionDto.setName(questionRequest.getName());
+			question.setDate(dateTime);
+			if (Objects.nonNull(questionRequest.getName())) {
+				question.setName(questionRequest.getName());
 			}
-			if (Objects.isNull(questionRequest.getCategoryId())) {
-				questionDto.setCategoryId(question.getCategoryId());
-			} else {
-				questionDto.setCategoryId(questionRequest.getCategoryId());
+			if (Objects.nonNull(questionRequest.getCategoryId())) {
+				question.setCategoryId(questionRequest.getCategoryId());
 			}
-			if (Objects.isNull(questionRequest.getIsPrivate())) {
-				questionDto.setIsPrivate(question.getIsPrivate());
-			} else {
-				questionDto.setIsPrivate(questionRequest.getIsPrivate());
+			if (Objects.nonNull(questionRequest.getIsPrivate())) {
+				question.setIsPrivate(questionRequest.getIsPrivate());
 			}
-			Question updatedQuestion = questionMapper.toQuestion(questionDto);
-			questionRepository.save(updatedQuestion);
+			questionRepository.save(question);
 			return true;
 		}
 		return false;

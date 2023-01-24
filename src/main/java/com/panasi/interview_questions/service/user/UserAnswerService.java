@@ -11,10 +11,12 @@ import com.panasi.interview_questions.payload.AnswerRequest;
 import com.panasi.interview_questions.repository.AnswerRepository;
 import com.panasi.interview_questions.repository.AnswerCommentRepository;
 import com.panasi.interview_questions.repository.dto.AnswerDto;
+import com.panasi.interview_questions.repository.dto.FullAnswerDto;
 import com.panasi.interview_questions.repository.entity.Answer;
 import com.panasi.interview_questions.repository.entity.AnswerComment;
 import com.panasi.interview_questions.security.service.UserDetailsImpl;
 import com.panasi.interview_questions.service.mappers.AnswerMapper;
+import com.panasi.interview_questions.service.mappers.FullAnswerMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,9 +27,23 @@ public class UserAnswerService {
 	private final AnswerRepository answerRepository;
 	private final AnswerCommentRepository commentRepository;
 	private final AnswerMapper mapper;
+	private final FullAnswerMapper fullMapper;
+	
 	
 	// Set answer rating
 	public void setAnswerRating(AnswerDto answer) {
+		int answerId = answer.getId();
+		List<AnswerComment> comments = commentRepository.findAllByAnswerId(answerId);
+		if (comments.isEmpty()) {
+			answer.setRating(null);
+		} else {
+			Double rating = commentRepository.getRating(answerId);
+			answer.setRating(rating);
+		}
+	}
+	
+	// Set answer rating
+	public void setAnswerRating(FullAnswerDto answer) {
 		int answerId = answer.getId();
 		List<AnswerComment> comments = commentRepository.findAllByAnswerId(answerId);
 		if (comments.isEmpty()) {
@@ -59,13 +75,13 @@ public class UserAnswerService {
 	}
 	
 	// Return answer by id
-	public AnswerDto getAnswerById(int answerId) {
+	public FullAnswerDto getAnswerById(int answerId) {
 		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Answer answer = answerRepository.findById(answerId).get();
 		if (answer.getIsPrivate() && answer.getAuthorId() != userDetails.getId()) {
 			return null;
 		}
-		AnswerDto answerDto = mapper.toAnswerDto(answer);
+		FullAnswerDto answerDto = fullMapper.toFullAnswerDto(answer);
 		setAnswerRating(answerDto);
 		return answerDto;
 	}
@@ -93,28 +109,17 @@ public class UserAnswerService {
 		Answer answer = answerRepository.findById(answerId).get();
 		if (answer.getAuthorId() == userDetails.getId()) {
 			LocalDateTime dateTime = LocalDateTime.now();
-			AnswerDto answerDto = new AnswerDto();
-			answerDto.setId(answerId);
-			answerDto.setAuthorName(answer.getAuthorName());
-			answerDto.setAuthorId(answer.getAuthorId());
-			answerDto.setDate(dateTime);
-			if (Objects.isNull(answerRequest.getName())) {
-				answerDto.setName(answer.getName());
-			} else {
-				answerDto.setName(answerRequest.getName());
+			answer.setDate(dateTime);
+			if (Objects.nonNull(answerRequest.getName())) {
+				answer.setName(answerRequest.getName());
 			}
-			if (Objects.isNull(answerRequest.getQuestionId())) {
-				answerDto.setQuestionId(answer.getQuestionId());
-			} else {
-				answerDto.setQuestionId(answerRequest.getQuestionId());
+			if (Objects.nonNull(answerRequest.getQuestionId())) {
+				answer.setQuestionId(answerRequest.getQuestionId());
 			}
-			if (Objects.isNull(answerRequest.getIsPrivate())) {
-				answerDto.setIsPrivate(answer.getIsPrivate());
-			} else {
-				answerDto.setIsPrivate(answerRequest.getIsPrivate());
+			if (Objects.nonNull(answerRequest.getIsPrivate())) {
+				answer.setIsPrivate(answerRequest.getIsPrivate());
 			}
-			Answer updatedAnswer = mapper.toAnswer(answerDto);
-			answerRepository.save(updatedAnswer);
+			answerRepository.save(answer);
 			return true;
 		}
 		return false;

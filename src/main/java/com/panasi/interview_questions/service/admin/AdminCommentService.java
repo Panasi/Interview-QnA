@@ -110,46 +110,28 @@ public class AdminCommentService {
 	public void updateQuestionComment(@Valid CommentRequest commentRequest, int commentId) {
 		QuestionComment comment = questionCommentRepository.findById(commentId).get();
 		LocalDateTime dateTime = LocalDateTime.now();
-		QuestionCommentDto commentDto = new QuestionCommentDto();
-		commentDto.setId(comment.getId());
-		commentDto.setAuthorId(comment.getAuthorId());
-		commentDto.setDate(dateTime);
-		commentDto.setQuestionId(comment.getQuestionId());
-		if (Objects.isNull(commentRequest.getContent())) {
-			commentDto.setContent(comment.getContent());
-		} else {
-			commentDto.setContent(commentRequest.getContent());
+		comment.setDate(dateTime);
+		if (Objects.nonNull(commentRequest.getContent())) {
+			comment.setContent(commentRequest.getContent());
 		}
-		if (Objects.isNull(commentRequest.getRate())) {
-			commentDto.setRate(comment.getRate());
-		} else {
-			commentDto.setRate(commentRequest.getRate());
+		if (Objects.nonNull(commentRequest.getRate())) {
+			comment.setRate(commentRequest.getRate());
 		}
-		QuestionComment updatedComment = questionCommentMapper.toComment(commentDto);
-		questionCommentRepository.save(updatedComment);
+		questionCommentRepository.save(comment);
 	}
 	
 	// Update answer comment
 	public void updateAnswerComment(@Valid CommentRequest commentRequest, int commentId) {
 		AnswerComment comment = answerCommentRepository.findById(commentId).get();
 		LocalDateTime dateTime = LocalDateTime.now();
-		AnswerCommentDto commentDto = new AnswerCommentDto();
-		commentDto.setId(comment.getId());
-		commentDto.setAuthorId(comment.getAuthorId());
-		commentDto.setDate(dateTime);
-		commentDto.setAnswerId(comment.getAnswerId());
-		if (Objects.isNull(commentRequest.getContent())) {
-			commentDto.setContent(comment.getContent());
-		} else {
-			commentDto.setContent(commentRequest.getContent());
+		comment.setDate(dateTime);
+		if (Objects.nonNull(commentRequest.getContent())) {
+			comment.setContent(commentRequest.getContent());
 		}
-		if (Objects.isNull(commentRequest.getRate())) {
-			commentDto.setRate(comment.getRate());
-		} else {
-			commentDto.setRate(commentRequest.getRate());
+		if (Objects.nonNull(commentRequest.getRate())) {
+			comment.setRate(commentRequest.getRate());
 		}
-		AnswerComment updatedComment = answerCommentMapper.toComment(commentDto);
-		answerCommentRepository.save(updatedComment);
+		answerCommentRepository.save(comment);
 	}
 	
 	// Delete question comment

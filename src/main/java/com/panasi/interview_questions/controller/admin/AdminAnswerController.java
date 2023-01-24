@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.panasi.interview_questions.payload.AnswerRequest;
 import com.panasi.interview_questions.payload.MessageResponse;
 import com.panasi.interview_questions.repository.dto.AnswerDto;
+import com.panasi.interview_questions.repository.dto.FullAnswerDto;
 import com.panasi.interview_questions.service.admin.AdminAnswerService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -58,9 +59,9 @@ public class AdminAnswerController {
 	
 	@GetMapping("/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	@Operation(summary = "Get answer by id")
-	public ResponseEntity<AnswerDto> showAnswerById(@PathVariable int id) {
-		AnswerDto answerDto = service.getAnswerById(id);
+	@Operation(summary = "Get a full answer with comments by id")
+	public ResponseEntity<FullAnswerDto> showAnswerById(@PathVariable int id) {
+		FullAnswerDto answerDto = service.getAnswerById(id);
 		return new ResponseEntity<>(answerDto, HttpStatus.OK);
 	}
 	

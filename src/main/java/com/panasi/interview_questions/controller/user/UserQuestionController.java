@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.panasi.interview_questions.payload.MessageResponse;
 import com.panasi.interview_questions.payload.QuestionRequest;
+import com.panasi.interview_questions.repository.dto.FullQuestionDto;
 import com.panasi.interview_questions.repository.dto.QuestionDto;
 import com.panasi.interview_questions.service.user.UserQuestionService;
 
@@ -62,9 +63,9 @@ public class UserQuestionController {
 	}
 	
 	@GetMapping("/{id}")
-	@Operation(summary = "Get a question by id")
+	@Operation(summary = "Get a full question with answers and comments by id")
 	public ResponseEntity<?> showQuestionById(@PathVariable int id) {
-		QuestionDto questionDto = service.getQuestionById(id);
+		FullQuestionDto questionDto = service.getQuestionById(id);
 		if (questionDto == null) {
 			String message = "Question " + id + " is private";
 			return new ResponseEntity<>(new MessageResponse(message), HttpStatus.FORBIDDEN);
