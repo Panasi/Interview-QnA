@@ -1,6 +1,7 @@
 package com.panasi.interview_questions.controller.admin;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -101,21 +102,24 @@ public class AdminAnswerControllerTest {
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("name", is("Admin public answer")))
-			.andExpect(jsonPath("questionId", is(1)));
+			.andExpect(jsonPath("questionId", is(1)))
+			.andExpect(jsonPath("rating", is(1.5)));
 		
 		mvc.perform(get("/admin/answers/3")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("name", is("User1 public answer")))
-			.andExpect(jsonPath("questionId", is(1)));
+			.andExpect(jsonPath("questionId", is(1)))
+			.andExpect(jsonPath("rating", is(nullValue())));
 		
 		mvc.perform(get("/admin/answers/6")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("name", is("User2 private answer")))
-			.andExpect(jsonPath("questionId", is(1)));
+			.andExpect(jsonPath("questionId", is(1)))
+			.andExpect(jsonPath("rating", is(5.0)));
 		
 	}
 	

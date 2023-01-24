@@ -8,14 +8,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.panasi.interview_questions.payload.QuestionRequest;
-import com.panasi.interview_questions.repository.AnswerCommentRepository;
+import com.panasi.interview_questions.payload.Utils;
 import com.panasi.interview_questions.repository.CategoryRepository;
 import com.panasi.interview_questions.repository.QuestionRepository;
 import com.panasi.interview_questions.repository.dto.CategoryDto;
-import com.panasi.interview_questions.repository.dto.FullAnswerDto;
 import com.panasi.interview_questions.repository.dto.FullQuestionDto;
 import com.panasi.interview_questions.repository.dto.QuestionDto;
-import com.panasi.interview_questions.repository.entity.AnswerComment;
 import com.panasi.interview_questions.repository.entity.Question;
 import com.panasi.interview_questions.security.service.UserDetailsImpl;
 import com.panasi.interview_questions.service.mappers.CategoryMapper;
@@ -31,57 +29,50 @@ public class AdminQuestionService {
 	private final QuestionRepository questionRepository;
 	private final CategoryRepository categoryRepository;
 	private final QuestionMapper questionMapper;
-	private final CategoryMapper categoryMapper;
 	private final FullQuestionMapper fullQuestionMapper;
-	private final AnswerCommentRepository commentRepository;
+	private final CategoryMapper categoryMapper;
+	private final Utils utils;
 	
-	
-	public void setAnswerRating(FullAnswerDto answer) {
-		int answerId = answer.getId();
-		List<AnswerComment> comments = commentRepository.findAllByAnswerId(answerId);
-		if (comments.isEmpty()) {
-			answer.setRating(null);
-		} else {
-			Double rating = commentRepository.getRating(answerId);
-			answer.setRating(rating);
-		}
-	}
 	
 	// Return all questions
 	public List<QuestionDto> getAllQuestions() {
 		List<QuestionDto> allQuestionDtos = questionMapper.toQuestionDtos(questionRepository.findAll());
+		allQuestionDtos.forEach(question -> utils.setQuestionRating(question));
 		return allQuestionDtos;
 	}
 	
 	// Return questions from certain category
 	public List<QuestionDto> getQuestionsFromCategory(int categoryId) {
 		List<QuestionDto> allQuestionDtos = questionMapper.toQuestionDtos(questionRepository.findAllByCategoryId(categoryId));
+		allQuestionDtos.forEach(question -> utils.setQuestionRating(question));
 		return allQuestionDtos;
 	}
 	
 	// Return questions from certain category and all its subcategories
-	public List<QuestionDto> getQuestionsFromSubcategories(int categoryId, List<QuestionDto> result) {
-		List<QuestionDto> questionDtos = questionMapper.toQuestionDtos(questionRepository.findAllByCategoryId(categoryId));
-		result.addAll(questionDtos);
+	public List<QuestionDto> getQuestionsFromSubcategories(int categoryId, List<QuestionDto> allQuestionDtos) {
+		List<QuestionDto> questionDtos = getQuestionsFromCategory(categoryId);
+		allQuestionDtos.addAll(questionDtos);
 		List<CategoryDto> allSubcategoryDtos = categoryMapper.toCategoryDtos(categoryRepository.findAllByParentId(categoryId));
 		if (allSubcategoryDtos.isEmpty()) {
-			return result;
+			return allQuestionDtos;
 		}
 		allSubcategoryDtos.forEach(subcategory -> {
-			getQuestionsFromSubcategories(subcategory.getId(), result);
+			getQuestionsFromSubcategories(subcategory.getId(), allQuestionDtos);
 		});
-		return result;
+		return allQuestionDtos;
 	}
 	
 	// Return all public questions
 	public List<QuestionDto> getAllPublicQuestions() {
 		List<QuestionDto> allQuestionDtos = questionMapper.toQuestionDtos(questionRepository.findAllByIsPrivate(false));
+		allQuestionDtos.forEach(question -> utils.setQuestionRating(question));
 		return allQuestionDtos;
 	}
 	
 	// Return all user questions
 	public List<QuestionDto> getAllUserQuestions(int authorId) {
 		List<QuestionDto> questionDtos = questionMapper.toQuestionDtos(questionRepository.findAllByAuthorId(authorId));
+		questionDtos.forEach(question -> utils.setQuestionRating(question));
 		return questionDtos;
 	}
 	
@@ -89,7 +80,8 @@ public class AdminQuestionService {
 	public FullQuestionDto getQuestionById(int questionId) {
 		Question question = questionRepository.findById(questionId).get();
 		FullQuestionDto	questionDto = fullQuestionMapper.toFullQuestionDto(question);
-		questionDto.getAnswers().forEach(answer -> setAnswerRating(answer));
+		questionDto.getAnswers().forEach(answer -> utils.setAnswerRating(answer));
+		utils.setQuestionRating(questionDto);
 		return questionDto;
 	}
 	

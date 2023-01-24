@@ -1,6 +1,7 @@
 package com.panasi.interview_questions.controller.admin;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -73,9 +74,13 @@ public class AdminQuestionControllerTest {
 	      	.andExpect(status().isOk())
 	      	.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 	      	.andExpect(jsonPath("$[0].name", is("Admin public question")))
+	      	.andExpect(jsonPath("$[0].rating", is(1.5)))
 			.andExpect(jsonPath("$[1].name", is("User1 private question")))
+			.andExpect(jsonPath("$[1].rating", is(5.0)))
 			.andExpect(jsonPath("$[2].name", is("Admin private question")))
+			.andExpect(jsonPath("$[2].rating", is(3.5)))
 			.andExpect(jsonPath("$[3].name", is("User2 public question")))
+			.andExpect(jsonPath("$[3].rating", is(nullValue())))
 			.andExpect(jsonPath("$[4].name").doesNotHaveJsonPath());
 	    
 	}
@@ -112,6 +117,7 @@ public class AdminQuestionControllerTest {
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$[0].name", is("User1 public question")))
 			.andExpect(jsonPath("$[1].name", is("User1 private question")));
+			
 		
 		mvc.perform(get("/admin/questions/user/3")
 			.contentType(MediaType.APPLICATION_JSON))
@@ -131,21 +137,24 @@ public class AdminQuestionControllerTest {
 	      	.andExpect(status().isOk())
 	      	.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 	      	.andExpect(jsonPath("name", is("Admin public question")))
-	      	.andExpect(jsonPath("categoryId", is(1)));
+	      	.andExpect(jsonPath("categoryId", is(1)))
+	      	.andExpect(jsonPath("rating", is(1.5)));
 	    
 	    mvc.perform(get("/admin/questions/3")
 		    .contentType(MediaType.APPLICATION_JSON))
 		    .andExpect(status().isOk())
 		    .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 		    .andExpect(jsonPath("name", is("User1 public question")))
-		    .andExpect(jsonPath("categoryId", is(3)));
+		    .andExpect(jsonPath("categoryId", is(3)))
+		    .andExpect(jsonPath("rating", is(nullValue())));
 	    
 	    mvc.perform(get("/admin/questions/6")
 		    .contentType(MediaType.APPLICATION_JSON))
 		    .andExpect(status().isOk())
 		    .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 		    .andExpect(jsonPath("name", is("User2 private question")))
-		    .andExpect(jsonPath("categoryId", is(3)));
+		    .andExpect(jsonPath("categoryId", is(3)))
+		    .andExpect(jsonPath("rating", is(5.0)));
 	    
 	}
 	

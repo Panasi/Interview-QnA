@@ -1,6 +1,7 @@
 package com.panasi.interview_questions.controller.user;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -65,8 +66,11 @@ public class UserQuestionControllerTest {
 	      	.andExpect(status().isOk())
 	      	.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 	      	.andExpect(jsonPath("$[0].name", is("Admin public question")))
+	      	.andExpect(jsonPath("$[0].rating", is(1.5)))
 			.andExpect(jsonPath("$[1].name", is("User1 private question")))
+			.andExpect(jsonPath("$[1].rating", is(5.0)))
 			.andExpect(jsonPath("$[2].name", is("User2 public question")))
+			.andExpect(jsonPath("$[2].rating", is(nullValue())))
 			.andExpect(jsonPath("$[3].name").doesNotHaveJsonPath());
 	    
 	}
