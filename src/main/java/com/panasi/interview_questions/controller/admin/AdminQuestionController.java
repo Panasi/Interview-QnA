@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.panasi.interview_questions.payload.MessageResponse;
@@ -34,44 +35,36 @@ public class AdminQuestionController {
 	private final AdminQuestionService service;
 	
 
-	@GetMapping("/all")
+	@GetMapping()
 	@PreAuthorize("hasRole('ADMIN')")
 	@Operation(summary = "Get all questions")
-	public ResponseEntity<List<QuestionDto>> showAllQuestions() {
-		List<QuestionDto> allQuestionDtos = service.getAllQuestions();
+	public ResponseEntity<List<QuestionDto>> showAllQuestions(@RequestParam(defaultValue = "all") String access) {
+		List<QuestionDto> allQuestionDtos = service.getAllQuestions(access);
 		return new ResponseEntity<>(allQuestionDtos, HttpStatus.OK);
 	}
 	
 	@GetMapping("/category/{categoryId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	@Operation(summary = "Get questions from certain category")
-	public ResponseEntity<List<QuestionDto>> showQuestionsFromCategory(@PathVariable int categoryId) {
-		List<QuestionDto> allQuestionDtos = service.getQuestionsFromCategory(categoryId);
+	public ResponseEntity<List<QuestionDto>> showQuestionsFromCategory(@PathVariable int categoryId, @RequestParam(defaultValue = "all") String access) {
+		List<QuestionDto> allQuestionDtos = service.getCategoryQuestions(categoryId, access);
 		return new ResponseEntity<>(allQuestionDtos, HttpStatus.OK);
 	}
 	
 	@GetMapping("/subcategory/{categoryId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	@Operation(summary = "Get questions from certain category and all its subcategories")
-	public ResponseEntity<List<QuestionDto>> showQuestionsFromSubcategories(@PathVariable int categoryId) {
+	public ResponseEntity<List<QuestionDto>> showQuestionsFromSubcategories(@PathVariable int categoryId, @RequestParam(defaultValue = "all") String access) {
 		List<QuestionDto> result = new ArrayList<>();
-		List<QuestionDto> allSubQuestionDtos = service.getQuestionsFromSubcategories(categoryId, result);
+		List<QuestionDto> allSubQuestionDtos = service.getSubcategoriesQuestions(categoryId, access, result);
 		return new ResponseEntity<>(allSubQuestionDtos, HttpStatus.OK);
-	}
-	
-	@GetMapping("/public")
-	@PreAuthorize("hasRole('ADMIN')")
-	@Operation(summary = "Get all public questions")
-	public ResponseEntity<List<QuestionDto>> showAllPublicQuestions() {
-		List<QuestionDto> allQuestionDtos = service.getAllPublicQuestions();
-		return new ResponseEntity<>(allQuestionDtos, HttpStatus.OK);
 	}
 	
 	@GetMapping("/user/{authorId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	@Operation(summary = "Get all user questions")
-	public ResponseEntity<List<QuestionDto>> showAllPrivateQuestions(@PathVariable int authorId) {
-		List<QuestionDto> allQuestionDtos = service.getAllUserQuestions(authorId);
+	public ResponseEntity<List<QuestionDto>> showAllUserQuestions(@PathVariable int authorId, @RequestParam(defaultValue = "all") String access) {
+		List<QuestionDto> allQuestionDtos = service.getUserQuestions(authorId, access);
 		return new ResponseEntity<>(allQuestionDtos, HttpStatus.OK);
 	}
 	

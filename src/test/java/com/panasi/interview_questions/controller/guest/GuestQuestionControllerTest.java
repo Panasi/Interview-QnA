@@ -42,7 +42,7 @@ public class GuestQuestionControllerTest {
 	}
 	
 	@Test
-	public void showQuestionsFromCategory_then_Status200() throws Exception {
+	public void showAllQuestionsFromCategory_then_Status200() throws Exception {
 
 	    mvc.perform(get("/questions/category/1")
 	    	.contentType(MediaType.APPLICATION_JSON))
@@ -54,7 +54,30 @@ public class GuestQuestionControllerTest {
 	}
 	
 	@Test
-	public void showQuestionsFromSubcategories_then_Status200() throws Exception {
+	public void showPublicQuestionsFromCategory_then_Status200() throws Exception {
+
+	    mvc.perform(get("/questions/category/1?access=public")
+	    	.contentType(MediaType.APPLICATION_JSON))
+	    	.andExpect(status().isOk())
+	    	.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+	    	.andExpect(jsonPath("$[0].name", is("Admin public question")))
+	    	.andExpect(jsonPath("$[1].name").doesNotHaveJsonPath());
+	    
+	}
+	
+	@Test
+	public void showPrivateQuestionsFromCategory_then_Status200() throws Exception {
+
+	    mvc.perform(get("/questions/category/1?access=private")
+	    	.contentType(MediaType.APPLICATION_JSON))
+	    	.andExpect(status().isOk())
+	    	.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+	    	.andExpect(jsonPath("$[0].name").doesNotHaveJsonPath());
+	    
+	}
+	
+	@Test
+	public void showAllQuestionsFromSubcategories_then_Status200() throws Exception {
 
 	    mvc.perform(get("/questions/subcategory/1")
 	    	.contentType(MediaType.APPLICATION_JSON))
@@ -67,21 +90,18 @@ public class GuestQuestionControllerTest {
 	}
 	
 	@Test
-	public void showPublicQuestions_then_Status200() throws Exception {
-		
-		mvc.perform(get("/questions/public")
-			.contentType(MediaType.APPLICATION_JSON))
-		  	.andExpect(status().isOk())
-		  	.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-		  	.andExpect(jsonPath("$[0].name", is("Admin public question")))
-		  	.andExpect(jsonPath("$[1].name", is("User1 public question")))
-		  	.andExpect(jsonPath("$[2].name", is("User2 public question")))
-		  	.andExpect(jsonPath("$[3].name").doesNotHaveJsonPath());
-		
+	public void showPrivateQuestionsFromSubcategories_then_Status200() throws Exception {
+
+	    mvc.perform(get("/questions/subcategory/1?access=private")
+	    	.contentType(MediaType.APPLICATION_JSON))
+	      	.andExpect(status().isOk())
+	      	.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].name").doesNotHaveJsonPath());
+	    
 	}
 	
 	@Test
-	public void showUserQuestions_then_Status200() throws Exception {
+	public void showAllUserQuestions_then_Status200() throws Exception {
 		
 		mvc.perform(get("/questions/user/1")
 			.contentType(MediaType.APPLICATION_JSON))
@@ -107,6 +127,23 @@ public class GuestQuestionControllerTest {
 	}
 	
 	@Test
+	public void showPrivateUserQuestions_then_Status403() throws Exception {
+		
+		mvc.perform(get("/questions/user/1?access=private")
+			.contentType(MediaType.APPLICATION_JSON))
+		  	.andExpect(status().isForbidden());
+		
+		mvc.perform(get("/questions/user/2?access=private")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isForbidden());
+		
+		mvc.perform(get("/questions/user/3?access=private")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isForbidden());
+		
+	}
+	
+	@Test
 	public void showQuestionById_then_Status200() throws Exception {
 
 	    mvc.perform(get("/questions/1")
@@ -125,7 +162,7 @@ public class GuestQuestionControllerTest {
 	    	.contentType(MediaType.APPLICATION_JSON))
 	    	.andExpect(status().isForbidden())
 	    	.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-	    	.andExpect(jsonPath("name").doesNotHaveJsonPath());
+	    	.andExpect(jsonPath("message", is("Question 2 is private")));
 	    
 	}
 	

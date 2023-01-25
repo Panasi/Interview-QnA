@@ -38,7 +38,7 @@ public class AdminQuestionControllerTest {
 	@WithUserDetails("Admin")
 	public void showAllQuestions_then_Status200() throws Exception {
 
-	    mvc.perform(get("/admin/questions/all")
+	    mvc.perform(get("/admin/questions")
 	    	.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -53,7 +53,35 @@ public class AdminQuestionControllerTest {
 	
 	@Test
 	@WithUserDetails("Admin")
-	public void showQuestionsFromCategory_then_Status200() throws Exception {
+	public void showAllPublicQuestions_then_Status200() throws Exception {
+
+	    mvc.perform(get("/admin/questions?access=public")
+	    	.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].name", is("Admin public question")))
+			.andExpect(jsonPath("$[1].name", is("User1 public question")))
+			.andExpect(jsonPath("$[2].name", is("User2 public question")));
+	    
+	}
+	
+	@Test
+	@WithUserDetails("Admin")
+	public void showAllPrivateQuestions_then_Status200() throws Exception {
+
+	    mvc.perform(get("/admin/questions?access=private")
+	    	.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].name", is("Admin private question")))
+			.andExpect(jsonPath("$[1].name", is("User1 private question")))
+			.andExpect(jsonPath("$[2].name", is("User2 private question")));
+	    
+	}
+	
+	@Test
+	@WithUserDetails("Admin")
+	public void showAllQuestionsFromCategory_then_Status200() throws Exception {
 
 	    mvc.perform(get("/admin/questions/category/1")
 	    	.contentType(MediaType.APPLICATION_JSON))
@@ -67,7 +95,33 @@ public class AdminQuestionControllerTest {
 	
 	@Test
 	@WithUserDetails("Admin")
-	public void showQuestionsFromSubcategories_then_Status200() throws Exception {
+	public void showPublicQuestionsFromCategory_then_Status200() throws Exception {
+
+	    mvc.perform(get("/admin/questions/category/1?access=public")
+	    	.contentType(MediaType.APPLICATION_JSON))
+	    	.andExpect(status().isOk())
+	    	.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+	    	.andExpect(jsonPath("$[0].name", is("Admin public question")))
+	    	.andExpect(jsonPath("$[1].name").doesNotHaveJsonPath());
+	    
+	}
+	
+	@Test
+	@WithUserDetails("Admin")
+	public void showPrivateQuestionsFromCategory_then_Status200() throws Exception {
+
+	    mvc.perform(get("/admin/questions/category/1?access=private")
+	    	.contentType(MediaType.APPLICATION_JSON))
+	    	.andExpect(status().isOk())
+	    	.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+	    	.andExpect(jsonPath("$[0].name", is("User1 private question")))
+	    	.andExpect(jsonPath("$[1].name").doesNotHaveJsonPath());
+	    
+	}
+	
+	@Test
+	@WithUserDetails("Admin")
+	public void showAllQuestionsFromSubcategories_then_Status200() throws Exception {
 
 	    mvc.perform(get("/admin/questions/subcategory/1")
 	    	.contentType(MediaType.APPLICATION_JSON))
@@ -87,22 +141,39 @@ public class AdminQuestionControllerTest {
 	
 	@Test
 	@WithUserDetails("Admin")
-	public void showPublicQuestions_then_Status200() throws Exception {
-		
-		mvc.perform(get("/admin/questions/public")
-			.contentType(MediaType.APPLICATION_JSON))
-		  	.andExpect(status().isOk())
-		  	.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-		  	.andExpect(jsonPath("$[0].name", is("Admin public question")))
-		  	.andExpect(jsonPath("$[1].name", is("User1 public question")))
-		  	.andExpect(jsonPath("$[2].name", is("User2 public question")))
-		  	.andExpect(jsonPath("$[3].name").doesNotHaveJsonPath());
-		
+	public void showPublicQuestionsFromSubcategories_then_Status200() throws Exception {
+
+	    mvc.perform(get("/admin/questions/subcategory/1?access=public")
+	    	.contentType(MediaType.APPLICATION_JSON))
+	      	.andExpect(status().isOk())
+	      	.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+	      	.andExpect(jsonPath("$[0].name", is("Admin public question")))
+	      	.andExpect(jsonPath("$[0].rating", is(1.5)))
+			.andExpect(jsonPath("$[1].name", is("User2 public question")))
+			.andExpect(jsonPath("$[1].rating", is(nullValue())))
+			.andExpect(jsonPath("$[2].name").doesNotHaveJsonPath());
+	    
 	}
 	
 	@Test
 	@WithUserDetails("Admin")
-	public void showUserQuestions_then_Status200() throws Exception {
+	public void showPrivateQuestionsFromSubcategories_then_Status200() throws Exception {
+
+	    mvc.perform(get("/admin/questions/subcategory/1?access=private")
+	    	.contentType(MediaType.APPLICATION_JSON))
+	      	.andExpect(status().isOk())
+	      	.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].name", is("User1 private question")))
+			.andExpect(jsonPath("$[0].rating", is(5.0)))
+			.andExpect(jsonPath("$[1].name", is("Admin private question")))
+			.andExpect(jsonPath("$[1].rating", is(3.5)))
+			.andExpect(jsonPath("$[2].name").doesNotHaveJsonPath());
+	    
+	}
+	
+	@Test
+	@WithUserDetails("Admin")
+	public void showAllUserQuestions_then_Status200() throws Exception {
 		
 		mvc.perform(get("/admin/questions/user/1")
 			.contentType(MediaType.APPLICATION_JSON))
@@ -125,6 +196,56 @@ public class AdminQuestionControllerTest {
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$[0].name", is("User2 public question")))
 			.andExpect(jsonPath("$[1].name", is("User2 private question")));
+		
+	}
+	
+	@Test
+	@WithUserDetails("Admin")
+	public void showUserPublicQuestions_then_Status200() throws Exception {
+		
+		mvc.perform(get("/admin/questions/user/1?access=public")
+			.contentType(MediaType.APPLICATION_JSON))
+		  	.andExpect(status().isOk())
+		  	.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+		  	.andExpect(jsonPath("$[0].name", is("Admin public question")));
+		
+		mvc.perform(get("/admin/questions/user/2?access=public")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].name", is("User1 public question")));
+			
+		
+		mvc.perform(get("/admin/questions/user/3?access=public")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].name", is("User2 public question")));
+		
+	}
+	
+	@Test
+	@WithUserDetails("Admin")
+	public void showUserPrivateQuestions_then_Status200() throws Exception {
+		
+		mvc.perform(get("/admin/questions/user/1?access=private")
+			.contentType(MediaType.APPLICATION_JSON))
+		  	.andExpect(status().isOk())
+		  	.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+		  	.andExpect(jsonPath("$[0].name", is("Admin private question")));
+		
+		mvc.perform(get("/admin/questions/user/2?access=private")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].name", is("User1 private question")));
+			
+		
+		mvc.perform(get("/admin/questions/user/3?access=private")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].name", is("User2 private question")));
 		
 	}
 	

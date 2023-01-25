@@ -11,12 +11,11 @@ import com.panasi.interview_questions.payload.QuestionRequest;
 import com.panasi.interview_questions.payload.Utils;
 import com.panasi.interview_questions.repository.CategoryRepository;
 import com.panasi.interview_questions.repository.QuestionRepository;
-import com.panasi.interview_questions.repository.dto.CategoryDto;
 import com.panasi.interview_questions.repository.dto.FullQuestionDto;
 import com.panasi.interview_questions.repository.dto.QuestionDto;
+import com.panasi.interview_questions.repository.entity.Category;
 import com.panasi.interview_questions.repository.entity.Question;
 import com.panasi.interview_questions.security.service.UserDetailsImpl;
-import com.panasi.interview_questions.service.mappers.CategoryMapper;
 import com.panasi.interview_questions.service.mappers.FullQuestionMapper;
 import com.panasi.interview_questions.service.mappers.QuestionMapper;
 
@@ -30,49 +29,53 @@ public class UserQuestionService {
 	private final CategoryRepository categoryRepository;
 	private final QuestionMapper questionMapper;
 	private final FullQuestionMapper fullQuestionMapper;
-	private final CategoryMapper categoryMapper;
 	private final Utils utils;
 	
 	
 	// Return questions from certain category
-	public List<QuestionDto> getQuestionsFromCategory(int categoryId) {
+	public List<QuestionDto> getCategoryQuestions(int categoryId, String access) {
 		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		List<Question> questions = questionRepository.findAllByCategoryIdAndUserId(categoryId, userDetails.getId());
+		List<Question> questions;
+	    if (access.equals("public")) {
+	        questions = questionRepository.findAllByCategoryIdAndIsPrivate(categoryId, false);
+	    } else if (access.equals("private")) {
+	        questions = questionRepository.findAllByCategoryIdAndIsPrivateAndAuthorId(categoryId, true, userDetails.getId());
+	    } else {
+	    	questions = questionRepository.findAllByCategoryIdAndAuthorId(categoryId, userDetails.getId());
+	    }
 		List<QuestionDto> questionDtos = questionMapper.toQuestionDtos(questions);
 		questionDtos.forEach(question -> utils.setQuestionRating(question));
 		return questionDtos;
 	}
 	
 	// Return questions from certain category and all its subcategories
-	public List<QuestionDto> getQuestionsFromSubcategories(int categoryId, List<QuestionDto> allQuestionDtos) {
-		List<QuestionDto> questionDtos = getQuestionsFromCategory(categoryId);
+	public List<QuestionDto> getSubcategoriesQuestions(int categoryId, String access, List<QuestionDto> allQuestionDtos) {
+		List<QuestionDto> questionDtos = getCategoryQuestions(categoryId, access);
 		allQuestionDtos.addAll(questionDtos);
-		List<CategoryDto> allSubcategoryDtos = categoryMapper.toCategoryDtos(categoryRepository.findAllByParentId(categoryId));
-		if (allSubcategoryDtos.isEmpty()) {
+		List<Category> allSubcategories = categoryRepository.findAllByParentId(categoryId);
+		if (allSubcategories.isEmpty()) {
 			return allQuestionDtos;
 		}
-		allSubcategoryDtos.forEach(subcategory -> {
-			getQuestionsFromSubcategories(subcategory.getId(), allQuestionDtos);
+		allSubcategories.forEach(subcategory -> {
+			getSubcategoriesQuestions(subcategory.getId(), access, allQuestionDtos);
 		});
 		return allQuestionDtos;
 	}
 	
-	// Return all public questions
-	public List<QuestionDto> getAllPublicQuestions() {
-		List<QuestionDto> allQuestionDtos = questionMapper.toQuestionDtos(questionRepository.findAllByIsPrivate(false));
-		allQuestionDtos.forEach(question -> utils.setQuestionRating(question));
-		return allQuestionDtos;
-	}
-	
-	// Return all user questions
-	public List<QuestionDto> getAllUserQuestions(int authorId) {
+	// Return user questions
+	public List<QuestionDto> getUserQuestions(int authorId, String access) {
 		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		List<QuestionDto> questionDtos;
-		if (authorId == userDetails.getId()) {
-			questionDtos = questionMapper.toQuestionDtos(questionRepository.findAllByAuthorId(authorId));
-		} else {
-			questionDtos = questionMapper.toQuestionDtos(questionRepository.findAllByAuthorIdAndIsPrivate(authorId, false));
-		}
+		List<Question> questions;
+		if (access.equals("public") || (access.equals("all") && authorId != userDetails.getId())) {
+	        questions = questionRepository.findAllByAuthorIdAndIsPrivate(authorId, false);
+	    } else if (access.equals("private") && authorId == userDetails.getId()) {
+	    	questions = questionRepository.findAllByAuthorIdAndIsPrivate(authorId, true);
+	    } else if (access.equals("private") && authorId != userDetails.getId()) {
+	    	return null;
+	    } else {
+	    	questions = questionRepository.findAllByAuthorId(authorId);
+	    }
+		List<QuestionDto> questionDtos = questionMapper.toQuestionDtos(questions);
 		questionDtos.forEach(question -> utils.setQuestionRating(question));
 		return questionDtos;
 	}
