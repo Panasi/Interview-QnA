@@ -30,22 +30,31 @@ public class AdminAnswerService {
 
 	
 	// Return all answers
-	public List<AnswerDto> getAllAnswers() {
-		List<AnswerDto> allAnswerDtos = answerMapper.toAnswerDtos(answerRepository.findAll());
-		allAnswerDtos.stream().forEach(answer -> utils.setAnswerRating(answer));
-		return allAnswerDtos;
-	}
-	
-	// Return all public answers
-	public List<AnswerDto> getAllPublicAnswers() {
-		List<AnswerDto> allAnswerDtos = answerMapper.toAnswerDtos(answerRepository.findAllByIsPrivate(false));
+	public List<AnswerDto> getAllAnswers(String access) {
+		List<Answer> answers;
+		if (access.equals("public")) {
+			answers = answerRepository.findAllByIsPrivate(false);
+		} else if (access.equals("private")) {
+			answers = answerRepository.findAllByIsPrivate(true);
+		} else {
+			answers = answerRepository.findAll();
+		}
+		List<AnswerDto> allAnswerDtos = answerMapper.toAnswerDtos(answers);
 		allAnswerDtos.stream().forEach(answer -> utils.setAnswerRating(answer));
 		return allAnswerDtos;
 	}
 	
 	// Return all user answers
-	public List<AnswerDto> getAllUserAnswers(int authorId) {
-		List<AnswerDto> allAnswerDtos = answerMapper.toAnswerDtos(answerRepository.findAllByAuthorId(authorId));
+	public List<AnswerDto> getAllUserAnswers(int authorId, String access) {
+		List<Answer> answers;
+		if (access.equals("public")) {
+			answers = answerRepository.findAllByAuthorIdAndIsPrivate(authorId, false);
+		} else if (access.equals("private")) {
+			answers = answerRepository.findAllByAuthorIdAndIsPrivate(authorId, true);
+		} else {
+			answers = answerRepository.findAllByAuthorId(authorId);
+		}
+		List<AnswerDto> allAnswerDtos = answerMapper.toAnswerDtos(answers);
 		allAnswerDtos.stream().forEach(answer -> utils.setAnswerRating(answer));
 		return allAnswerDtos;
 	}

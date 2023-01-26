@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.panasi.interview_questions.payload.AnswerRequest;
@@ -33,27 +34,19 @@ public class AdminAnswerController {
 	private final AdminAnswerService service;
 	
 	
-	@GetMapping("/all")
-	@PreAuthorize("hasRole('ADMIN')")
-	@Operation(summary = "Get all answers")
-	public ResponseEntity<List<AnswerDto>> showAllAnswers() {
-		List<AnswerDto> allAnswerDtos = service.getAllAnswers();
-		return new ResponseEntity<>(allAnswerDtos, HttpStatus.OK);
-	}
-	
 	@GetMapping()
 	@PreAuthorize("hasRole('ADMIN')")
-	@Operation(summary = "Get all public answers")
-	public ResponseEntity<List<AnswerDto>> showAllPublicAnswers() {
-		List<AnswerDto> allAnswerDtos = service.getAllPublicAnswers();
+	@Operation(summary = "Get all answers")
+	public ResponseEntity<List<AnswerDto>> showAllAnswers(@RequestParam(defaultValue = "all") String access) {
+		List<AnswerDto> allAnswerDtos = service.getAllAnswers(access);
 		return new ResponseEntity<>(allAnswerDtos, HttpStatus.OK);
 	}
 	
 	@GetMapping("/user/{authorId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	@Operation(summary = "Get all user answers")
-	public ResponseEntity<List<AnswerDto>> showUserAnswers(@PathVariable int authorId) {
-		List<AnswerDto> allAnswerDtos = service.getAllUserAnswers(authorId);
+	public ResponseEntity<List<AnswerDto>> showUserAnswers(@PathVariable int authorId, @RequestParam(defaultValue = "all") String access) {
+		List<AnswerDto> allAnswerDtos = service.getAllUserAnswers(authorId, access);
 		return new ResponseEntity<>(allAnswerDtos, HttpStatus.OK);
 	}
 	

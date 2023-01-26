@@ -29,22 +29,20 @@ public class UserAnswerService {
 	private final Utils utils;
 	
 	
-	// Return all public answers
-	public List<AnswerDto> getAllPublicAnswers() {
-		List<AnswerDto> allAnswerDtos = answerMapper.toAnswerDtos(answerRepository.findAllByIsPrivate(false));
-		allAnswerDtos.stream().forEach(answer -> utils.setAnswerRating(answer));
-		return allAnswerDtos;
-	}
-	
 	// Return user answers
-	public List<AnswerDto> getUserAnswers(int authorId) {
+	public List<AnswerDto> getUserAnswers(int authorId, String access) {
 		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		List<AnswerDto> answerDtos;
-		if (authorId == userDetails.getId()) {
-			answerDtos = answerMapper.toAnswerDtos(answerRepository.findAllByAuthorId(authorId));
-		} else {
-			answerDtos = answerMapper.toAnswerDtos(answerRepository.findAllByAuthorIdAndIsPrivate(authorId, false));
+		List<Answer> answers;
+		if (access.equals("public") || (access.equals("all") && authorId != userDetails.getId())) {
+			answers = answerRepository.findAllByAuthorIdAndIsPrivate(authorId, false);
+		} else if (access.equals("private") && authorId == userDetails.getId()) {
+			answers = answerRepository.findAllByAuthorIdAndIsPrivate(authorId, true);
+		} else if (access.equals("private") && authorId != userDetails.getId()) {
+	    	return null;
+	    } else {
+			answers = answerRepository.findAllByAuthorId(authorId);
 		}
+		List<AnswerDto> answerDtos = answerMapper.toAnswerDtos(answers);
 		answerDtos.stream().forEach(answer -> utils.setAnswerRating(answer));
 		return answerDtos;
 	}

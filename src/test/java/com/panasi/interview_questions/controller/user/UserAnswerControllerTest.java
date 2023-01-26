@@ -44,21 +44,7 @@ public class UserAnswerControllerTest {
 	
 	@Test
 	@WithUserDetails("User1")
-	public void showAllPublicAnswers_then_Status200() throws Exception {
-		
-		mvc.perform(get("/answers")
-		.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk())
-		.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-		.andExpect(jsonPath("$[0].name", is("Admin public answer")))
-		.andExpect(jsonPath("$[1].name", is("User1 public answer")))
-		.andExpect(jsonPath("$[2].name", is("User2 public answer")));
-		
-	}
-	
-	@Test
-	@WithUserDetails("User1")
-	public void showUserAnswersToFirstUser_then_Status200() throws Exception {
+	public void showAllUserAnswersToFirstUser_then_Status200() throws Exception {
 		
 		mvc.perform(get("/answers/user/1")
 			.contentType(MediaType.APPLICATION_JSON))
@@ -81,6 +67,56 @@ public class UserAnswerControllerTest {
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$[0].name", is("User2 public answer")))
 			.andExpect(jsonPath("$[1].name").doesNotHaveJsonPath());
+		
+	}
+	
+	@Test
+	@WithUserDetails("User1")
+	public void showPublicUserAnswersToFirstUser_then_Status200() throws Exception {
+		
+		mvc.perform(get("/answers/user/1?access=public")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].name", is("Admin public answer")))
+			.andExpect(jsonPath("$[1].name").doesNotHaveJsonPath());
+			
+		
+		mvc.perform(get("/answers/user/2?access=public")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].name", is("User1 public answer")));
+		
+		mvc.perform(get("/answers/user/3?access=public")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].name", is("User2 public answer")))
+			.andExpect(jsonPath("$[1].name").doesNotHaveJsonPath());
+		
+	}
+	
+	@Test
+	@WithUserDetails("User1")
+	public void showPrivateUserAnswersToFirstUser_then_Status200() throws Exception {
+		
+		mvc.perform(get("/answers/user/1?access=private")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isForbidden())
+			.andExpect(jsonPath("message", is("You don't have access to user private answers")));
+			
+		
+		mvc.perform(get("/answers/user/2?access=private")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].name", is("User1 private answer")));
+		
+		mvc.perform(get("/answers/user/3?access=private")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isForbidden())
+			.andExpect(jsonPath("message", is("You don't have access to user private answers")));
 		
 	}
 	

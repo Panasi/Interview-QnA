@@ -38,7 +38,7 @@ public class AdminAnswerControllerTest {
 	@WithUserDetails("Admin")
 	public void showAllAnswers_then_Status200() throws Exception {
 	
-		mvc.perform(get("/admin/answers/all")
+		mvc.perform(get("/admin/answers")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -53,22 +53,35 @@ public class AdminAnswerControllerTest {
 	
 	@Test
 	@WithUserDetails("Admin")
-	public void showAllPublicAnswers_then_Status200() throws Exception {
-		
-		mvc.perform(get("/admin/answers")
+	public void showPublicAnswers_then_Status200() throws Exception {
+	
+		mvc.perform(get("/admin/answers?access=public")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$[0].name", is("Admin public answer")))
 			.andExpect(jsonPath("$[1].name", is("User1 public answer")))
-			.andExpect(jsonPath("$[2].name", is("User2 public answer")))
-			.andExpect(jsonPath("$[3].name").doesNotHaveJsonPath());
+			.andExpect(jsonPath("$[2].name", is("User2 public answer")));
 		
 	}
 	
 	@Test
 	@WithUserDetails("Admin")
-	public void showUserAnswers_then_Status200() throws Exception {
+	public void showPrivateAnswers_then_Status200() throws Exception {
+	
+		mvc.perform(get("/admin/answers?access=private")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].name", is("Admin private answer")))
+			.andExpect(jsonPath("$[1].name", is("User1 private answer")))
+			.andExpect(jsonPath("$[2].name", is("User2 private answer")));
+		
+	}
+	
+	@Test
+	@WithUserDetails("Admin")
+	public void showAllUserAnswers_then_Status200() throws Exception {
 		
 		mvc.perform(get("/admin/answers/user/1")
 			.contentType(MediaType.APPLICATION_JSON))
@@ -90,6 +103,54 @@ public class AdminAnswerControllerTest {
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$[0].name", is("User2 public answer")))
 			.andExpect(jsonPath("$[1].name", is("User2 private answer")));
+		
+	}
+	
+	@Test
+	@WithUserDetails("Admin")
+	public void showAPublicUserAnswers_then_Status200() throws Exception {
+		
+		mvc.perform(get("/admin/answers/user/1?access=public")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].name", is("Admin public answer")));
+		
+		mvc.perform(get("/admin/answers/user/2?access=public")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].name", is("User1 public answer")));
+		
+		mvc.perform(get("/admin/answers/user/3?access=public")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].name", is("User2 public answer")));
+		
+	}
+	
+	@Test
+	@WithUserDetails("Admin")
+	public void showPrivateUserAnswers_then_Status200() throws Exception {
+		
+		mvc.perform(get("/admin/answers/user/1?access=private")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].name", is("Admin private answer")));
+		
+		mvc.perform(get("/admin/answers/user/2?access=private")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].name", is("User1 private answer")));
+		
+		mvc.perform(get("/admin/answers/user/3?access=private")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].name", is("User2 private answer")));
 		
 	}
 	

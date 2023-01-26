@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.panasi.interview_questions.payload.AnswerRequest;
@@ -32,17 +33,14 @@ public class UserAnswerController {
 	private final UserAnswerService service;
 	
 	
-	@GetMapping()
-	@Operation(summary = "Get all public answers")
-	public ResponseEntity<List<AnswerDto>> showAllPublicAnswers() {
-		List<AnswerDto> allAnswerDtos = service.getAllPublicAnswers();
-		return new ResponseEntity<>(allAnswerDtos, HttpStatus.OK);
-	}
-	
 	@GetMapping("/user/{authorId}")
 	@Operation(summary = "Get user answers")
-	public ResponseEntity<List<AnswerDto>> showUserAnswers(@PathVariable int authorId) {
-		List<AnswerDto> allAnswerDtos = service.getUserAnswers(authorId);
+	public ResponseEntity<?> showUserAnswers(@PathVariable int authorId, @RequestParam(defaultValue = "all") String access) {
+		List<AnswerDto> allAnswerDtos = service.getUserAnswers(authorId, access);
+		if (allAnswerDtos == null) {
+			String message = "You don't have access to user private answers";
+			return new ResponseEntity<>(new MessageResponse(message), HttpStatus.FORBIDDEN);
+		}
 		return new ResponseEntity<>(allAnswerDtos, HttpStatus.OK);
 	}
 	
