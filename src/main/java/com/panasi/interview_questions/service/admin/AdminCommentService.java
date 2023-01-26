@@ -6,18 +6,17 @@ import java.util.Objects;
 
 import javax.validation.Valid;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import com.panasi.interview_questions.payload.CommentRequest;
+import com.panasi.interview_questions.payload.Utils;
 import com.panasi.interview_questions.repository.AnswerCommentRepository;
 import com.panasi.interview_questions.repository.QuestionCommentRepository;
 import com.panasi.interview_questions.repository.dto.AnswerCommentDto;
 import com.panasi.interview_questions.repository.dto.QuestionCommentDto;
 import com.panasi.interview_questions.repository.entity.AnswerComment;
 import com.panasi.interview_questions.repository.entity.QuestionComment;
-import com.panasi.interview_questions.security.service.UserDetailsImpl;
 import com.panasi.interview_questions.service.mappers.AnswerCommentMapper;
 import com.panasi.interview_questions.service.mappers.QuestionCommentMapper;
 
@@ -78,14 +77,13 @@ public class AdminCommentService {
 	
 	// Add a new comment to question
 	public void createQuestionComment(@Valid CommentRequest commentRequest, int questionId) {
-		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		int authorId = userDetails.getId();
+		int currentUserId = Utils.getCurrentUserId();
 		LocalDateTime dateTime = LocalDateTime.now();
 		QuestionCommentDto commentDto = QuestionCommentDto.builder()
 			.content(commentRequest.getContent())
 			.rate(commentRequest.getRate())
 			.questionId(questionId)
-			.authorId(authorId)
+			.authorId(currentUserId)
 			.date(dateTime)
 			.build();
 		QuestionComment comment = questionCommentMapper.toComment(commentDto);
@@ -94,14 +92,13 @@ public class AdminCommentService {
 	
 	// Add a new comment to answer
 	public void createAnswerComment(@Valid CommentRequest commentRequest, int answerId) {
-		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		int authorId = userDetails.getId();
+		int currentUserId = Utils.getCurrentUserId();
 		LocalDateTime dateTime = LocalDateTime.now();
 		AnswerCommentDto commentDto = AnswerCommentDto.builder()
 			.content(commentRequest.getContent())
 			.rate(commentRequest.getRate())
 			.answerId(answerId)
-			.authorId(authorId)
+			.authorId(currentUserId)
 			.date(dateTime)
 			.build();
 		AnswerComment comment = answerCommentMapper.toComment(commentDto);

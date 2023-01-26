@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.panasi.interview_questions.payload.QuestionRequest;
@@ -15,7 +14,6 @@ import com.panasi.interview_questions.repository.dto.FullQuestionDto;
 import com.panasi.interview_questions.repository.dto.QuestionDto;
 import com.panasi.interview_questions.repository.entity.Category;
 import com.panasi.interview_questions.repository.entity.Question;
-import com.panasi.interview_questions.security.service.UserDetailsImpl;
 import com.panasi.interview_questions.service.mappers.FullQuestionMapper;
 import com.panasi.interview_questions.service.mappers.QuestionMapper;
 
@@ -34,14 +32,14 @@ public class UserQuestionService {
 	
 	// Return questions from certain category
 	public List<QuestionDto> getCategoryQuestions(int categoryId, String access) {
-		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		int currentUserId = Utils.getCurrentUserId();
 		List<Question> questions;
 	    if (access.equals("public")) {
 	        questions = questionRepository.findAllByCategoryIdAndIsPrivate(categoryId, false);
 	    } else if (access.equals("private")) {
-	        questions = questionRepository.findAllByCategoryIdAndIsPrivateAndAuthorId(categoryId, true, userDetails.getId());
+	        questions = questionRepository.findAllByCategoryIdAndIsPrivateAndAuthorId(categoryId, true, currentUserId);
 	    } else {
-	    	questions = questionRepository.findAllByCategoryIdAndAuthorId(categoryId, userDetails.getId());
+	    	questions = questionRepository.findAllByCategoryIdAndAuthorId(categoryId, currentUserId);
 	    }
 		List<QuestionDto> questionDtos = questionMapper.toQuestionDtos(questions);
 		questionDtos.forEach(question -> utils.setQuestionRating(question));
@@ -64,13 +62,13 @@ public class UserQuestionService {
 	
 	// Return user questions
 	public List<QuestionDto> getUserQuestions(int authorId, String access) {
-		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		int currentUserId = Utils.getCurrentUserId();
 		List<Question> questions;
-		if (access.equals("public") || (access.equals("all") && authorId != userDetails.getId())) {
+		if (access.equals("public") || (access.equals("all") && authorId != currentUserId)) {
 	        questions = questionRepository.findAllByAuthorIdAndIsPrivate(authorId, false);
-	    } else if (access.equals("private") && authorId == userDetails.getId()) {
+	    } else if (access.equals("private") && authorId == currentUserId) {
 	    	questions = questionRepository.findAllByAuthorIdAndIsPrivate(authorId, true);
-	    } else if (access.equals("private") && authorId != userDetails.getId()) {
+	    } else if (access.equals("private") && authorId != currentUserId) {
 	    	return null;
 	    } else {
 	    	questions = questionRepository.findAllByAuthorId(authorId);
@@ -82,9 +80,9 @@ public class UserQuestionService {
 	
 	// Return question by id
 	public FullQuestionDto getQuestionById(int questionId) {
-		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		int currentUserId = Utils.getCurrentUserId();
 		Question question = questionRepository.findById(questionId).get();
-		if (question.getIsPrivate() && question.getAuthorId() != userDetails.getId()) {
+		if (question.getIsPrivate() && question.getAuthorId() != currentUserId) {
 			return null;
 		}
 		FullQuestionDto	questionDto = fullQuestionMapper.toFullQuestionDto(question);
@@ -95,16 +93,15 @@ public class UserQuestionService {
 	
 	// Add a new question
 	public void createQuestion(QuestionRequest questionRequest) {
-		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		String authorName = userDetails.getUsername();
-		int authorId = userDetails.getId();
+		String currentUserName = Utils.getCurrentUserName();
+		int currentUserId = Utils.getCurrentUserId();
 		LocalDateTime dateTime = LocalDateTime.now(); 
 		QuestionDto questionDto = QuestionDto.builder()
 			.name(questionRequest.getName())
 			.categoryId(questionRequest.getCategoryId())
 			.isPrivate(questionRequest.getIsPrivate())
-			.authorName(authorName)
-			.authorId(authorId)
+			.authorName(currentUserName)
+			.authorId(currentUserId)
 			.date(dateTime)
 			.build();
 		Question question = questionMapper.toQuestion(questionDto);
@@ -113,9 +110,9 @@ public class UserQuestionService {
 	
 	// Update certain question
 	public boolean updateQuestion(QuestionRequest questionRequest, int questionId) {
-		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		int currentUserId = Utils.getCurrentUserId();
 		Question question = questionRepository.findById(questionId).get();
-		if (question.getAuthorId() == userDetails.getId()) {
+		if (question.getAuthorId() == currentUserId) {
 			LocalDateTime dateTime = LocalDateTime.now();
 			question.setDate(dateTime);
 			if (Objects.nonNull(questionRequest.getName())) {

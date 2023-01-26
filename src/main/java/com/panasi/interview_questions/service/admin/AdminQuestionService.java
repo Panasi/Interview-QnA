@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.panasi.interview_questions.payload.QuestionRequest;
@@ -15,7 +14,6 @@ import com.panasi.interview_questions.repository.dto.FullQuestionDto;
 import com.panasi.interview_questions.repository.dto.QuestionDto;
 import com.panasi.interview_questions.repository.entity.Category;
 import com.panasi.interview_questions.repository.entity.Question;
-import com.panasi.interview_questions.security.service.UserDetailsImpl;
 import com.panasi.interview_questions.service.mappers.FullQuestionMapper;
 import com.panasi.interview_questions.service.mappers.QuestionMapper;
 
@@ -102,16 +100,15 @@ public class AdminQuestionService {
 	
 	// Add a new question
 	public void createQuestion(QuestionRequest questionRequest) {
-		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		String authorName = userDetails.getUsername();
-		int authorId = userDetails.getId();
+		String currentUserName = Utils.getCurrentUserName();
+		int currentUserId = Utils.getCurrentUserId();
 		LocalDateTime dateTime = LocalDateTime.now(); 
 		QuestionDto questionDto = QuestionDto.builder()
 			.name(questionRequest.getName())
 			.categoryId(questionRequest.getCategoryId())
 			.isPrivate(questionRequest.getIsPrivate())
-			.authorName(authorName)
-			.authorId(authorId)
+			.authorName(currentUserName)
+			.authorId(currentUserId)
 			.date(dateTime)
 			.build();
 		Question question = questionMapper.toQuestion(questionDto);

@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.panasi.interview_questions.payload.AnswerRequest;
@@ -13,7 +12,6 @@ import com.panasi.interview_questions.repository.AnswerRepository;
 import com.panasi.interview_questions.repository.dto.AnswerDto;
 import com.panasi.interview_questions.repository.dto.FullAnswerDto;
 import com.panasi.interview_questions.repository.entity.Answer;
-import com.panasi.interview_questions.security.service.UserDetailsImpl;
 import com.panasi.interview_questions.service.mappers.AnswerMapper;
 import com.panasi.interview_questions.service.mappers.FullAnswerMapper;
 
@@ -31,13 +29,13 @@ public class UserAnswerService {
 	
 	// Return user answers
 	public List<AnswerDto> getUserAnswers(int authorId, String access) {
-		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		int currentUserId = Utils.getCurrentUserId();
 		List<Answer> answers;
-		if (access.equals("public") || (access.equals("all") && authorId != userDetails.getId())) {
+		if (access.equals("public") || (access.equals("all") && authorId != currentUserId)) {
 			answers = answerRepository.findAllByAuthorIdAndIsPrivate(authorId, false);
-		} else if (access.equals("private") && authorId == userDetails.getId()) {
+		} else if (access.equals("private") && authorId == currentUserId) {
 			answers = answerRepository.findAllByAuthorIdAndIsPrivate(authorId, true);
-		} else if (access.equals("private") && authorId != userDetails.getId()) {
+		} else if (access.equals("private") && authorId != currentUserId) {
 	    	return null;
 	    } else {
 			answers = answerRepository.findAllByAuthorId(authorId);
@@ -49,9 +47,9 @@ public class UserAnswerService {
 	
 	// Return answer by id
 	public FullAnswerDto getAnswerById(int answerId) {
-		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		int currentUserId = Utils.getCurrentUserId();
 		Answer answer = answerRepository.findById(answerId).get();
-		if (answer.getIsPrivate() && answer.getAuthorId() != userDetails.getId()) {
+		if (answer.getIsPrivate() && answer.getAuthorId() != currentUserId) {
 			return null;
 		}
 		FullAnswerDto answerDto = fullAnswerMapper.toFullAnswerDto(answer);
@@ -61,16 +59,15 @@ public class UserAnswerService {
 	
 	// Add a new answer
 	public void createAnswer(AnswerRequest answerRequest) {
-		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		String authorName = userDetails.getUsername();
-		int authorId = userDetails.getId();
+		String currentUserName = Utils.getCurrentUserName();
+		int currentUserId = Utils.getCurrentUserId();
 		LocalDateTime dateTime = LocalDateTime.now();
 		AnswerDto answerDto = AnswerDto.builder()
 			.name(answerRequest.getName())
 			.questionId(answerRequest.getQuestionId())
 			.isPrivate(answerRequest.getIsPrivate())
-			.authorName(authorName)
-			.authorId(authorId)
+			.authorName(currentUserName)
+			.authorId(currentUserId)
 			.date(dateTime)
 			.build();
 		Answer answer = answerMapper.toAnswer(answerDto);
@@ -79,9 +76,9 @@ public class UserAnswerService {
 	
 	// Update certain answer
 	public boolean updateAnswer(AnswerRequest answerRequest, int answerId) {
-		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		int currentUserId = Utils.getCurrentUserId();
 		Answer answer = answerRepository.findById(answerId).get();
-		if (answer.getAuthorId() == userDetails.getId()) {
+		if (answer.getAuthorId() == currentUserId) {
 			LocalDateTime dateTime = LocalDateTime.now();
 			answer.setDate(dateTime);
 			if (Objects.nonNull(answerRequest.getName())) {

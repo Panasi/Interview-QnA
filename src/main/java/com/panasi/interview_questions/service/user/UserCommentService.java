@@ -6,11 +6,11 @@ import java.util.Objects;
 
 import javax.validation.Valid;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import com.panasi.interview_questions.payload.CommentRequest;
+import com.panasi.interview_questions.payload.Utils;
 import com.panasi.interview_questions.repository.AnswerCommentRepository;
 import com.panasi.interview_questions.repository.AnswerRepository;
 import com.panasi.interview_questions.repository.QuestionCommentRepository;
@@ -21,7 +21,6 @@ import com.panasi.interview_questions.repository.entity.Answer;
 import com.panasi.interview_questions.repository.entity.AnswerComment;
 import com.panasi.interview_questions.repository.entity.Question;
 import com.panasi.interview_questions.repository.entity.QuestionComment;
-import com.panasi.interview_questions.security.service.UserDetailsImpl;
 import com.panasi.interview_questions.service.mappers.AnswerCommentMapper;
 import com.panasi.interview_questions.service.mappers.QuestionCommentMapper;
 
@@ -42,9 +41,9 @@ public class UserCommentService {
 	
 	// Return all comments to question
 	public List<QuestionCommentDto> getAllCommentsToQuestion(int questionId) {
-		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		int currentUserId = Utils.getCurrentUserId();
 		Question question = questionRepository.findById(questionId).get();
-		if (question.getIsPrivate() == false || userDetails.getId() == question.getAuthorId()) {
+		if (question.getIsPrivate() == false || currentUserId == question.getAuthorId()) {
 			List<QuestionComment> allComments = questionCommentRepository.findAllByQuestionId(questionId);
 			List<QuestionCommentDto> allCommentDtos = questionCommentMapper.toCommentDtos(allComments);
 			return allCommentDtos;
@@ -54,9 +53,9 @@ public class UserCommentService {
 	
 	// Return all comments to answer
 	public List<AnswerCommentDto> getAllCommentsToAnswer(int answerId) {
-		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		int currentUserId = Utils.getCurrentUserId();
 		Answer answer = answerRepository.findById(answerId).get();
-		if (answer.getIsPrivate() == false ||  userDetails.getId() == answer.getAuthorId()) {
+		if (answer.getIsPrivate() == false || currentUserId == answer.getAuthorId()) {
 			List<AnswerComment> allComments = answerCommentRepository.findAllByAnswerId(answerId);
 			List<AnswerCommentDto> allCommentDtos = answerCommentMapper.toCommentDtos(allComments);
 			return allCommentDtos;
@@ -67,10 +66,10 @@ public class UserCommentService {
 	
 	// Return question comment by id
 	public QuestionCommentDto getQuestionCommentById(int commentId) {
-		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		int currentUserId = Utils.getCurrentUserId();
 		QuestionComment comment = questionCommentRepository.findById(commentId).get();
 		Question question = questionRepository.findById(comment.getQuestionId()).get();
-		if (question.getIsPrivate() == false || userDetails.getId() == question.getAuthorId()) {
+		if (question.getIsPrivate() == false || currentUserId == question.getAuthorId()) {
 			QuestionCommentDto commentDto = questionCommentMapper.toCommentDto(comment);
 			return commentDto;
 		}
@@ -79,10 +78,10 @@ public class UserCommentService {
 	
 	// Return answer comment by id
 	public AnswerCommentDto getAnswerCommentById(int commentId) {
-		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		int currentUserId = Utils.getCurrentUserId();
 		AnswerComment comment = answerCommentRepository.findById(commentId).get();
 		Answer answer = answerRepository.findById(comment.getAnswerId()).get();
-		if (answer.getIsPrivate() == false || userDetails.getId() == answer.getAuthorId()) {
+		if (answer.getIsPrivate() == false || currentUserId == answer.getAuthorId()) {
 			AnswerCommentDto commentDto = answerCommentMapper.toCommentDto(comment);
 			return commentDto;
 		}
@@ -91,16 +90,15 @@ public class UserCommentService {
 	
 	// Add a new comment to question
 	public boolean createQuestionComment(@Valid CommentRequest commentRequest, int questionId) {
-		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		int currentUserId = Utils.getCurrentUserId();
 		Question question = questionRepository.findById(questionId).get();
-		int authorId = userDetails.getId();
-		if (question.getIsPrivate() == false || authorId == question.getAuthorId()) {
+		if (question.getIsPrivate() == false || currentUserId == question.getAuthorId()) {
 			LocalDateTime dateTime = LocalDateTime.now();
 			QuestionCommentDto commentDto = QuestionCommentDto.builder()
 				.content(commentRequest.getContent())
 				.rate(commentRequest.getRate())
 				.questionId(questionId)
-				.authorId(authorId)
+				.authorId(currentUserId)
 				.date(dateTime)
 				.build();
 			QuestionComment comment = questionCommentMapper.toComment(commentDto);
@@ -113,16 +111,15 @@ public class UserCommentService {
 	
 	// Add a new comment to answer
 	public boolean createAnswerComment(@Valid CommentRequest commentRequest, int answerId) {
-		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		int currentUserId = Utils.getCurrentUserId();
 		Answer answer = answerRepository.findById(answerId).get();
-		int authorId = userDetails.getId();
-		if (answer.getIsPrivate() == false || userDetails.getId() == answer.getAuthorId()) {
+		if (answer.getIsPrivate() == false || currentUserId == answer.getAuthorId()) {
 			LocalDateTime dateTime = LocalDateTime.now();
 			AnswerCommentDto commentDto = AnswerCommentDto.builder()
 				.content(commentRequest.getContent())
 				.rate(commentRequest.getRate())
 				.answerId(answerId)
-				.authorId(authorId)
+				.authorId(currentUserId)
 				.date(dateTime)
 				.build();
 			AnswerComment comment = answerCommentMapper.toComment(commentDto);
@@ -134,9 +131,9 @@ public class UserCommentService {
 	
 	// Update question comment
 	public boolean updateQuestionComment(@Valid CommentRequest commentRequest, int commentId) {
-		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		int currentUserId = Utils.getCurrentUserId();
 		QuestionComment comment = questionCommentRepository.findById(commentId).get();
-		if (userDetails.getId() == comment.getAuthorId()) {
+		if (currentUserId == comment.getAuthorId()) {
 			LocalDateTime dateTime = LocalDateTime.now();
 			comment.setDate(dateTime);
 			if (Objects.nonNull(commentRequest.getContent())) {
@@ -154,9 +151,9 @@ public class UserCommentService {
 	
 	// Update answer comment
 	public boolean updateAnswerComment(@Valid CommentRequest commentRequest, int commentId) {
-		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		int currentUserId = Utils.getCurrentUserId();
 		AnswerComment comment = answerCommentRepository.findById(commentId).get();
-		if (userDetails.getId() == comment.getAuthorId()) {
+		if (currentUserId == comment.getAuthorId()) {
 			LocalDateTime dateTime = LocalDateTime.now();
 			comment.setDate(dateTime);
 			if (Objects.nonNull(commentRequest.getContent())) {
