@@ -12,6 +12,7 @@ import com.panasi.interview_questions.repository.AnswerRepository;
 import com.panasi.interview_questions.repository.dto.AnswerDto;
 import com.panasi.interview_questions.repository.dto.FullAnswerDto;
 import com.panasi.interview_questions.repository.entity.Answer;
+import com.panasi.interview_questions.service.CommentService;
 import com.panasi.interview_questions.service.mappers.AnswerMapper;
 import com.panasi.interview_questions.service.mappers.FullAnswerMapper;
 
@@ -24,7 +25,7 @@ public class UserAnswerService {
 	private final AnswerRepository answerRepository;
 	private final AnswerMapper answerMapper;
 	private final FullAnswerMapper fullAnswerMapper;
-	private final Utils utils;
+	private final CommentService commentService;
 	
 	
 	// Return user answers
@@ -41,7 +42,7 @@ public class UserAnswerService {
 			answers = answerRepository.findAllByAuthorId(authorId);
 		}
 		List<AnswerDto> answerDtos = answerMapper.toAnswerDtos(answers);
-		answerDtos.stream().forEach(answer -> utils.setAnswerRating(answer));
+		answerDtos.stream().forEach(answer -> commentService.setAnswerRating(answer));
 		return answerDtos;
 	}
 	
@@ -53,7 +54,7 @@ public class UserAnswerService {
 			return null;
 		}
 		FullAnswerDto answerDto = fullAnswerMapper.toFullAnswerDto(answer);
-		utils.setAnswerRating(answerDto);
+		commentService.setAnswerRating(answerDto);
 		return answerDto;
 	}
 	

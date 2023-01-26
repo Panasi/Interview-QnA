@@ -14,6 +14,7 @@ import com.panasi.interview_questions.repository.dto.FullQuestionDto;
 import com.panasi.interview_questions.repository.dto.QuestionDto;
 import com.panasi.interview_questions.repository.entity.Category;
 import com.panasi.interview_questions.repository.entity.Question;
+import com.panasi.interview_questions.service.CommentService;
 import com.panasi.interview_questions.service.mappers.FullQuestionMapper;
 import com.panasi.interview_questions.service.mappers.QuestionMapper;
 
@@ -27,7 +28,7 @@ public class AdminQuestionService {
 	private final CategoryRepository categoryRepository;
 	private final QuestionMapper questionMapper;
 	private final FullQuestionMapper fullQuestionMapper;
-	private final Utils utils;
+	private final CommentService commentService;
 	
 	
 	// Return all questions
@@ -41,7 +42,7 @@ public class AdminQuestionService {
 	        questions = questionRepository.findAll();
 	    }
 	    List<QuestionDto> allQuestionDtos = questionMapper.toQuestionDtos(questions);
-	    allQuestionDtos.forEach(question -> utils.setQuestionRating(question));
+	    allQuestionDtos.forEach(question -> commentService.setQuestionRating(question));
 	    return allQuestionDtos;
 	}
 	
@@ -56,7 +57,7 @@ public class AdminQuestionService {
 	        questions = questionRepository.findAllByCategoryId(categoryId);
 	    }
 		List<QuestionDto> allQuestionDtos = questionMapper.toQuestionDtos(questions);
-		allQuestionDtos.forEach(question -> utils.setQuestionRating(question));
+		allQuestionDtos.forEach(question -> commentService.setQuestionRating(question));
 		return allQuestionDtos;
 	}
 	
@@ -85,7 +86,7 @@ public class AdminQuestionService {
 	        questions = questionRepository.findAllByAuthorId(authorId);
 	    }
 	    List<QuestionDto> allQuestionDtos = questionMapper.toQuestionDtos(questions);
-	    allQuestionDtos.forEach(question -> utils.setQuestionRating(question));
+	    allQuestionDtos.forEach(question -> commentService.setQuestionRating(question));
 		return allQuestionDtos;
 	}
 	
@@ -93,8 +94,8 @@ public class AdminQuestionService {
 	public FullQuestionDto getQuestionById(int questionId) {
 		Question question = questionRepository.findById(questionId).get();
 		FullQuestionDto	questionDto = fullQuestionMapper.toFullQuestionDto(question);
-		questionDto.getAnswers().forEach(answer -> utils.setAnswerRating(answer));
-		utils.setQuestionRating(questionDto);
+		questionDto.getAnswers().forEach(answer -> commentService.setAnswerRating(answer));
+		commentService.setQuestionRating(questionDto);
 		return questionDto;
 	}
 	
