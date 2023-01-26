@@ -65,13 +65,14 @@ public class UserAnswerService {
 		String authorName = userDetails.getUsername();
 		int authorId = userDetails.getId();
 		LocalDateTime dateTime = LocalDateTime.now();
-		AnswerDto answerDto = new AnswerDto();
-		answerDto.setName(answerRequest.getName());
-		answerDto.setQuestionId(answerRequest.getQuestionId());
-		answerDto.setIsPrivate(answerRequest.getIsPrivate());
-		answerDto.setAuthorName(authorName);
-		answerDto.setAuthorId(authorId);
-		answerDto.setDate(dateTime);
+		AnswerDto answerDto = AnswerDto.builder()
+			.name(answerRequest.getName())
+			.questionId(answerRequest.getQuestionId())
+			.isPrivate(answerRequest.getIsPrivate())
+			.authorName(authorName)
+			.authorId(authorId)
+			.date(dateTime)
+			.build();
 		Answer answer = answerMapper.toAnswer(answerDto);
 		answerRepository.save(answer);
 	}

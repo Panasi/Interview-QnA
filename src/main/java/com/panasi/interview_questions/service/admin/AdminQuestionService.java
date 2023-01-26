@@ -106,13 +106,14 @@ public class AdminQuestionService {
 		String authorName = userDetails.getUsername();
 		int authorId = userDetails.getId();
 		LocalDateTime dateTime = LocalDateTime.now(); 
-		QuestionDto questionDto = new QuestionDto();
-		questionDto.setName(questionRequest.getName());
-		questionDto.setCategoryId(questionRequest.getCategoryId());
-		questionDto.setIsPrivate(questionRequest.getIsPrivate());
-		questionDto.setAuthorName(authorName);
-		questionDto.setAuthorId(authorId);
-		questionDto.setDate(dateTime);
+		QuestionDto questionDto = QuestionDto.builder()
+			.name(questionRequest.getName())
+			.categoryId(questionRequest.getCategoryId())
+			.isPrivate(questionRequest.getIsPrivate())
+			.authorName(authorName)
+			.authorId(authorId)
+			.date(dateTime)
+			.build();
 		Question question = questionMapper.toQuestion(questionDto);
 		questionRepository.save(question);
 	}

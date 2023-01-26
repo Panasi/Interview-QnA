@@ -42,9 +42,10 @@ public class CategoryService {
 	
 	// Add a new category
 	public void createCategory(CategoryRequest categoryRequest) {
-		CategoryDto categoryDto = new CategoryDto();
-		categoryDto.setName(categoryRequest.getName());
-		categoryDto.setParentId(categoryRequest.getParentId());
+		CategoryDto categoryDto = CategoryDto.builder()
+			.name(categoryRequest.getName())
+			.parentId(categoryRequest.getParentId())
+			.build();
 		Category category = categoryMapper.toCategory(categoryDto);
 		categoryRepository.save(category);
 	}

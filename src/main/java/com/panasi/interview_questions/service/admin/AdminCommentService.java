@@ -81,12 +81,13 @@ public class AdminCommentService {
 		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		int authorId = userDetails.getId();
 		LocalDateTime dateTime = LocalDateTime.now();
-		QuestionCommentDto commentDto = new QuestionCommentDto();
-		commentDto.setContent(commentRequest.getContent());
-		commentDto.setRate(commentRequest.getRate());
-		commentDto.setQuestionId(questionId);
-		commentDto.setAuthorId(authorId);
-		commentDto.setDate(dateTime);
+		QuestionCommentDto commentDto = QuestionCommentDto.builder()
+			.content(commentRequest.getContent())
+			.rate(commentRequest.getRate())
+			.questionId(questionId)
+			.authorId(authorId)
+			.date(dateTime)
+			.build();
 		QuestionComment comment = questionCommentMapper.toComment(commentDto);
 		questionCommentRepository.save(comment);
 	}
@@ -96,12 +97,13 @@ public class AdminCommentService {
 		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		int authorId = userDetails.getId();
 		LocalDateTime dateTime = LocalDateTime.now();
-		AnswerCommentDto commentDto = new AnswerCommentDto();
-		commentDto.setContent(commentRequest.getContent());
-		commentDto.setRate(commentRequest.getRate());
-		commentDto.setAnswerId(answerId);
-		commentDto.setAuthorId(authorId);
-		commentDto.setDate(dateTime);
+		AnswerCommentDto commentDto = AnswerCommentDto.builder()
+			.content(commentRequest.getContent())
+			.rate(commentRequest.getRate())
+			.answerId(answerId)
+			.authorId(authorId)
+			.date(dateTime)
+			.build();
 		AnswerComment comment = answerCommentMapper.toComment(commentDto);
 		answerCommentRepository.save(comment);
 	}
