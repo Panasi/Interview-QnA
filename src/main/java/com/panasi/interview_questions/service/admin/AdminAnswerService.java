@@ -8,23 +8,14 @@ import org.springframework.stereotype.Service;
 
 import com.panasi.interview_questions.payload.AnswerRequest;
 import com.panasi.interview_questions.payload.Utils;
-import com.panasi.interview_questions.repository.AnswerRepository;
 import com.panasi.interview_questions.repository.dto.AnswerDto;
 import com.panasi.interview_questions.repository.dto.FullAnswerDto;
 import com.panasi.interview_questions.repository.entity.Answer;
 import com.panasi.interview_questions.service.AnswerService;
-import com.panasi.interview_questions.service.CommentService;
-import com.panasi.interview_questions.service.mappers.AnswerMapper;
-import com.panasi.interview_questions.service.mappers.FullAnswerMapper;
 
 @Service
 public class AdminAnswerService extends AnswerService {
 	
-	public AdminAnswerService(AnswerRepository answerRepository, AnswerMapper answerMapper,
-			FullAnswerMapper fullAnswerMapper, CommentService commentService) {
-		super(answerRepository, answerMapper, fullAnswerMapper, commentService);
-	}
-
 	// Return all answers
 	public List<AnswerDto> getAllAnswers(String access) {
 		List<Answer> answers;
@@ -36,7 +27,7 @@ public class AdminAnswerService extends AnswerService {
 			answers = answerRepository.findAll();
 		}
 		List<AnswerDto> allAnswerDtos = answerMapper.toAnswerDtos(answers);
-		allAnswerDtos.stream().forEach(answer -> commentService.setAnswerRating(answer));
+		allAnswerDtos.stream().forEach(answer -> setAnswerRating(answer));
 		List<AnswerDto> sortedAnswers = sortAnswerDtos(allAnswerDtos);
 		return sortedAnswers;
 	}
@@ -52,7 +43,7 @@ public class AdminAnswerService extends AnswerService {
 			answers = answerRepository.findAllByAuthorId(authorId);
 		}
 		List<AnswerDto> answerDtos = answerMapper.toAnswerDtos(answers);
-		answerDtos.stream().forEach(answer -> commentService.setAnswerRating(answer));
+		answerDtos.stream().forEach(answer -> setAnswerRating(answer));
 		List<AnswerDto> sortedAnswers = sortAnswerDtos(answerDtos);
 		return sortedAnswers;
 	}
@@ -61,7 +52,7 @@ public class AdminAnswerService extends AnswerService {
 	public FullAnswerDto getAnswerById(int answerId) {
 		Answer answer = answerRepository.findById(answerId).get();
 		FullAnswerDto answerDto = fullAnswerMapper.toFullAnswerDto(answer);
-		commentService.setAnswerRating(answerDto);
+		setAnswerRating(answerDto);
 		return answerDto;
 	}
 	

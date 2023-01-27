@@ -11,33 +11,17 @@ import org.springframework.validation.annotation.Validated;
 
 import com.panasi.interview_questions.payload.CommentRequest;
 import com.panasi.interview_questions.payload.Utils;
-import com.panasi.interview_questions.repository.AnswerCommentRepository;
-import com.panasi.interview_questions.repository.AnswerRepository;
-import com.panasi.interview_questions.repository.QuestionCommentRepository;
-import com.panasi.interview_questions.repository.QuestionRepository;
 import com.panasi.interview_questions.repository.dto.AnswerCommentDto;
 import com.panasi.interview_questions.repository.dto.QuestionCommentDto;
 import com.panasi.interview_questions.repository.entity.Answer;
 import com.panasi.interview_questions.repository.entity.AnswerComment;
 import com.panasi.interview_questions.repository.entity.Question;
 import com.panasi.interview_questions.repository.entity.QuestionComment;
-import com.panasi.interview_questions.service.mappers.AnswerCommentMapper;
-import com.panasi.interview_questions.service.mappers.QuestionCommentMapper;
-
-import lombok.RequiredArgsConstructor;
+import com.panasi.interview_questions.service.CommentService;
 
 @Service
-@RequiredArgsConstructor
 @Validated
-public class UserCommentService {
-	
-	private final QuestionCommentRepository questionCommentRepository;
-	private final AnswerCommentRepository answerCommentRepository;
-	private final QuestionRepository questionRepository;
-	private final AnswerRepository answerRepository;
-	private final QuestionCommentMapper questionCommentMapper;
-	private final AnswerCommentMapper answerCommentMapper;
-	
+public class UserCommentService extends CommentService {
 	
 	// Return all comments to question
 	public List<QuestionCommentDto> getAllCommentsToQuestion(int questionId) {
@@ -46,7 +30,8 @@ public class UserCommentService {
 		if (question.getIsPrivate() == false || currentUserId == question.getAuthorId()) {
 			List<QuestionComment> allComments = questionCommentRepository.findAllByQuestionId(questionId);
 			List<QuestionCommentDto> allCommentDtos = questionCommentMapper.toCommentDtos(allComments);
-			return allCommentDtos;
+			List<QuestionCommentDto> sortedCommentDtos = sortQuestionCommentDtos(allCommentDtos);
+			return sortedCommentDtos;
 		}
 		return null;
 	}
@@ -58,7 +43,8 @@ public class UserCommentService {
 		if (answer.getIsPrivate() == false || currentUserId == answer.getAuthorId()) {
 			List<AnswerComment> allComments = answerCommentRepository.findAllByAnswerId(answerId);
 			List<AnswerCommentDto> allCommentDtos = answerCommentMapper.toCommentDtos(allComments);
-			return allCommentDtos;
+			List<AnswerCommentDto> sortedCommentDtos = sortAnswerCommentDtos(allCommentDtos);
+			return sortedCommentDtos;
 		}
 		return null;
 	}

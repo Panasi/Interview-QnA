@@ -8,24 +8,14 @@ import org.springframework.stereotype.Service;
 
 import com.panasi.interview_questions.payload.QuestionRequest;
 import com.panasi.interview_questions.payload.Utils;
-import com.panasi.interview_questions.repository.CategoryRepository;
-import com.panasi.interview_questions.repository.QuestionRepository;
 import com.panasi.interview_questions.repository.dto.FullQuestionDto;
 import com.panasi.interview_questions.repository.dto.QuestionDto;
 import com.panasi.interview_questions.repository.entity.Category;
 import com.panasi.interview_questions.repository.entity.Question;
-import com.panasi.interview_questions.service.CommentService;
 import com.panasi.interview_questions.service.QuestionService;
-import com.panasi.interview_questions.service.mappers.FullQuestionMapper;
-import com.panasi.interview_questions.service.mappers.QuestionMapper;
 
 @Service
 public class UserQuestionService extends QuestionService {
-	
-	public UserQuestionService(QuestionRepository questionRepository, CategoryRepository categoryRepository,
-			QuestionMapper questionMapper, FullQuestionMapper fullQuestionMapper, CommentService commentService) {
-		super(questionRepository, categoryRepository, questionMapper, fullQuestionMapper, commentService);
-	}
 
 	// Return questions from certain category
 	public List<QuestionDto> getCategoryQuestions(int categoryId, String access) {
@@ -39,7 +29,7 @@ public class UserQuestionService extends QuestionService {
 	    	questions = questionRepository.findAllByCategoryIdAndAuthorId(categoryId, currentUserId);
 	    }
 		List<QuestionDto> questionDtos = questionMapper.toQuestionDtos(questions);
-		questionDtos.forEach(question -> commentService.setQuestionRating(question));
+		questionDtos.forEach(question -> setQuestionRating(question));
 		List<QuestionDto> sortedQuestions = sortQuestionDtos(questionDtos); 
 	    return sortedQuestions;
 	}
@@ -73,7 +63,7 @@ public class UserQuestionService extends QuestionService {
 	    	questions = questionRepository.findAllByAuthorId(authorId);
 	    }
 		List<QuestionDto> questionDtos = questionMapper.toQuestionDtos(questions);
-		questionDtos.forEach(question -> commentService.setQuestionRating(question));
+		questionDtos.forEach(question -> setQuestionRating(question));
 		List<QuestionDto> sortedQuestions = sortQuestionDtos(questionDtos); 
 	    return sortedQuestions;
 	}
@@ -86,8 +76,8 @@ public class UserQuestionService extends QuestionService {
 			return null;
 		}
 		FullQuestionDto	questionDto = fullQuestionMapper.toFullQuestionDto(question);
-		questionDto.getAnswers().forEach(answer -> commentService.setAnswerRating(answer));
-		commentService.setQuestionRating(questionDto);
+		questionDto.getAnswers().forEach(answer -> setAnswerRating(answer));
+		setQuestionRating(questionDto);
 		return questionDto;
 	}
 	

@@ -41,10 +41,10 @@ public class UserCommentControllerTest {
 			.contentType(MediaType.APPLICATION_JSON))
 	  		.andExpect(status().isOk())
 	  		.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-	  		.andExpect(jsonPath("$[0].content", is("Comment1")))
-	  		.andExpect(jsonPath("$[0].rate", is(1)))
-	  		.andExpect(jsonPath("$[1].content", is("Comment2")))
-	  		.andExpect(jsonPath("$[1].rate", is(2)))
+	  		.andExpect(jsonPath("$[0].content", is("Comment2")))
+	  		.andExpect(jsonPath("$[0].rate", is(2)))
+	  		.andExpect(jsonPath("$[1].content", is("Comment1")))
+	  		.andExpect(jsonPath("$[1].rate", is(1)))
 	  		.andExpect(jsonPath("$[2].content").doesNotHaveJsonPath());
 		
 	}
@@ -69,10 +69,10 @@ public class UserCommentControllerTest {
 			.contentType(MediaType.APPLICATION_JSON))
 	  		.andExpect(status().isOk())
 	  		.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-	  		.andExpect(jsonPath("$[0].content", is("Comment1")))
-	  		.andExpect(jsonPath("$[0].rate", is(1)))
-	  		.andExpect(jsonPath("$[1].content", is("Comment2")))
-	  		.andExpect(jsonPath("$[1].rate", is(2)))
+	  		.andExpect(jsonPath("$[0].content", is("Comment2")))
+	  		.andExpect(jsonPath("$[0].rate", is(2)))
+	  		.andExpect(jsonPath("$[1].content", is("Comment1")))
+	  		.andExpect(jsonPath("$[1].rate", is(1)))
 	  		.andExpect(jsonPath("$[2].content").doesNotHaveJsonPath());
 		
 	}

@@ -4,25 +4,56 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.panasi.interview_questions.repository.AnswerCommentRepository;
 import com.panasi.interview_questions.repository.AnswerRepository;
 import com.panasi.interview_questions.repository.dto.AnswerDto;
+import com.panasi.interview_questions.repository.dto.FullAnswerDto;
+import com.panasi.interview_questions.repository.entity.AnswerComment;
 import com.panasi.interview_questions.service.mappers.AnswerMapper;
 import com.panasi.interview_questions.service.mappers.FullAnswerMapper;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
 public class AnswerService {
 	
-	protected final AnswerRepository answerRepository;
-	protected final AnswerMapper answerMapper;
-	protected final FullAnswerMapper fullAnswerMapper;
-	protected final CommentService commentService;
+	@Autowired
+	protected AnswerRepository answerRepository;
+	@Autowired
+	protected AnswerMapper answerMapper;
+	@Autowired
+	protected FullAnswerMapper fullAnswerMapper;
+	@Autowired
+	private AnswerCommentRepository answerCommentRepository;
 	
+	// Set full answer rating
+	public void setAnswerRating(AnswerDto answer) {
+		int answerId = answer.getId();
+		List<AnswerComment> comments = answerCommentRepository.findAllByAnswerId(answerId);
+		if (comments.isEmpty()) {
+			answer.setRating(null);
+		} else {
+			Double rating = answerCommentRepository.getRating(answerId);
+			Double roundedRating = Math.ceil(rating * 100) / 100;
+			answer.setRating(roundedRating);
+		}
+	}
+			
+	// Set answer rating
+	public void setAnswerRating(FullAnswerDto answer) {
+		int answerId = answer.getId();
+		List<AnswerComment> comments = answerCommentRepository.findAllByAnswerId(answerId);
+		if (comments.isEmpty()) {
+			answer.setRating(null);
+		} else {
+			Double rating = answerCommentRepository.getRating(answerId);
+			Double roundedRating = Math.ceil(rating * 100) / 100;
+			answer.setRating(roundedRating);
+		}
+	}
 	
+	// Sort Answers
 	public List<AnswerDto> sortAnswerDtos(List<AnswerDto> answerDtos) {
 	    List<AnswerDto> sortedAnswers = new ArrayList<>(answerDtos);
 	    sortedAnswers.sort((q1,q2) -> {

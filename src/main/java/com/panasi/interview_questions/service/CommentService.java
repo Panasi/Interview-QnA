@@ -1,78 +1,60 @@
 package com.panasi.interview_questions.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.panasi.interview_questions.repository.AnswerCommentRepository;
+import com.panasi.interview_questions.repository.AnswerRepository;
 import com.panasi.interview_questions.repository.QuestionCommentRepository;
-import com.panasi.interview_questions.repository.dto.AnswerDto;
-import com.panasi.interview_questions.repository.dto.FullAnswerDto;
-import com.panasi.interview_questions.repository.dto.FullQuestionDto;
-import com.panasi.interview_questions.repository.dto.QuestionDto;
-import com.panasi.interview_questions.repository.entity.AnswerComment;
-import com.panasi.interview_questions.repository.entity.QuestionComment;
-
-import lombok.RequiredArgsConstructor;
+import com.panasi.interview_questions.repository.QuestionRepository;
+import com.panasi.interview_questions.repository.dto.AnswerCommentDto;
+import com.panasi.interview_questions.repository.dto.QuestionCommentDto;
+import com.panasi.interview_questions.service.mappers.AnswerCommentMapper;
+import com.panasi.interview_questions.service.mappers.QuestionCommentMapper;
 
 @Service
-@RequiredArgsConstructor
 public class CommentService {
 	
-	private final QuestionCommentRepository questionCommentRepository;
-	private final AnswerCommentRepository answerCommentRepository;
+	@Autowired
+	protected QuestionCommentRepository questionCommentRepository;
+	@Autowired
+	protected AnswerCommentRepository answerCommentRepository;
+	@Autowired
+	protected QuestionRepository questionRepository;
+	@Autowired
+	protected AnswerRepository answerRepository;
+	@Autowired
+	protected QuestionCommentMapper questionCommentMapper;
+	@Autowired
+	protected AnswerCommentMapper answerCommentMapper;
 	
-
-	// Set full question rating
-	public void setQuestionRating(FullQuestionDto question) {
-		int questionId = question.getId();
-		List<QuestionComment> comments = questionCommentRepository.findAllByQuestionId(questionId);
-		if (comments.isEmpty()) {
-			question.setRating(null);
-		} else {
-			Double rating = questionCommentRepository.getRating(questionId);
-			Double roundedRating = Math.ceil(rating * 100) / 100;
-			question.setRating(roundedRating);
-		}
+	// Sort question comments
+	public List<QuestionCommentDto> sortQuestionCommentDtos(List<QuestionCommentDto> questionCommentDtos) {
+		List<QuestionCommentDto> sortedComments = new ArrayList<>(questionCommentDtos);
+		sortedComments.sort((q1,q2) -> {
+			int compare = q1.getQuestionId().compareTo(q2.getQuestionId());
+			if (compare == 0) {
+				compare = q1.getDate().compareTo(q2.getDate());
+			}
+			return compare;
+			});
+		return sortedComments;
 	}
 	
-	// Set question rating
-	public void setQuestionRating(QuestionDto question) {
-		int questionId = question.getId();
-		List<QuestionComment> comments = questionCommentRepository.findAllByQuestionId(questionId);
-		if (comments.isEmpty()) {
-			question.setRating(null);
-		} else {
-			Double rating = questionCommentRepository.getRating(questionId);
-			Double roundedRating = Math.ceil(rating * 100) / 100;
-			question.setRating(roundedRating);
-		}
-	}
-	
-	// Set full answer rating
-	public void setAnswerRating(AnswerDto answer) {
-		int answerId = answer.getId();
-		List<AnswerComment> comments = answerCommentRepository.findAllByAnswerId(answerId);
-		if (comments.isEmpty()) {
-			answer.setRating(null);
-		} else {
-			Double rating = answerCommentRepository.getRating(answerId);
-			Double roundedRating = Math.ceil(rating * 100) / 100;
-			answer.setRating(roundedRating);
-		}
-	}
-		
-	// Set answer rating
-	public void setAnswerRating(FullAnswerDto answer) {
-		int answerId = answer.getId();
-		List<AnswerComment> comments = answerCommentRepository.findAllByAnswerId(answerId);
-		if (comments.isEmpty()) {
-			answer.setRating(null);
-		} else {
-			Double rating = answerCommentRepository.getRating(answerId);
-			Double roundedRating = Math.ceil(rating * 100) / 100;
-			answer.setRating(roundedRating);
-		}
+	// Sort answer comments
+	public List<AnswerCommentDto> sortAnswerCommentDtos(List<AnswerCommentDto> answerCommentDtos) {
+		List<AnswerCommentDto> sortedComments = new ArrayList<>(answerCommentDtos);
+		sortedComments.sort((q1,q2) -> {
+			int compare = q1.getAnswerId().compareTo(q2.getAnswerId());
+			if (compare == 0) {
+				compare = q1.getDate().compareTo(q2.getDate());
+			}
+			return compare;
+		});
+		return sortedComments;
 	}
 
 }

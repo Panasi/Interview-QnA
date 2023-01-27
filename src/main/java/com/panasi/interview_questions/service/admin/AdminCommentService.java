@@ -11,54 +11,46 @@ import org.springframework.validation.annotation.Validated;
 
 import com.panasi.interview_questions.payload.CommentRequest;
 import com.panasi.interview_questions.payload.Utils;
-import com.panasi.interview_questions.repository.AnswerCommentRepository;
-import com.panasi.interview_questions.repository.QuestionCommentRepository;
 import com.panasi.interview_questions.repository.dto.AnswerCommentDto;
 import com.panasi.interview_questions.repository.dto.QuestionCommentDto;
 import com.panasi.interview_questions.repository.entity.AnswerComment;
 import com.panasi.interview_questions.repository.entity.QuestionComment;
-import com.panasi.interview_questions.service.mappers.AnswerCommentMapper;
-import com.panasi.interview_questions.service.mappers.QuestionCommentMapper;
-
-import lombok.RequiredArgsConstructor;
+import com.panasi.interview_questions.service.CommentService;
 
 @Service
-@RequiredArgsConstructor
 @Validated
-public class AdminCommentService {
-	
-	private final AnswerCommentRepository answerCommentRepository;
-	private final QuestionCommentRepository questionCommentRepository;
-	private final AnswerCommentMapper answerCommentMapper;
-	private final QuestionCommentMapper questionCommentMapper;
-	
+public class AdminCommentService extends CommentService {
 	
 	// Return all comments to question
 	public List<QuestionCommentDto> getAllCommentsToQuestion(int questionId) {
 		List<QuestionComment> allComments = questionCommentRepository.findAllByQuestionId(questionId);
 		List<QuestionCommentDto> allCommentDtos = questionCommentMapper.toCommentDtos(allComments);
-		return allCommentDtos;
+		List<QuestionCommentDto> sortedCommentDtos = sortQuestionCommentDtos(allCommentDtos);
+		return sortedCommentDtos;
 	}
 	
 	// Return all comments to answer
 	public List<AnswerCommentDto> getAllCommentsToAnswer(int answerId) {
 		List<AnswerComment> allComments = answerCommentRepository.findAllByAnswerId(answerId);
 		List<AnswerCommentDto> allCommentDtos = answerCommentMapper.toCommentDtos(allComments);
-		return allCommentDtos;
+		List<AnswerCommentDto> sortedCommentDtos = sortAnswerCommentDtos(allCommentDtos);
+		return sortedCommentDtos;
 	}
 	
 	// Return all author comments to all questions
 	public List<QuestionCommentDto> getAllUserCommentsToQuestions(int authorId) {
 		List<QuestionComment> allUserComments = questionCommentRepository.findAllByAuthorId(authorId);
 		List<QuestionCommentDto> allUserCommentDtos = questionCommentMapper.toCommentDtos(allUserComments);
-		return allUserCommentDtos;
+		List<QuestionCommentDto> sortedCommentDtos = sortQuestionCommentDtos(allUserCommentDtos);
+		return sortedCommentDtos;
 	}
 	
 	// Return all author comments to all answers
 	public List<AnswerCommentDto> getAllUserCommentsToAnswers(int authorId) {
 		List<AnswerComment> allUserComments = answerCommentRepository.findAllByAuthorId(authorId);
 		List<AnswerCommentDto> allUserCommentDtos = answerCommentMapper.toCommentDtos(allUserComments);
-		return allUserCommentDtos;
+		List<AnswerCommentDto> sortedCommentDtos = sortAnswerCommentDtos(allUserCommentDtos);
+		return sortedCommentDtos;
 	}
 	
 	// Return question comment by id

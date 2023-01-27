@@ -8,24 +8,14 @@ import org.springframework.stereotype.Service;
 
 import com.panasi.interview_questions.payload.QuestionRequest;
 import com.panasi.interview_questions.payload.Utils;
-import com.panasi.interview_questions.repository.CategoryRepository;
-import com.panasi.interview_questions.repository.QuestionRepository;
 import com.panasi.interview_questions.repository.dto.FullQuestionDto;
 import com.panasi.interview_questions.repository.dto.QuestionDto;
 import com.panasi.interview_questions.repository.entity.Category;
 import com.panasi.interview_questions.repository.entity.Question;
-import com.panasi.interview_questions.service.CommentService;
 import com.panasi.interview_questions.service.QuestionService;
-import com.panasi.interview_questions.service.mappers.FullQuestionMapper;
-import com.panasi.interview_questions.service.mappers.QuestionMapper;
 
 @Service
 public class AdminQuestionService extends QuestionService {
-	
-	public AdminQuestionService(QuestionRepository questionRepository, CategoryRepository categoryRepository,
-			QuestionMapper questionMapper, FullQuestionMapper fullQuestionMapper, CommentService commentService) {
-		super(questionRepository, categoryRepository, questionMapper, fullQuestionMapper, commentService);
-	}
 
 	// Return all questions
 	public List<QuestionDto> getAllQuestions(String access) {
@@ -38,7 +28,7 @@ public class AdminQuestionService extends QuestionService {
 	        questions = questionRepository.findAll();
 	    }
 	    List<QuestionDto> allQuestionDtos = questionMapper.toQuestionDtos(questions);
-	    allQuestionDtos.forEach(question -> commentService.setQuestionRating(question));
+	    allQuestionDtos.forEach(question -> setQuestionRating(question));
 	    List<QuestionDto> sortedQuestions = sortQuestionDtos(allQuestionDtos); 
 	    return sortedQuestions;
 	}
@@ -54,7 +44,7 @@ public class AdminQuestionService extends QuestionService {
 	        questions = questionRepository.findAllByCategoryId(categoryId);
 	    }
 		List<QuestionDto> allQuestionDtos = questionMapper.toQuestionDtos(questions);
-		allQuestionDtos.forEach(question -> commentService.setQuestionRating(question));
+		allQuestionDtos.forEach(question -> setQuestionRating(question));
 		List<QuestionDto> sortedQuestions = sortQuestionDtos(allQuestionDtos); 
 	    return sortedQuestions;
 	}
@@ -85,7 +75,7 @@ public class AdminQuestionService extends QuestionService {
 	        questions = questionRepository.findAllByAuthorId(authorId);
 	    }
 	    List<QuestionDto> allQuestionDtos = questionMapper.toQuestionDtos(questions);
-	    allQuestionDtos.forEach(question -> commentService.setQuestionRating(question));
+	    allQuestionDtos.forEach(question -> setQuestionRating(question));
 	    List<QuestionDto> sortedQuestions = sortQuestionDtos(allQuestionDtos); 
 	    return sortedQuestions;
 	}
@@ -94,8 +84,8 @@ public class AdminQuestionService extends QuestionService {
 	public FullQuestionDto getQuestionById(int questionId) {
 		Question question = questionRepository.findById(questionId).get();
 		FullQuestionDto	questionDto = fullQuestionMapper.toFullQuestionDto(question);
-		questionDto.getAnswers().forEach(answer -> commentService.setAnswerRating(answer));
-		commentService.setQuestionRating(questionDto);
+		questionDto.getAnswers().forEach(answer -> setAnswerRating(answer));
+		setQuestionRating(questionDto);
 		return questionDto;
 	}
 	

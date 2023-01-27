@@ -8,23 +8,14 @@ import org.springframework.stereotype.Service;
 
 import com.panasi.interview_questions.payload.AnswerRequest;
 import com.panasi.interview_questions.payload.Utils;
-import com.panasi.interview_questions.repository.AnswerRepository;
 import com.panasi.interview_questions.repository.dto.AnswerDto;
 import com.panasi.interview_questions.repository.dto.FullAnswerDto;
 import com.panasi.interview_questions.repository.entity.Answer;
 import com.panasi.interview_questions.service.AnswerService;
-import com.panasi.interview_questions.service.CommentService;
-import com.panasi.interview_questions.service.mappers.AnswerMapper;
-import com.panasi.interview_questions.service.mappers.FullAnswerMapper;
 
 @Service
 public class UserAnswerService extends AnswerService {
 	
-	public UserAnswerService(AnswerRepository answerRepository, AnswerMapper answerMapper,
-			FullAnswerMapper fullAnswerMapper, CommentService commentService) {
-		super(answerRepository, answerMapper, fullAnswerMapper, commentService);
-	}
-
 	// Return user answers
 	public List<AnswerDto> getUserAnswers(int authorId, String access) {
 		int currentUserId = Utils.getCurrentUserId();
@@ -39,7 +30,7 @@ public class UserAnswerService extends AnswerService {
 			answers = answerRepository.findAllByAuthorId(authorId);
 		}
 		List<AnswerDto> answerDtos = answerMapper.toAnswerDtos(answers);
-		answerDtos.stream().forEach(answer -> commentService.setAnswerRating(answer));
+		answerDtos.stream().forEach(answer -> setAnswerRating(answer));
 		List<AnswerDto> sortedAnswers = sortAnswerDtos(answerDtos);
 		return sortedAnswers;
 	}
@@ -52,7 +43,7 @@ public class UserAnswerService extends AnswerService {
 			return null;
 		}
 		FullAnswerDto answerDto = fullAnswerMapper.toFullAnswerDto(answer);
-		commentService.setAnswerRating(answerDto);
+		setAnswerRating(answerDto);
 		return answerDto;
 	}
 	
