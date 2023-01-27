@@ -124,7 +124,7 @@ public class GuestAnswerControllerTest {
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("name", is("Admin public answer")))
-			.andExpect(jsonPath("questionId", is(1)));
+			.andExpect(jsonPath("questionId", is(3)));
 		
 	}
 	
@@ -181,7 +181,7 @@ public class GuestAnswerControllerTest {
 	@Test
 	public void updateAnswer_then_Status401() throws Exception {
 			
-		mvc.perform(put("/answers/8")
+		mvc.perform(put("/answers/6")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content("{\"name\": \"User1 updated answer\"}"))
 			.andExpect(status().isUnauthorized());
@@ -193,7 +193,7 @@ public class GuestAnswerControllerTest {
 	@Test
 	public void deleteAnswer_then_Status401() throws Exception {
 
-		mvc.perform(delete("/admin/answers/10")
+		mvc.perform(delete("/admin/answers/6")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isUnauthorized());
 

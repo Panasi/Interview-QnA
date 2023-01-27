@@ -12,22 +12,19 @@ import com.panasi.interview_questions.repository.AnswerRepository;
 import com.panasi.interview_questions.repository.dto.AnswerDto;
 import com.panasi.interview_questions.repository.dto.FullAnswerDto;
 import com.panasi.interview_questions.repository.entity.Answer;
+import com.panasi.interview_questions.service.AnswerService;
 import com.panasi.interview_questions.service.CommentService;
 import com.panasi.interview_questions.service.mappers.AnswerMapper;
 import com.panasi.interview_questions.service.mappers.FullAnswerMapper;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
-public class UserAnswerService {
+public class UserAnswerService extends AnswerService {
 	
-	private final AnswerRepository answerRepository;
-	private final AnswerMapper answerMapper;
-	private final FullAnswerMapper fullAnswerMapper;
-	private final CommentService commentService;
-	
-	
+	public UserAnswerService(AnswerRepository answerRepository, AnswerMapper answerMapper,
+			FullAnswerMapper fullAnswerMapper, CommentService commentService) {
+		super(answerRepository, answerMapper, fullAnswerMapper, commentService);
+	}
+
 	// Return user answers
 	public List<AnswerDto> getUserAnswers(int authorId, String access) {
 		int currentUserId = Utils.getCurrentUserId();
@@ -43,7 +40,8 @@ public class UserAnswerService {
 		}
 		List<AnswerDto> answerDtos = answerMapper.toAnswerDtos(answers);
 		answerDtos.stream().forEach(answer -> commentService.setAnswerRating(answer));
-		return answerDtos;
+		List<AnswerDto> sortedAnswers = sortAnswerDtos(answerDtos);
+		return sortedAnswers;
 	}
 	
 	// Return answer by id

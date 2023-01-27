@@ -12,22 +12,19 @@ import com.panasi.interview_questions.repository.AnswerRepository;
 import com.panasi.interview_questions.repository.dto.AnswerDto;
 import com.panasi.interview_questions.repository.dto.FullAnswerDto;
 import com.panasi.interview_questions.repository.entity.Answer;
+import com.panasi.interview_questions.service.AnswerService;
 import com.panasi.interview_questions.service.CommentService;
 import com.panasi.interview_questions.service.mappers.AnswerMapper;
 import com.panasi.interview_questions.service.mappers.FullAnswerMapper;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
-public class AdminAnswerService {
+public class AdminAnswerService extends AnswerService {
 	
-	private final AnswerRepository answerRepository;
-	private final AnswerMapper answerMapper;
-	private final FullAnswerMapper fullAnswerMapper;
-	private final CommentService commentService;
+	public AdminAnswerService(AnswerRepository answerRepository, AnswerMapper answerMapper,
+			FullAnswerMapper fullAnswerMapper, CommentService commentService) {
+		super(answerRepository, answerMapper, fullAnswerMapper, commentService);
+	}
 
-	
 	// Return all answers
 	public List<AnswerDto> getAllAnswers(String access) {
 		List<Answer> answers;
@@ -40,7 +37,8 @@ public class AdminAnswerService {
 		}
 		List<AnswerDto> allAnswerDtos = answerMapper.toAnswerDtos(answers);
 		allAnswerDtos.stream().forEach(answer -> commentService.setAnswerRating(answer));
-		return allAnswerDtos;
+		List<AnswerDto> sortedAnswers = sortAnswerDtos(allAnswerDtos);
+		return sortedAnswers;
 	}
 	
 	// Return all user answers
@@ -53,9 +51,10 @@ public class AdminAnswerService {
 		} else {
 			answers = answerRepository.findAllByAuthorId(authorId);
 		}
-		List<AnswerDto> allAnswerDtos = answerMapper.toAnswerDtos(answers);
-		allAnswerDtos.stream().forEach(answer -> commentService.setAnswerRating(answer));
-		return allAnswerDtos;
+		List<AnswerDto> answerDtos = answerMapper.toAnswerDtos(answers);
+		answerDtos.stream().forEach(answer -> commentService.setAnswerRating(answer));
+		List<AnswerDto> sortedAnswers = sortAnswerDtos(answerDtos);
+		return sortedAnswers;
 	}
 	
 	// Return answer by id

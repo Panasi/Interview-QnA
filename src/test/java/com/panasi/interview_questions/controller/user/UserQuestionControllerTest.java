@@ -145,8 +145,9 @@ public class UserQuestionControllerTest {
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-			.andExpect(jsonPath("$[0].name", is("User1 public question")))
-			.andExpect(jsonPath("$[1].name", is("User1 private question")));
+			.andExpect(jsonPath("$[0].name", is("User1 private question")))
+			.andExpect(jsonPath("$[1].name", is("User1 public question")))
+			.andExpect(jsonPath("$[2].name").doesNotHaveJsonPath());
 		
 		mvc.perform(get("/questions/user/3")
 			.contentType(MediaType.APPLICATION_JSON))
@@ -227,7 +228,8 @@ public class UserQuestionControllerTest {
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$[0].name", is("User2 public question")))
-			.andExpect(jsonPath("$[1].name", is("User2 private question")));
+			.andExpect(jsonPath("$[1].name", is("User2 private question")))
+			.andExpect(jsonPath("$[2].name").doesNotHaveJsonPath());
 		
 	}
 	
@@ -303,12 +305,12 @@ public class UserQuestionControllerTest {
 	@WithUserDetails("User1")
 	public void updateQuestion_then_Status202() throws Exception {
 			
-		mvc.perform(put("/questions/8")
+		mvc.perform(put("/questions/4")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content("{\"name\": \"User1 updated question\"}"))
 			.andExpect(status().isAccepted());
 				    
-		mvc.perform(get("/questions/8")
+		mvc.perform(get("/questions/4")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -321,7 +323,7 @@ public class UserQuestionControllerTest {
 	@WithUserDetails("User1")
 	public void updateQuestion_then_Status403() throws Exception {
 			
-		mvc.perform(put("/questions/9")
+		mvc.perform(put("/questions/6")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content("{\"name\": \"User2 updated question\"}"))
 			.andExpect(status().isForbidden())

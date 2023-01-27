@@ -15,22 +15,18 @@ import com.panasi.interview_questions.repository.dto.QuestionDto;
 import com.panasi.interview_questions.repository.entity.Category;
 import com.panasi.interview_questions.repository.entity.Question;
 import com.panasi.interview_questions.service.CommentService;
+import com.panasi.interview_questions.service.QuestionService;
 import com.panasi.interview_questions.service.mappers.FullQuestionMapper;
 import com.panasi.interview_questions.service.mappers.QuestionMapper;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
-public class AdminQuestionService {
+public class AdminQuestionService extends QuestionService {
 	
-	private final QuestionRepository questionRepository;
-	private final CategoryRepository categoryRepository;
-	private final QuestionMapper questionMapper;
-	private final FullQuestionMapper fullQuestionMapper;
-	private final CommentService commentService;
-	
-	
+	public AdminQuestionService(QuestionRepository questionRepository, CategoryRepository categoryRepository,
+			QuestionMapper questionMapper, FullQuestionMapper fullQuestionMapper, CommentService commentService) {
+		super(questionRepository, categoryRepository, questionMapper, fullQuestionMapper, commentService);
+	}
+
 	// Return all questions
 	public List<QuestionDto> getAllQuestions(String access) {
 	    List<Question> questions;
@@ -43,7 +39,8 @@ public class AdminQuestionService {
 	    }
 	    List<QuestionDto> allQuestionDtos = questionMapper.toQuestionDtos(questions);
 	    allQuestionDtos.forEach(question -> commentService.setQuestionRating(question));
-	    return allQuestionDtos;
+	    List<QuestionDto> sortedQuestions = sortQuestionDtos(allQuestionDtos); 
+	    return sortedQuestions;
 	}
 	
 	// Return questions from certain category
@@ -58,7 +55,8 @@ public class AdminQuestionService {
 	    }
 		List<QuestionDto> allQuestionDtos = questionMapper.toQuestionDtos(questions);
 		allQuestionDtos.forEach(question -> commentService.setQuestionRating(question));
-		return allQuestionDtos;
+		List<QuestionDto> sortedQuestions = sortQuestionDtos(allQuestionDtos); 
+	    return sortedQuestions;
 	}
 	
 	// Return questions from certain category and all its subcategories
@@ -67,7 +65,8 @@ public class AdminQuestionService {
 		allQuestionDtos.addAll(questionDtos);
 		List<Category> allSubcategories = categoryRepository.findAllByParentId(categoryId);
 		if (allSubcategories.isEmpty()) {
-			return allQuestionDtos;
+			List<QuestionDto> sortedQuestions = sortQuestionDtos(allQuestionDtos);
+			return sortedQuestions;
 		}
 		allSubcategories.forEach(subcategory -> {
 			getSubcategoriesQuestions(subcategory.getId(), access, allQuestionDtos);
@@ -87,7 +86,8 @@ public class AdminQuestionService {
 	    }
 	    List<QuestionDto> allQuestionDtos = questionMapper.toQuestionDtos(questions);
 	    allQuestionDtos.forEach(question -> commentService.setQuestionRating(question));
-		return allQuestionDtos;
+	    List<QuestionDto> sortedQuestions = sortQuestionDtos(allQuestionDtos); 
+	    return sortedQuestions;
 	}
 	
 	// Return question by id

@@ -15,33 +15,21 @@ INSERT INTO categories (name, parent_id) VALUES
 ('Category4', null),
 ('Category5', null);
 
-INSERT INTO questions (name, user_id, category_id, is_private) VALUES
-('Admin public question', 1, 1, false),
-('Admin private question', 1, 2, true),
-('User1 public question', 2, 3, false),
-('User1 private question', 2, 1, true),
-('User2 public question', 3, 2, false),
-('User2 private question', 3, 3, true),
-('Admin question for update', 1, 3, true),
-('User1 question for update', 2, 3, true),
-('User2 question for update', 3, 3, true),
-('Admin question for delete', 1, 3, true),
-('User1 question for delete', 2, 3, true),
-('User2 question for delete', 3, 3, true);
+INSERT INTO questions (name, user_id, category_id, is_private, date) VALUES
+('Admin public question',  1, 1, false, '2023-01-27T10:53:00.092804'),
+('Admin private question', 1, 2, true, '2023-01-27T10:52:00.092804'),
+('User1 public question',  2, 3, false, '2023-01-27T10:54:00.092804'),
+('User1 private question', 2, 1, true, '2023-01-27T10:55:00.092804'),
+('User2 public question',  3, 2, false, '2023-01-27T10:52:00.092804'),
+('User2 private question', 3, 3, true, '2023-01-27T10:47:00.092804');
 
-INSERT INTO answers (name, user_id, question_id, is_private) VALUES
-('Admin public answer', 1, 1, false),
-('Admin private answer', 1, 1, true),
-('User1 public answer', 2, 1, false),
-('User1 private answer', 2, 1, true),
-('User2 public answer', 3, 1, false),
-('User2 private answer', 3, 1, true),
-('Admin answer for update', 1, 1, true),
-('User1 answer for update', 2, 1, true),
-('User2 answer for update', 3, 1, true),
-('Admin answer for delete', 1, 1, true),
-('User1 answer for delete', 2, 1, true),
-('User2 answer for delete', 3, 1, true);
+INSERT INTO answers (name, user_id, question_id, is_private, date) VALUES
+('Admin public answer',  1, 3, false, '2023-01-27T10:53:00.092804'),
+('Admin private answer', 1, 1, true, '2023-01-27T10:52:00.092804'),
+('User1 public answer',  2, 2, false, '2023-01-27T10:54:00.092804'),
+('User1 private answer', 2, 1, true, '2023-01-27T10:55:00.092804'),
+('User2 public answer',  3, 2, false, '2023-01-27T10:52:00.092804'),
+('User2 private answer', 3, 2, true, '2023-01-27T10:47:00.092804');
 
 INSERT INTO question_comments (content, rate, question_id, user_id) VALUES
 ('Comment1', 1, 1, 2),

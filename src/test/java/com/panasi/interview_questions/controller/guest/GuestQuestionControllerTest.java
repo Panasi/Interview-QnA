@@ -208,7 +208,7 @@ public class GuestQuestionControllerTest {
 	@Test
 	public void updateQuestion_then_Status401() throws Exception {
 			
-		mvc.perform(put("/questions/8")
+		mvc.perform(put("/questions/6")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content("{\"name\": \"User1 updated question\"}"))
 			.andExpect(status().isUnauthorized());
@@ -220,7 +220,7 @@ public class GuestQuestionControllerTest {
 	@Test
 	public void deleteQuestion_then_Status401() throws Exception {
 			
-		mvc.perform(delete("/admin/questions/10")
+		mvc.perform(delete("/admin/questions/6")
 		    .contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isUnauthorized());
 		

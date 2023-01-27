@@ -15,22 +15,18 @@ import com.panasi.interview_questions.repository.dto.QuestionDto;
 import com.panasi.interview_questions.repository.entity.Category;
 import com.panasi.interview_questions.repository.entity.Question;
 import com.panasi.interview_questions.service.CommentService;
+import com.panasi.interview_questions.service.QuestionService;
 import com.panasi.interview_questions.service.mappers.FullQuestionMapper;
 import com.panasi.interview_questions.service.mappers.QuestionMapper;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
-public class UserQuestionService {
+public class UserQuestionService extends QuestionService {
 	
-	private final QuestionRepository questionRepository;
-	private final CategoryRepository categoryRepository;
-	private final QuestionMapper questionMapper;
-	private final FullQuestionMapper fullQuestionMapper;
-	private final CommentService commentService;
-	
-	
+	public UserQuestionService(QuestionRepository questionRepository, CategoryRepository categoryRepository,
+			QuestionMapper questionMapper, FullQuestionMapper fullQuestionMapper, CommentService commentService) {
+		super(questionRepository, categoryRepository, questionMapper, fullQuestionMapper, commentService);
+	}
+
 	// Return questions from certain category
 	public List<QuestionDto> getCategoryQuestions(int categoryId, String access) {
 		int currentUserId = Utils.getCurrentUserId();
@@ -44,7 +40,8 @@ public class UserQuestionService {
 	    }
 		List<QuestionDto> questionDtos = questionMapper.toQuestionDtos(questions);
 		questionDtos.forEach(question -> commentService.setQuestionRating(question));
-		return questionDtos;
+		List<QuestionDto> sortedQuestions = sortQuestionDtos(questionDtos); 
+	    return sortedQuestions;
 	}
 	
 	// Return questions from certain category and all its subcategories
@@ -53,7 +50,8 @@ public class UserQuestionService {
 		allQuestionDtos.addAll(questionDtos);
 		List<Category> allSubcategories = categoryRepository.findAllByParentId(categoryId);
 		if (allSubcategories.isEmpty()) {
-			return allQuestionDtos;
+			List<QuestionDto> sortedQuestions = sortQuestionDtos(allQuestionDtos); 
+		    return sortedQuestions;
 		}
 		allSubcategories.forEach(subcategory -> {
 			getSubcategoriesQuestions(subcategory.getId(), access, allQuestionDtos);
@@ -76,7 +74,8 @@ public class UserQuestionService {
 	    }
 		List<QuestionDto> questionDtos = questionMapper.toQuestionDtos(questions);
 		questionDtos.forEach(question -> commentService.setQuestionRating(question));
-		return questionDtos;
+		List<QuestionDto> sortedQuestions = sortQuestionDtos(questionDtos); 
+	    return sortedQuestions;
 	}
 	
 	// Return question by id

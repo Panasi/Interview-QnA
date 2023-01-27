@@ -43,11 +43,12 @@ public class AdminQuestionControllerTest {
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$[0].name", is("Admin public question")))
-			.andExpect(jsonPath("$[1].name", is("Admin private question")))
-			.andExpect(jsonPath("$[2].name", is("User1 public question")))
-			.andExpect(jsonPath("$[3].name", is("User1 private question")))
-			.andExpect(jsonPath("$[4].name", is("User2 public question")))
-			.andExpect(jsonPath("$[5].name", is("User2 private question")));
+			.andExpect(jsonPath("$[1].name", is("User1 private question")))
+			.andExpect(jsonPath("$[2].name", is("User2 public question")))
+			.andExpect(jsonPath("$[3].name", is("Admin private question")))
+			.andExpect(jsonPath("$[4].name", is("User1 public question")))
+			.andExpect(jsonPath("$[5].name", is("User2 private question")))
+			.andExpect(jsonPath("$[6].name").doesNotHaveJsonPath());
 	    
 	}
 	
@@ -60,8 +61,9 @@ public class AdminQuestionControllerTest {
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$[0].name", is("Admin public question")))
-			.andExpect(jsonPath("$[1].name", is("User1 public question")))
-			.andExpect(jsonPath("$[2].name", is("User2 public question")));
+			.andExpect(jsonPath("$[1].name", is("User2 public question")))
+			.andExpect(jsonPath("$[2].name", is("User1 public question")))
+			.andExpect(jsonPath("$[3].name").doesNotHaveJsonPath());
 	    
 	}
 	
@@ -73,9 +75,10 @@ public class AdminQuestionControllerTest {
 	    	.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-			.andExpect(jsonPath("$[0].name", is("Admin private question")))
-			.andExpect(jsonPath("$[1].name", is("User1 private question")))
-			.andExpect(jsonPath("$[2].name", is("User2 private question")));
+			.andExpect(jsonPath("$[0].name", is("User1 private question")))
+			.andExpect(jsonPath("$[1].name", is("Admin private question")))
+			.andExpect(jsonPath("$[2].name", is("User2 private question")))
+			.andExpect(jsonPath("$[3].name").doesNotHaveJsonPath());
 	    
 	}
 	
@@ -131,10 +134,10 @@ public class AdminQuestionControllerTest {
 	      	.andExpect(jsonPath("$[0].rating", is(1.5)))
 			.andExpect(jsonPath("$[1].name", is("User1 private question")))
 			.andExpect(jsonPath("$[1].rating", is(5.0)))
-			.andExpect(jsonPath("$[2].name", is("Admin private question")))
-			.andExpect(jsonPath("$[2].rating", is(3.5)))
-			.andExpect(jsonPath("$[3].name", is("User2 public question")))
-			.andExpect(jsonPath("$[3].rating", is(nullValue())))
+			.andExpect(jsonPath("$[2].name", is("User2 public question")))
+			.andExpect(jsonPath("$[2].rating", is(nullValue())))
+			.andExpect(jsonPath("$[3].name", is("Admin private question")))
+			.andExpect(jsonPath("$[3].rating", is(3.5)))
 			.andExpect(jsonPath("$[4].name").doesNotHaveJsonPath());
 	    
 	}
@@ -180,14 +183,16 @@ public class AdminQuestionControllerTest {
 		  	.andExpect(status().isOk())
 		  	.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 		  	.andExpect(jsonPath("$[0].name", is("Admin public question")))
-		  	.andExpect(jsonPath("$[1].name", is("Admin private question")));
+		  	.andExpect(jsonPath("$[1].name", is("Admin private question")))
+		  	.andExpect(jsonPath("$[2].name").doesNotHaveJsonPath());
 		
 		mvc.perform(get("/admin/questions/user/2")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-			.andExpect(jsonPath("$[0].name", is("User1 public question")))
-			.andExpect(jsonPath("$[1].name", is("User1 private question")));
+			.andExpect(jsonPath("$[0].name", is("User1 private question")))
+			.andExpect(jsonPath("$[1].name", is("User1 public question")))
+			.andExpect(jsonPath("$[2].name").doesNotHaveJsonPath());
 			
 		
 		mvc.perform(get("/admin/questions/user/3")
@@ -195,7 +200,8 @@ public class AdminQuestionControllerTest {
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$[0].name", is("User2 public question")))
-			.andExpect(jsonPath("$[1].name", is("User2 private question")));
+			.andExpect(jsonPath("$[1].name", is("User2 private question")))
+			.andExpect(jsonPath("$[2].name").doesNotHaveJsonPath());
 		
 	}
 	
@@ -207,20 +213,23 @@ public class AdminQuestionControllerTest {
 			.contentType(MediaType.APPLICATION_JSON))
 		  	.andExpect(status().isOk())
 		  	.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-		  	.andExpect(jsonPath("$[0].name", is("Admin public question")));
+		  	.andExpect(jsonPath("$[0].name", is("Admin public question")))
+		  	.andExpect(jsonPath("$[1].name").doesNotHaveJsonPath());
 		
 		mvc.perform(get("/admin/questions/user/2?access=public")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-			.andExpect(jsonPath("$[0].name", is("User1 public question")));
+			.andExpect(jsonPath("$[0].name", is("User1 public question")))
+			.andExpect(jsonPath("$[1].name").doesNotHaveJsonPath());
 			
 		
 		mvc.perform(get("/admin/questions/user/3?access=public")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-			.andExpect(jsonPath("$[0].name", is("User2 public question")));
+			.andExpect(jsonPath("$[0].name", is("User2 public question")))
+			.andExpect(jsonPath("$[1].name").doesNotHaveJsonPath());
 		
 	}
 	
@@ -232,20 +241,23 @@ public class AdminQuestionControllerTest {
 			.contentType(MediaType.APPLICATION_JSON))
 		  	.andExpect(status().isOk())
 		  	.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-		  	.andExpect(jsonPath("$[0].name", is("Admin private question")));
+		  	.andExpect(jsonPath("$[0].name", is("Admin private question")))
+		  	.andExpect(jsonPath("$[1].name").doesNotHaveJsonPath());
 		
 		mvc.perform(get("/admin/questions/user/2?access=private")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-			.andExpect(jsonPath("$[0].name", is("User1 private question")));
+			.andExpect(jsonPath("$[0].name", is("User1 private question")))
+			.andExpect(jsonPath("$[1].name").doesNotHaveJsonPath());
 			
 		
 		mvc.perform(get("/admin/questions/user/3?access=private")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-			.andExpect(jsonPath("$[0].name", is("User2 private question")));
+			.andExpect(jsonPath("$[0].name", is("User2 private question")))
+			.andExpect(jsonPath("$[1].name").doesNotHaveJsonPath());
 		
 	}
 	
@@ -325,12 +337,12 @@ public class AdminQuestionControllerTest {
 	@WithUserDetails("Admin")
 	public void updateQuestion_then_Status202() throws Exception {
 		
-		mvc.perform(put("/admin/questions/7")
+		mvc.perform(put("/admin/questions/6")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content("{\"name\": \"Admin updated question\"}"))
 			.andExpect(status().isAccepted());
 				    
-		mvc.perform(get("/admin/questions/7")
+		mvc.perform(get("/admin/questions/6")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -355,11 +367,11 @@ public class AdminQuestionControllerTest {
 	@WithUserDetails("Admin")
 	public void deleteQuestion_then_Status200() throws Exception {
 		
-	    mvc.perform(delete("/admin/questions/10")
+	    mvc.perform(delete("/admin/questions/6")
 	    	.contentType(MediaType.APPLICATION_JSON))
 	     	.andExpect(status().isOk());
 	    
-	    mvc.perform(get("/admin/questions/10")
+	    mvc.perform(get("/admin/questions/6")
 	    	.contentType(MediaType.APPLICATION_JSON))
 	     	.andExpect(status().isNotFound())
 	     	.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

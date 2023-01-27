@@ -58,8 +58,9 @@ public class UserAnswerControllerTest {
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-			.andExpect(jsonPath("$[0].name", is("User1 public answer")))
-			.andExpect(jsonPath("$[1].name", is("User1 private answer")));
+			.andExpect(jsonPath("$[0].name", is("User1 private answer")))
+			.andExpect(jsonPath("$[1].name", is("User1 public answer")))
+			.andExpect(jsonPath("$[2].name").doesNotHaveJsonPath());
 		
 		mvc.perform(get("/answers/user/3")
 			.contentType(MediaType.APPLICATION_JSON))
@@ -86,7 +87,8 @@ public class UserAnswerControllerTest {
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-			.andExpect(jsonPath("$[0].name", is("User1 public answer")));
+			.andExpect(jsonPath("$[0].name", is("User1 public answer")))
+			.andExpect(jsonPath("$[1].name").doesNotHaveJsonPath());
 		
 		mvc.perform(get("/answers/user/3?access=public")
 			.contentType(MediaType.APPLICATION_JSON))
@@ -111,7 +113,8 @@ public class UserAnswerControllerTest {
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-			.andExpect(jsonPath("$[0].name", is("User1 private answer")));
+			.andExpect(jsonPath("$[0].name", is("User1 private answer")))
+			.andExpect(jsonPath("$[1].name").doesNotHaveJsonPath());
 		
 		mvc.perform(get("/answers/user/3?access=private")
 			.contentType(MediaType.APPLICATION_JSON))
@@ -144,7 +147,8 @@ public class UserAnswerControllerTest {
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$[0].name", is("User2 public answer")))
-			.andExpect(jsonPath("$[1].name", is("User2 private answer")));
+			.andExpect(jsonPath("$[1].name", is("User2 private answer")))
+			.andExpect(jsonPath("$[2].name").doesNotHaveJsonPath());
 		
 	}
 	
@@ -157,7 +161,7 @@ public class UserAnswerControllerTest {
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("name", is("Admin public answer")))
-			.andExpect(jsonPath("questionId", is(1)));
+			.andExpect(jsonPath("questionId", is(3)));
 		
 		mvc.perform(get("/answers/2")
 			.contentType(MediaType.APPLICATION_JSON))
@@ -220,12 +224,12 @@ public class UserAnswerControllerTest {
 	@WithUserDetails("User1")
 	public void updateAnswer_then_Status202() throws Exception {
 			
-		mvc.perform(put("/answers/8")
+		mvc.perform(put("/answers/4")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content("{\"name\": \"User1 updated answer\"}"))
 			.andExpect(status().isAccepted());
 				    
-		mvc.perform(get("/answers/8")
+		mvc.perform(get("/answers/4")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -237,7 +241,7 @@ public class UserAnswerControllerTest {
 	@WithUserDetails("User1")
 	public void updateAnswer_then_Status403() throws Exception {
 			
-		mvc.perform(put("/answers/9")
+		mvc.perform(put("/answers/6")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content("{\"name\": \"User2 updated answer\"}"))
 			.andExpect(status().isForbidden())
