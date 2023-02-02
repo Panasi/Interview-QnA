@@ -116,7 +116,7 @@ public class AdminCommentController {
 	@DeleteMapping("/questions/comment/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	@Operation(summary = "Delete question comment")
-	public ResponseEntity<?> deleteQuestionComment(@PathVariable int id) {
+	public ResponseEntity<MessageResponse> deleteQuestionComment(@PathVariable int id) {
 		service.deleteQuestionComment(id);
 		String message = "Comment " + id + " deleted";
 		return new ResponseEntity<>(new MessageResponse(message), HttpStatus.OK);
@@ -125,7 +125,7 @@ public class AdminCommentController {
 	@DeleteMapping("/answers/comment/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	@Operation(summary = "Delete answer comment")
-	public ResponseEntity<?> deleteAnswerComment(@PathVariable int id) {
+	public ResponseEntity<MessageResponse> deleteAnswerComment(@PathVariable int id) {
 		service.deleteAnswerComment(id);
 		String message = "Comment " + id + " deleted";
 		return new ResponseEntity<>(new MessageResponse(message), HttpStatus.OK);

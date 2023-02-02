@@ -47,7 +47,7 @@ public class AuthController {
 	private final JwtUtils jwtUtils;
 	
 	@PostMapping("/signin")
-	public ResponseEntity<?> authenticateUser(@Valid @RequestBody SignInRequest signInRequest) {
+	public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody SignInRequest signInRequest) {
 
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword()));
@@ -69,7 +69,7 @@ public class AuthController {
 	}
 	
 	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
+	public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
 			String message = "Error: Username is already taken!";
 			return new ResponseEntity<>(new MessageResponse(message), HttpStatus.BAD_REQUEST);

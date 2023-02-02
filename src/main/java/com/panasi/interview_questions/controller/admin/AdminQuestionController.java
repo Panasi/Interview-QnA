@@ -95,7 +95,7 @@ public class AdminQuestionController {
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	@Operation(summary = "Delete question")
-	public ResponseEntity<?> deleteQuestion(@PathVariable int id) {
+	public ResponseEntity<MessageResponse> deleteQuestion(@PathVariable int id) {
 			service.deleteQuestion(id);
 			String message = "Question " + id + " is deleted";
 			return new ResponseEntity<>(new MessageResponse(message), HttpStatus.OK);
