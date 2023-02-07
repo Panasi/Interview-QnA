@@ -1,5 +1,7 @@
 package com.panasi.interview_questions.service.mappers;
 
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -11,5 +13,6 @@ public interface FullQuestionMapper {
 	
 	@Mapping(target = "rating", ignore = true)
 	FullQuestionDto toFullQuestionDto(Question question);
+	List<FullQuestionDto> toFullQuestionDtos(List<Question> questions);
 
 }

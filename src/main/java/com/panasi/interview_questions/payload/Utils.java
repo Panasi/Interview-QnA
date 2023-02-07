@@ -1,6 +1,5 @@
 package com.panasi.interview_questions.payload;
 
-
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 

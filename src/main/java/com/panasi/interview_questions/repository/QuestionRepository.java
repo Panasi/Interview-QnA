@@ -23,7 +23,10 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
 	
 	public List<Question> findAllByCategoryIdAndIsPrivateAndAuthorId(int categoryId, boolean isPrivate, int authorId);
 	
+	@Query("SELECT q FROM Question q WHERE (q.isPrivate = false) OR (q.isPrivate = true AND q.authorId = ?1)")
+	public List<Question> findAllPublicAndAuthorPrivate(int authorId);
+	
 	@Query("SELECT q FROM Question q WHERE (q.categoryId = ?1 AND q.isPrivate = false) OR (q.categoryId = ?1 AND q.isPrivate = true AND q.authorId = ?2)")
-	public List<Question> findAllByCategoryIdAndAuthorId(int categoryId, int authorId);
+	public List<Question> findAllPublicAndAuthorPrivateByCategoryId(int categoryId, int authorId);
 	
 }

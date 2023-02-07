@@ -1,9 +1,14 @@
 package com.panasi.interview_questions.controller.user;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -69,6 +74,40 @@ public class UserQuestionController {
 			return new ResponseEntity<>(new MessageResponse(message), HttpStatus.FORBIDDEN);
 		}
 		return new ResponseEntity<>(questionDto, HttpStatus.OK);
+	}
+	
+	@GetMapping("/download")
+	@Operation(summary = "Download a PDF file with all questions and answers")
+	public ResponseEntity<InputStreamResource> downloadPdf() throws Exception {
+		File filePDF = service.createPDF();
+		InputStreamResource resource = new InputStreamResource(new FileInputStream(filePDF));
+	    HttpHeaders header = new HttpHeaders();
+	    header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filePDF.getName());
+	    header.add("Cache-Control", "no-cache, no-store, must-revalidate");
+	    header.add("Pragma", "no-cache");
+	    header.add("Expires", "0");
+	    return ResponseEntity.ok()
+	        .headers(header)
+	        .contentLength(filePDF.length())
+	        .contentType(MediaType.parseMediaType("application/octet-stream"))
+	        .body(resource);
+	}
+	
+	@GetMapping("/category/{categoryId}/download")
+	@Operation(summary = "Download a PDF file with all questions and answers")
+	public ResponseEntity<InputStreamResource> downloadPdf(@PathVariable int categoryId) throws Exception {
+		File filePDF = service.createPDF(categoryId);
+		InputStreamResource resource = new InputStreamResource(new FileInputStream(filePDF));
+	    HttpHeaders header = new HttpHeaders();
+	    header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filePDF.getName());
+	    header.add("Cache-Control", "no-cache, no-store, must-revalidate");
+	    header.add("Pragma", "no-cache");
+	    header.add("Expires", "0");
+	    return ResponseEntity.ok()
+	        .headers(header)
+	        .contentLength(filePDF.length())
+	        .contentType(MediaType.parseMediaType("application/octet-stream"))
+	        .body(resource);
 	}
 	
 	@PostMapping

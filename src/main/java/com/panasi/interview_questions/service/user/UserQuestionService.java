@@ -1,11 +1,16 @@
 package com.panasi.interview_questions.service.user;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
+import com.itextpdf.text.DocumentException;
+import com.panasi.interview_questions.payload.PdfEditor;
 import com.panasi.interview_questions.payload.QuestionRequest;
 import com.panasi.interview_questions.payload.Utils;
 import com.panasi.interview_questions.repository.dto.FullQuestionDto;
@@ -16,6 +21,32 @@ import com.panasi.interview_questions.service.QuestionService;
 
 @Service
 public class UserQuestionService extends QuestionService {
+	
+	// Return all questions and answers
+	public List<FullQuestionDto> getQuestionsWithAnswers() {
+		int currentUserId = Utils.getCurrentUserId();
+		List<Question> questions = questionRepository.findAllPublicAndAuthorPrivate(currentUserId);
+		List<FullQuestionDto> questionDtos = fullQuestionMapper.toFullQuestionDtos(questions);
+		questionDtos.forEach(question -> {
+			setQuestionRating(question);
+			question.getAnswers().forEach(answer -> setAnswerRating(answer));
+		});
+		List<FullQuestionDto> sortedQuestions = sortFullQuestionDtos(questionDtos);
+		return sortedQuestions;
+	}
+	
+	// Return all questions and answers by category id
+	public List<FullQuestionDto> getCategoryQuestionsWithAnswers(int categoryId) {
+		int currentUserId = Utils.getCurrentUserId();
+		List<Question> questions = questionRepository.findAllPublicAndAuthorPrivateByCategoryId(categoryId, currentUserId);
+		List<FullQuestionDto> questionDtos = fullQuestionMapper.toFullQuestionDtos(questions);
+		questionDtos.forEach(question -> {
+			setQuestionRating(question);
+			question.getAnswers().forEach(answer -> setAnswerRating(answer));
+		});
+		List<FullQuestionDto> sortedQuestions = sortFullQuestionDtos(questionDtos);
+		return sortedQuestions;
+	}
 
 	// Return questions from certain category
 	public List<QuestionDto> getCategoryQuestions(int categoryId, String access) {
@@ -26,7 +57,7 @@ public class UserQuestionService extends QuestionService {
 	    } else if (access.equals("private")) {
 	        questions = questionRepository.findAllByCategoryIdAndIsPrivateAndAuthorId(categoryId, true, currentUserId);
 	    } else {
-	    	questions = questionRepository.findAllByCategoryIdAndAuthorId(categoryId, currentUserId);
+	    	questions = questionRepository.findAllPublicAndAuthorPrivateByCategoryId(categoryId, currentUserId);
 	    }
 		List<QuestionDto> questionDtos = questionMapper.toQuestionDtos(questions);
 		questionDtos.forEach(question -> setQuestionRating(question));
@@ -68,7 +99,7 @@ public class UserQuestionService extends QuestionService {
 	    return sortedQuestions;
 	}
 	
-	// Return question by id
+	// Return question with answers by id
 	public FullQuestionDto getQuestionById(int questionId) {
 		int currentUserId = Utils.getCurrentUserId();
 		Question question = questionRepository.findById(questionId).get();
@@ -79,6 +110,31 @@ public class UserQuestionService extends QuestionService {
 		questionDto.getAnswers().forEach(answer -> setAnswerRating(answer));
 		setQuestionRating(questionDto);
 		return questionDto;
+	}
+	
+	// Create PDF file for all questions and answers
+	public File createPDF() throws IOException, DocumentException {
+		List<FullQuestionDto> questions = getQuestionsWithAnswers();
+		String filePath = "src/main/resources/temp/Questions And Answers.pdf";
+		File filePDF = new File(filePath);
+		FileOutputStream fileOutputStream = new FileOutputStream(filePDF);
+		String titleName = "Questions and Asnwers";
+		PdfEditor.editPDF(questions, titleName, fileOutputStream);
+		fileOutputStream.close();
+		return filePDF;	
+	}
+	
+	// Create PDF file for all questions and answers from category
+	public File createPDF(int categoryId) throws IOException, DocumentException {
+		List<FullQuestionDto> questions = getCategoryQuestionsWithAnswers(categoryId);
+		String filePath = "src/main/resources/temp/Questions And Answers.pdf";
+		File filePDF = new File(filePath);
+		FileOutputStream fileOutputStream = new FileOutputStream(filePDF);
+		String categoryName = categoryRepository.findById(categoryId).get().getName();
+		String titleName = "Questions and Asnwers from " + categoryName + " category";
+		PdfEditor.editPDF(questions, titleName, fileOutputStream);
+		fileOutputStream.close();
+		return filePDF;	
 	}
 	
 	// Add a new question
