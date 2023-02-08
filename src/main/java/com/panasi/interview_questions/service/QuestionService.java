@@ -94,4 +94,24 @@ public class QuestionService {
 	    return sortedQuestions;
 	}
 	
+	// Sort questions with answers
+	public List<FullQuestionDto> sortFullQuestionDtos(List<FullQuestionDto> questionDtos) {
+		List<FullQuestionDto> sortedQuestions = new ArrayList<>(questionDtos);
+		sortedQuestions.sort((q1,q2) -> {
+			int compare = q1.getCategoryId().compareTo(q2.getCategoryId());
+			if (compare == 0) {
+				compare = Boolean.compare(q1.getIsPrivate(), q2.getIsPrivate());
+			    if (compare == 0) {
+			    	compare = Optional.ofNullable(q1.getRating()).orElse(Double.MIN_VALUE)
+			    		.compareTo(Optional.ofNullable(q2.getRating()).orElse(Double.MIN_VALUE));
+			    	if (compare == 0) {
+			    		compare = q1.getDate().compareTo(q2.getDate());
+			    	}
+			     }
+			}
+			return compare;
+		});
+		return sortedQuestions;
+	}
+	
 }

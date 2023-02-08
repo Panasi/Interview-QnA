@@ -1,11 +1,13 @@
 package com.panasi.interview_questions.service.user;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
+import com.panasi.interview_questions.payload.PdfEditor;
 import com.panasi.interview_questions.payload.QuestionRequest;
 import com.panasi.interview_questions.payload.Utils;
 import com.panasi.interview_questions.repository.dto.FullQuestionDto;
@@ -16,6 +18,32 @@ import com.panasi.interview_questions.service.QuestionService;
 
 @Service
 public class UserQuestionService extends QuestionService {
+	
+	// Return all questions and answers
+	public List<FullQuestionDto> getQuestionsWithAnswers() {
+		int currentUserId = Utils.getCurrentUserId();
+		List<Question> questions = questionRepository.findAllPublicAndAuthorPrivate(currentUserId);
+		List<FullQuestionDto> questionDtos = fullQuestionMapper.toFullQuestionDtos(questions);
+		questionDtos.forEach(question -> {
+			setQuestionRating(question);
+			question.getAnswers().forEach(answer -> setAnswerRating(answer));
+		});
+		List<FullQuestionDto> sortedQuestions = sortFullQuestionDtos(questionDtos);
+		return sortedQuestions;
+	}
+	
+	// Return all questions and answers by category id
+	public List<FullQuestionDto> getCategoryQuestionsWithAnswers(int categoryId) {
+		int currentUserId = Utils.getCurrentUserId();
+		List<Question> questions = questionRepository.findAllPublicAndAuthorPrivateByCategoryId(categoryId, currentUserId);
+		List<FullQuestionDto> questionDtos = fullQuestionMapper.toFullQuestionDtos(questions);
+		questionDtos.forEach(question -> {
+			setQuestionRating(question);
+			question.getAnswers().forEach(answer -> setAnswerRating(answer));
+		});
+		List<FullQuestionDto> sortedQuestions = sortFullQuestionDtos(questionDtos);
+		return sortedQuestions;
+	}
 
 	// Return questions from certain category
 	public List<QuestionDto> getCategoryQuestions(int categoryId, String access) {
@@ -26,7 +54,7 @@ public class UserQuestionService extends QuestionService {
 	    } else if (access.equals("private")) {
 	        questions = questionRepository.findAllByCategoryIdAndIsPrivateAndAuthorId(categoryId, true, currentUserId);
 	    } else {
-	    	questions = questionRepository.findAllByCategoryIdAndAuthorId(categoryId, currentUserId);
+	    	questions = questionRepository.findAllPublicAndAuthorPrivateByCategoryId(categoryId, currentUserId);
 	    }
 		List<QuestionDto> questionDtos = questionMapper.toQuestionDtos(questions);
 		questionDtos.forEach(question -> setQuestionRating(question));
@@ -68,7 +96,7 @@ public class UserQuestionService extends QuestionService {
 	    return sortedQuestions;
 	}
 	
-	// Return question by id
+	// Return question with answers by id
 	public FullQuestionDto getQuestionById(int questionId) {
 		int currentUserId = Utils.getCurrentUserId();
 		Question question = questionRepository.findById(questionId).get();
@@ -118,6 +146,23 @@ public class UserQuestionService extends QuestionService {
 			return true;
 		}
 		return false;
+	}
+	
+	// Create PDF file for all questions and answers
+	public void createPDF() throws IOException {
+		List<FullQuestionDto> questions = getQuestionsWithAnswers();
+		String filePath = "./src/main/resources/temp/Questions And Answers.pdf";
+		String title = "Questions and Asnwers";
+		PdfEditor.createPDF(filePath, title, questions);
+	}
+		
+	// Create PDF file for all questions and answers from category
+	public void createPDF(int categoryId) throws IOException {
+		List<FullQuestionDto> questions = getCategoryQuestionsWithAnswers(categoryId);
+		String filePath = "./src/main/resources/temp/Questions And Answers.pdf";
+		String categoryName = categoryRepository.findById(categoryId).get().getName();
+		String title = "Questions and Asnwers from " + categoryName + " category";
+		PdfEditor.createPDF(filePath, title, questions);	
 	}
 
 }
