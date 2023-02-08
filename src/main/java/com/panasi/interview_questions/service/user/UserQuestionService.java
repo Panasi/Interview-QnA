@@ -1,7 +1,5 @@
 package com.panasi.interview_questions.service.user;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,7 +7,6 @@ import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
-import com.itextpdf.text.DocumentException;
 import com.panasi.interview_questions.payload.PdfEditor;
 import com.panasi.interview_questions.payload.QuestionRequest;
 import com.panasi.interview_questions.payload.Utils;
@@ -112,31 +109,6 @@ public class UserQuestionService extends QuestionService {
 		return questionDto;
 	}
 	
-	// Create PDF file for all questions and answers
-	public File createPDF() throws IOException, DocumentException {
-		List<FullQuestionDto> questions = getQuestionsWithAnswers();
-		String filePath = "src/main/resources/temp/Questions And Answers.pdf";
-		File filePDF = new File(filePath);
-		FileOutputStream fileOutputStream = new FileOutputStream(filePDF);
-		String titleName = "Questions and Asnwers";
-		PdfEditor.editPDF(questions, titleName, fileOutputStream);
-		fileOutputStream.close();
-		return filePDF;	
-	}
-	
-	// Create PDF file for all questions and answers from category
-	public File createPDF(int categoryId) throws IOException, DocumentException {
-		List<FullQuestionDto> questions = getCategoryQuestionsWithAnswers(categoryId);
-		String filePath = "src/main/resources/temp/Questions And Answers.pdf";
-		File filePDF = new File(filePath);
-		FileOutputStream fileOutputStream = new FileOutputStream(filePDF);
-		String categoryName = categoryRepository.findById(categoryId).get().getName();
-		String titleName = "Questions and Asnwers from " + categoryName + " category";
-		PdfEditor.editPDF(questions, titleName, fileOutputStream);
-		fileOutputStream.close();
-		return filePDF;	
-	}
-	
 	// Add a new question
 	public void createQuestion(QuestionRequest questionRequest) {
 		String currentUserName = Utils.getCurrentUserName();
@@ -174,6 +146,23 @@ public class UserQuestionService extends QuestionService {
 			return true;
 		}
 		return false;
+	}
+	
+	// Create PDF file for all questions and answers
+	public void createPDF() throws IOException {
+		List<FullQuestionDto> questions = getQuestionsWithAnswers();
+		String filePath = "./src/main/resources/temp/Questions And Answers.pdf";
+		String title = "Questions and Asnwers";
+		PdfEditor.createPDF(filePath, title, questions);
+	}
+		
+	// Create PDF file for all questions and answers from category
+	public void createPDF(int categoryId) throws IOException {
+		List<FullQuestionDto> questions = getCategoryQuestionsWithAnswers(categoryId);
+		String filePath = "./src/main/resources/temp/Questions And Answers.pdf";
+		String categoryName = categoryRepository.findById(categoryId).get().getName();
+		String title = "Questions and Asnwers from " + categoryName + " category";
+		PdfEditor.createPDF(filePath, title, questions);	
 	}
 
 }

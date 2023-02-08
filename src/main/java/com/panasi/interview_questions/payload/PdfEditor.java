@@ -1,65 +1,78 @@
 package com.panasi.interview_questions.payload;
 
-import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.ListItem;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.panasi.interview_questions.repository.dto.FullAnswerDto;
 import com.panasi.interview_questions.repository.dto.FullQuestionDto;
 
-public class PdfEditor {
+
+public final class PdfEditor {
 	
-	private static Font titleFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 16, Font.BOLD);
-	private static Font questionFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 14, Font.NORMAL);
-	private static Font answerFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
+	private static final String ARIAL = "./src/main/resources/fonts/Arial.ttf";
 	
-	private static void addTitle(String titleName, Document document) throws DocumentException {
-		Paragraph title = new Paragraph(titleName, titleFont);
-	    title.setAlignment(com.itextpdf.text.Element.ALIGN_CENTER);
-	    addEmptyLine(title, 1);
-	    document.add(title);
+	private static PdfFont createFont() throws IOException {
+		return PdfFontFactory.createFont(ARIAL);
 	}
 	
-	private static void addEmptyLine(Paragraph paragraph, int number) {
-        for (int i = 0; i < number; i++) {
-            paragraph.add(new Paragraph(" "));
-        }
-    }
+	private static void addTitle(Document document, String title) throws IOException {
+		Paragraph titleParagraph = new Paragraph(title);
+		titleParagraph.setFont(createFont());
+		titleParagraph.setFontSize(16);
+		titleParagraph.setBold();
+		titleParagraph.setTextAlignment(TextAlignment.CENTER);
+		titleParagraph.setMarginBottom(5);
+		document.add(titleParagraph);
+	}
 	
-	public static void editPDF(List<FullQuestionDto> questions, String titleName, FileOutputStream fileOutputStream) throws DocumentException {
+	private static void addList(Document document, List<FullQuestionDto> questions) throws IOException {
 		
-	    Document document = new Document(PageSize.A4);
-	    PdfWriter.getInstance(document, fileOutputStream);
-	    document.open();
-	    
-	    addTitle(titleName, document);
-	    
-	    questions.forEach(question -> {
-	    	
-	    	Paragraph questionParagraph = new Paragraph(question.getId() + ". " + question.getName(), questionFont);
-	    	questionParagraph.setSpacingBefore(8);
-	    	try {
-				document.add(questionParagraph);
-			} catch (DocumentException e) {
-				e.printStackTrace();
-			}
-	    	question.getAnswers().forEach(answer -> {
-	    		Paragraph answerParagraph = new Paragraph("-  " + answer.getName(), answerFont);
-	    		answerParagraph.setIndentationLeft(20);
-	    		try {
-					document.add(answerParagraph);
-				} catch (DocumentException e) {
-					e.printStackTrace();
-				}
-	    	});
-	    	
-	    });
-	    
+		for (int i = 0; i < questions.size(); i++) {
+			
+			FullQuestionDto question = questions.get(i);
+			Paragraph questionParagraph = new Paragraph(i + 1 + ". " + question.getName());
+			questionParagraph.setFont(createFont());
+			questionParagraph.setFontSize(14);
+			questionParagraph.setMarginTop(10);
+			questionParagraph.setMarginBottom(5);
+			document.add(questionParagraph);
+			
+			List<FullAnswerDto> answers = question.getAnswers();
+			com.itextpdf.layout.element.List list = new com.itextpdf.layout.element.List();
+			list.setFont(createFont());
+			list.setFontSize(11);
+			list.setItalic();
+			list.setTextAlignment(TextAlignment.JUSTIFIED);
+			
+			answers.forEach(answer -> {
+				ListItem listItem = new ListItem(answer.getName());
+				listItem.setMarginBottom(5);
+				list.add(listItem);
+			});
+			document.add(list);
+			
+		}
+		
+	}
+	
+	public static void createPDF(String filePath, String title, List<FullQuestionDto> questions) throws IOException {
+		
+		PdfWriter writer = new PdfWriter(filePath);
+		PdfDocument pdfDoc = new PdfDocument(writer);
+		pdfDoc.addNewPage();
+		Document document = new Document(pdfDoc);
+		
+		addTitle(document, title);
+		addList(document, questions);
+		
 	    document.close();
 	    
 	 }

@@ -2,6 +2,7 @@ package com.panasi.interview_questions.controller.user;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,8 +79,9 @@ public class UserQuestionController {
 	
 	@GetMapping("/download")
 	@Operation(summary = "Download a PDF file with all questions and answers")
-	public ResponseEntity<InputStreamResource> downloadPdf() throws Exception {
-		File filePDF = service.createPDF();
+	public ResponseEntity<InputStreamResource> downloadPdf() throws IOException {
+		service.createPDF();
+		File filePDF = new File("./src/main/resources/temp/Questions And Answers.pdf");
 		InputStreamResource resource = new InputStreamResource(new FileInputStream(filePDF));
 	    HttpHeaders header = new HttpHeaders();
 	    header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filePDF.getName());
@@ -95,8 +97,9 @@ public class UserQuestionController {
 	
 	@GetMapping("/category/{categoryId}/download")
 	@Operation(summary = "Download a PDF file with all questions and answers")
-	public ResponseEntity<InputStreamResource> downloadPdf(@PathVariable int categoryId) throws Exception {
-		File filePDF = service.createPDF(categoryId);
+	public ResponseEntity<InputStreamResource> downloadPdf(@PathVariable int categoryId) throws IOException {
+		service.createPDF(categoryId);
+		File filePDF = new File("./src/main/resources/temp/Questions And Answers.pdf");
 		InputStreamResource resource = new InputStreamResource(new FileInputStream(filePDF));
 	    HttpHeaders header = new HttpHeaders();
 	    header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filePDF.getName());
