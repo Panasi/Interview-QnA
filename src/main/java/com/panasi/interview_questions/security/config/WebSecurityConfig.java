@@ -80,6 +80,7 @@ public class WebSecurityConfig {
 	        .antMatchers("/admin/**").hasRole("ADMIN")
 	        .antMatchers("/swagger.html", "/swagger-ui/**", "/api-docs/**").hasRole("ADMIN")
 	        .antMatchers("/h2-console/**").hasRole("ADMIN")
+	        .antMatchers("/sendEmail").hasRole("ADMIN")
 	        .anyRequest().authenticated();
 	    
 	    http.authenticationProvider(authenticationProvider());
