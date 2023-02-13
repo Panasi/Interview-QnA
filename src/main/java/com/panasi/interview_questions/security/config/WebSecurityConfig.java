@@ -76,11 +76,11 @@ public class WebSecurityConfig {
 	        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 	        .authorizeRequests()
 	        .antMatchers("/auth/**").permitAll()
-	        .antMatchers(HttpMethod.GET, "/questions/**", "/categories/**", "/answers/**").permitAll()
+	        .antMatchers(HttpMethod.GET, "/questions/**", "/categories/**", "/answers/**", "/sendSms").permitAll()
 	        .antMatchers("/admin/**").hasRole("ADMIN")
 	        .antMatchers("/swagger.html", "/swagger-ui/**", "/api-docs/**").hasRole("ADMIN")
 	        .antMatchers("/h2-console/**").hasRole("ADMIN")
-	        .antMatchers("/sendEmail").hasRole("ADMIN")
+	        .antMatchers("/sendEmail", "/sendSms").hasRole("ADMIN")
 	        .anyRequest().authenticated();
 	    
 	    http.authenticationProvider(authenticationProvider());
