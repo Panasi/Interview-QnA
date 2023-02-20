@@ -109,6 +109,12 @@
     		<type>pom</type>
 		</dependency>
 		
+		<dependency>
+  			<groupId>com.twilio.sdk</groupId>
+  			<artifactId>twilio</artifactId>
+  			<version>9.2.3</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
