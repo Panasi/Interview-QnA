@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.panasi.interview_questions.mail.service.EmailService;
 import com.panasi.interview_questions.payload.MessageResponse;
 import com.panasi.interview_questions.security.jwt.JwtUtils;
 import com.panasi.interview_questions.security.payload.ERole;
@@ -45,6 +46,7 @@ public class AuthController {
 	private final UserRepository userRepository;
 	private final RoleRepository roleRepository;
 	private final JwtUtils jwtUtils;
+	private final EmailService emailService;
 	
 	@PostMapping("/signin")
 	public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody SignInRequest signInRequest) {
@@ -107,9 +109,16 @@ public class AuthController {
 
 		user.setRoles(roles);
 		userRepository.save(user);
-
-		String message = "User registered successfully!";
+		
+		boolean emailStatus = emailService.sendAuthEmail(signUpRequest.getEmail());
+		
+		if (emailStatus) {
+			String message = "You have successfully registered. An email has been sent to your email address.";
+			return new ResponseEntity<>(new MessageResponse(message), HttpStatus.OK);
+		}
+		String message = "You have successfully registered.";
 		return new ResponseEntity<>(new MessageResponse(message), HttpStatus.OK);
+		
 	}
 
 }
