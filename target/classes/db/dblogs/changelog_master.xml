@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>	
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    
+    <include file="/db/dblogs/changes/241120221517_create_categories_table.xml"/>
+    <include file="/db/dblogs/changes/241120221530_create_questions_and_answers_table.xml"/>
+    <include file="/db/dblogs/changes/071220221705_create_roles_table.xml"/>
+    <include file="/db/dblogs/changes/071220221748_create_users_table.xml"/>
+    <include file="/db/dblogs/changes/071220221746_create_user_roles_table.xml"/>
+    <include file="/db/dblogs/changes/071220221753_insert_roles_table.xml"/>
+    <include file="/db/dblogs/changes/131220221300_create_questions_table.xml"/>
+    <include file="/db/dblogs/changes/131220221247_create_answers_table.xml"/>
+    <include file="/db/dblogs/changes/131220221753_migrate_and_drop_qaa_table.xml"/>
+    <include file="/db/dblogs/changes/151220221526_rename_category_col_in_questions_table.xml"/>
+    <include file="/db/dblogs/changes/151220221920_add_author_to_questions_and_answers_tables.xml"/>
+    <include file="/db/dblogs/changes/020120231157_rename_author_and_add_authorid.xml"/>
+    <include file="/db/dblogs/changes/020120231450_add_date_to_answers_and_questions_tables.xml"/>
+    <include file="/db/dblogs/changes/020120231750_add_access_to_answers_and_questions_tables.xml"/>
+    <include file="/db/dblogs/changes/050120231510_create_comments_table.xml"/>
+    <include file="/db/dblogs/changes/090120231548_delete_username_from_comments_table.xml"/>
+    <include file="/db/dblogs/changes/090120231616_delete_rating_from_answers_table.xml"/>
+    <include file="/db/dblogs/changes/110120231148_rename_comments_table.xml"/>
+
+</databaseChangeLog>

@@ -36,12 +36,12 @@ public class WebSecurityConfig {
 	private AuthEntryPointJwt unauthorizedHandler;
 
 	@Bean
-	public AuthTokenFilter authenticationJwtTokenFilter() {
+	AuthTokenFilter authenticationJwtTokenFilter() {
 		return new AuthTokenFilter();
 	}
 
 	@Bean
-	public DaoAuthenticationProvider authenticationProvider() {
+	DaoAuthenticationProvider authenticationProvider() {
 	    DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 	       
 	    authProvider.setUserDetailsService(userDetailsService);
@@ -51,25 +51,24 @@ public class WebSecurityConfig {
 	}
 	
 	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfiguration) throws Exception {
+	AuthenticationManager authenticationManager(AuthenticationConfiguration authConfiguration) throws Exception {
 	    return authConfiguration.getAuthenticationManager();
 	}
 
 	@Bean
-	public PasswordEncoder passwordEncoder() {
+	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 	
 	@Bean
-	public UserDetailsImpl getAnonimus() {
+	UserDetailsImpl getAnonimus() {
 		Set<Role> roles = new HashSet<>();
 		User testUser = new User(0, "Guest", "guest@gmail.com", "password", roles);
-		UserDetailsImpl userDetails = UserDetailsImpl.build(testUser);
-		return userDetails;
+		return UserDetailsImpl.build(testUser);
 	}
 	
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 	    http.cors().and().csrf().disable()
 	    	.anonymous().principal(getAnonimus()).authorities("GUEST_ROLE").and()
 	        .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
